@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import trainerService, { type TrainerMonster } from '@services/trainerService';
 import monsterService from '@services/monsterService';
 import itemsService, { type Item } from '@services/itemsService';
+import itemSessionService from '@services/itemSessionService';
 import type { ItemDetailData } from '@components/items/ItemDetailModal';
 import { useAuth } from '@contexts/useAuth';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
@@ -180,6 +181,7 @@ export function useTrainerDetail() {
   // Mass edit state
   const [showMassEditModal, setShowMassEditModal] = useState(false);
   const [trainerInventory, setTrainerInventory] = useState<Record<string, Record<string, number>>>({});
+  const [hasPendingMassEditSession, setHasPendingMassEditSession] = useState(false);
 
   // Relations state
   const [relatedTrainers, setRelatedTrainers] = useState<Record<string, Trainer>>({});
@@ -625,6 +627,14 @@ export function useTrainerDetail() {
 
   // --- Mass edit ---
 
+  // Check for pending mass edit session
+  useEffect(() => {
+    if (!isOwner) return;
+    itemSessionService.get('mass_edit').then(session => {
+      setHasPendingMassEditSession(!!session);
+    }).catch(() => {});
+  }, [isOwner, showMassEditModal]);
+
   const handleOpenMassEdit = useCallback(async () => {
     if (!id) return;
     try {
@@ -645,6 +655,7 @@ export function useTrainerDetail() {
   const handleMassEditComplete = useCallback((results: Array<{ status: string }>) => {
     fetchTrainerData();
     setShowMassEditModal(false);
+    setHasPendingMassEditSession(false);
     const successCount = results.filter(r => r.status === 'success').length;
     setStatusMessage(`Mass edit completed! ${successCount} operations processed successfully.`);
     setStatusType('success');
@@ -1231,6 +1242,7 @@ export function useTrainerDetail() {
     trainerInventory,
     handleOpenMassEdit,
     handleMassEditComplete,
+    hasPendingMassEditSession,
 
     // Relations
     relatedTrainers,

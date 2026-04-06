@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { TrainerAutocomplete } from '../common/TrainerAutocomplete';
 import { MonsterAutocomplete } from '../common/MonsterAutocomplete';
 import { ErrorMessage } from '../common/ErrorMessage';
-import { LoadingSpinner } from '../common/LoadingSpinner';
 import submissionService from '../../services/submissionService';
 import monsterService from '../../services/monsterService';
 import trainerService from '../../services/trainerService';
@@ -246,7 +245,7 @@ export function ExternalLevelAllocator({
           onClick={handleAllocate}
           disabled={loading || !((recipientType === 'trainer' && selectedTrainerId) || (recipientType === 'monster' && selectedMonsterId)) || levels <= 0}
         >
-          {loading ? <LoadingSpinner /> : 'Allocate Levels'}
+          {loading ? <><i className="fas fa-spinner fa-spin"></i> Allocating...</> : 'Allocate Levels'}
         </button>
       </div>
 

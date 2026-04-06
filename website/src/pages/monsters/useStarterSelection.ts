@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@contexts/useAuth';
 import monsterRollerService from '@services/monsterRollerService';
@@ -36,10 +36,28 @@ export function useStarterSelection(trainerId: string | undefined): UseStarterSe
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedStarters, setSelectedStarters] = useState<(StarterMonster | null)[]>([null, null, null]);
   const [starterNames, setStarterNames] = useState(['', '', '']);
+  const seedRef = useRef<string>('');
 
   const allSelected = selectedStarters.every(s => s !== null);
 
   const clearError = useCallback(() => setError(null), []);
+
+  // Save session progress to the backend (debounced via caller)
+  const saveSession = useCallback((
+    sets: StarterSet[],
+    selected: (StarterMonster | null)[],
+    names: string[],
+    step: number,
+  ) => {
+    if (!trainerId || !seedRef.current || sets.length === 0) return;
+    monsterRollerService.saveStarterSession(trainerId, {
+      seed: seedRef.current,
+      starterSets: sets,
+      selectedStarters: selected,
+      starterNames: names,
+      currentStep: step,
+    }).catch(() => { /* silent - best effort */ });
+  }, [trainerId]);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -48,7 +66,7 @@ export function useStarterSelection(trainerId: string | undefined): UseStarterSe
     }
   }, [isAuthenticated, navigate, location]);
 
-  // Fetch starter sets on mount
+  // Fetch starter sets on mount (restores existing session if present)
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -58,22 +76,40 @@ export function useStarterSelection(trainerId: string | undefined): UseStarterSe
       try {
         setLoading(true);
         setError(null);
-        const response = await monsterRollerService.rollStarterSets();
+        const response = await monsterRollerService.rollStarterSets(trainerId);
 
         if (cancelled) return;
 
         if (response.success && response.data) {
           setStarterSets(response.data);
+          seedRef.current = response.seed ?? '';
+
+          // Restore session state if the backend returned one
+          if (response.session) {
+            const { selectedStarters: restored, starterNames: restoredNames, currentStep: restoredStep } = response.session;
+            if (restored && Array.isArray(restored)) {
+              setSelectedStarters(restored);
+            }
+            if (restoredNames && Array.isArray(restoredNames)) {
+              setStarterNames(restoredNames);
+            }
+            if (typeof restoredStep === 'number') {
+              setCurrentStep(restoredStep);
+            }
+          }
         } else {
           setError('Failed to load starter monsters');
         }
       } catch (err) {
         if (cancelled) return;
-        const e = err as { response?: { status?: number }; message?: string };
+        const e = err as { response?: { status?: number; data?: { message?: string } }; message?: string };
         if (e.response?.status === 401) {
           navigate('/login', { state: { from: location } });
+        } else if (e.response?.status === 400 && trainerId) {
+          // Trainer already has monsters — redirect to their page
+          navigate(`/trainers/${trainerId}`);
         } else {
-          setError(`Error loading starter monsters: ${e.message ?? 'Unknown error'}`);
+          setError(`Error loading starter monsters: ${e.response?.data?.message ?? e.message ?? 'Unknown error'}`);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -83,13 +119,20 @@ export function useStarterSelection(trainerId: string | undefined): UseStarterSe
     fetchStarterSets();
 
     return () => { cancelled = true; };
-  }, [isAuthenticated, navigate, location]);
+  }, [isAuthenticated, navigate, location, trainerId]);
 
   const handleSelectMonster = useCallback((setIndex: number, monster: StarterMonster) => {
     setError(null);
     setSelectedStarters(prev => {
       const next = [...prev];
       next[setIndex] = monster;
+
+      // Determine the new step
+      const nextStep = setIndex < 2 ? setIndex + 1 : 3;
+
+      // Save session with the updated selections
+      setTimeout(() => saveSession(starterSets, next, starterNames, nextStep), 0);
+
       return next;
     });
 
@@ -101,15 +144,19 @@ export function useStarterSelection(trainerId: string | undefined): UseStarterSe
         setCurrentStep(3);
       }
     }, 500);
-  }, []);
+  }, [starterSets, starterNames, saveSession]);
 
   const handleNameChange = useCallback((index: number, name: string) => {
     setStarterNames(prev => {
       const next = [...prev];
       next[index] = name;
+
+      // Save session with the updated names
+      setTimeout(() => saveSession(starterSets, selectedStarters, next, currentStep), 0);
+
       return next;
     });
-  }, []);
+  }, [starterSets, selectedStarters, currentStep, saveSession]);
 
   const handleSubmit = useCallback(async () => {
     if (!allSelected) {

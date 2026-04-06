@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
+import townService from '../../services/townService';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { ErrorMessage } from '../common/ErrorMessage';
 import { extractErrorMessage } from '../../utils/errorUtils';
@@ -28,17 +29,27 @@ export function GardenHarvest({ className = '' }: GardenHarvestProps) {
   const [error, setError] = useState<string | null>(null);
   const [gardenPoints, setGardenPoints] = useState<GardenPoints | null>(null);
   const [harvestLoading, setHarvestLoading] = useState(false);
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
 
-  // Fetch garden points
+  // Fetch garden points and check for active session
   const fetchGardenPoints = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.get('/garden/points');
+      const [pointsResponse, activeSessionResponse] = await Promise.all([
+        api.get('/garden/points'),
+        townService.getActiveGardenSession(),
+      ]);
 
-      if (response.data.success) {
-        setGardenPoints(response.data.data);
+      if (pointsResponse.data.success) {
+        setGardenPoints(pointsResponse.data.data);
       } else {
-        setError(response.data.message || 'Failed to load garden points');
+        setError(pointsResponse.data.message || 'Failed to load garden points');
+      }
+
+      if (activeSessionResponse.success && activeSessionResponse.hasActiveSession && activeSessionResponse.sessionId) {
+        setActiveSessionId(activeSessionResponse.sessionId);
+      } else {
+        setActiveSessionId(null);
       }
     } catch (err) {
       console.error('Error fetching garden points:', err);
@@ -58,6 +69,12 @@ export function GardenHarvest({ className = '' }: GardenHarvestProps) {
 
   // Handle harvest — redirect to rewards page
   const handleHarvest = useCallback(async () => {
+    // If there's already an active session, go directly to it
+    if (activeSessionId) {
+      navigate(`/town/activities/rewards/${activeSessionId}`);
+      return;
+    }
+
     try {
       setHarvestLoading(true);
       setError(null);
@@ -81,7 +98,7 @@ export function GardenHarvest({ className = '' }: GardenHarvestProps) {
     } finally {
       setHarvestLoading(false);
     }
-  }, [fetchGardenPoints, navigate]);
+  }, [activeSessionId, fetchGardenPoints, navigate]);
 
   if (loading) {
     return (
@@ -158,20 +175,36 @@ export function GardenHarvest({ className = '' }: GardenHarvestProps) {
       </div>
 
       <div className="action-button-group action-button-group--align-center action-button-group--gap-md">
-        <button
-          className="button success lg no-flex"
-          onClick={handleHarvest}
-          disabled={harvestLoading || !gardenPoints || gardenPoints.points <= 0}
-        >
-          {harvestLoading ? (
-            <><LoadingSpinner /> Harvesting...</>
-          ) : (
-            <><i className="fas fa-hand-holding-heart"></i> Harvest Garden</>
-          )}
-        </button>
+        {activeSessionId ? (
+          <button
+            className="button warning lg no-flex"
+            onClick={handleHarvest}
+          >
+            <i className="fas fa-undo"></i> Resume Harvest
+          </button>
+        ) : (
+          <button
+            className="button success lg no-flex"
+            onClick={handleHarvest}
+            disabled={harvestLoading || !gardenPoints || gardenPoints.points <= 0}
+          >
+            {harvestLoading ? (
+              <><i className="fas fa-spinner fa-spin"></i> Harvesting...</>
+            ) : (
+              <><i className="fas fa-hand-holding-heart"></i> Harvest Garden</>
+            )}
+          </button>
+        )}
       </div>
 
-      {gardenPoints && gardenPoints.points <= 0 && (
+      {activeSessionId && (
+        <div className="empty-state">
+          <i className="fas fa-exclamation-circle"></i>
+          <p>You have an unfinished harvest session. Resume it to claim your rewards!</p>
+        </div>
+      )}
+
+      {!activeSessionId && gardenPoints && gardenPoints.points <= 0 && (
         <div className="empty-state">
           <i className="fas fa-seedling"></i>
           <p>You don't have any garden points to harvest. Complete garden activities to earn points!</p>

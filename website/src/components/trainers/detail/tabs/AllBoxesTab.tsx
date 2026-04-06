@@ -17,6 +17,7 @@ interface AllBoxesTabProps {
   setCurrentPCBox: (v: number) => void;
   setActiveTab: (tab: string) => void;
   handleOpenMassEdit: () => void;
+  hasPendingMassEditSession?: boolean;
 }
 
 export const AllBoxesTab = ({
@@ -33,6 +34,7 @@ export const AllBoxesTab = ({
   setCurrentPCBox,
   setActiveTab,
   handleOpenMassEdit,
+  hasPendingMassEditSession,
 }: AllBoxesTabProps) => {
   const maxBoxes = getMaxBoxNumber();
 
@@ -45,9 +47,29 @@ export const AllBoxesTab = ({
             <button
               className="button secondary"
               onClick={handleOpenMassEdit}
-              title="Mass edit your monsters"
+              title={hasPendingMassEditSession ? "Resume pending species selection" : "Mass edit your monsters"}
+              style={{ position: 'relative' }}
             >
               <i className="fas fa-edit"></i> Mass Edit
+              {hasPendingMassEditSession && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '-6px',
+                    right: '-6px',
+                    fontSize: '0.65rem',
+                    padding: '2px 5px',
+                    borderRadius: '8px',
+                    lineHeight: 1,
+                    background: 'var(--warning-color, #f59e0b)',
+                    color: '#fff',
+                    fontWeight: 700,
+                  }}
+                  title="You have a pending species selection to resume"
+                >
+                  !
+                </span>
+              )}
             </button>
           )}
           {isOwner && monsters.length > 0 && (

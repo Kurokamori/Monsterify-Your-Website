@@ -73,7 +73,7 @@ export async function getHarvestSession(req: Request, res: Response): Promise<vo
       return;
     }
 
-    const session = gardenService.getHarvestSession(sessionId, userId);
+    const session = await gardenService.getHarvestSession(sessionId, userId);
 
     if (!session) {
       res.status(404).json({ success: false, message: 'Session not found' });
@@ -88,6 +88,39 @@ export async function getHarvestSession(req: Request, res: Response): Promise<vo
       res.status(403).json({ success: false, message: msg });
       return;
     }
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+// =============================================================================
+// Get Active Session (for resuming)
+// =============================================================================
+
+export async function getActiveSession(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const session = await gardenService.getActiveSession(userId);
+
+    if (!session) {
+      res.json({ success: true, hasActiveSession: false });
+      return;
+    }
+
+    res.json({
+      success: true,
+      hasActiveSession: true,
+      sessionId: session.id,
+      session,
+      rewards: session.rewards,
+    });
+  } catch (error) {
+    console.error('Error getting active session:', error);
+    const msg = error instanceof Error ? error.message : 'Error getting active session';
     res.status(500).json({ success: false, message: msg });
   }
 }
@@ -194,6 +227,100 @@ export async function forfeitMonster(req: Request, res: Response): Promise<void>
     }
     if (msg === 'Reward already claimed' || msg === 'Only monster rewards can be forfeited') {
       res.status(400).json({ success: false, message: msg });
+      return;
+    }
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+// =============================================================================
+// Bulk Claim Rewards
+// =============================================================================
+
+export async function claimBulk(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const { sessionId, claims } = req.body as {
+      sessionId?: string;
+      claims?: { rewardId: string; trainerId: number; monsterName?: string; ball?: string }[];
+    };
+
+    if (!sessionId || !claims || !Array.isArray(claims) || claims.length === 0) {
+      res.status(400).json({ success: false, message: 'Missing sessionId or claims array' });
+      return;
+    }
+
+    const result = await gardenService.claimBulk(sessionId, claims, userId);
+
+    const claimedCount = result.results.filter(r => r.success).length;
+    const failedCount = result.results.filter(r => !r.success).length;
+
+    res.json({
+      success: true,
+      message: `Claimed ${claimedCount} reward(s)${failedCount > 0 ? `, ${failedCount} failed` : ''}`,
+      results: result.results,
+    });
+  } catch (error) {
+    console.error('Error bulk claiming rewards:', error);
+    const msg = error instanceof Error ? error.message : 'Error bulk claiming rewards';
+    if (msg === 'Session not found') {
+      res.status(404).json({ success: false, message: msg });
+      return;
+    }
+    if (msg === 'Unauthorized') {
+      res.status(403).json({ success: false, message: msg });
+      return;
+    }
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+// =============================================================================
+// Bulk Forfeit Monsters
+// =============================================================================
+
+export async function forfeitBulk(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const { sessionId, forfeits } = req.body as {
+      sessionId?: string;
+      forfeits?: { rewardId: string; monsterName?: string }[];
+    };
+
+    if (!sessionId || !forfeits || !Array.isArray(forfeits) || forfeits.length === 0) {
+      res.status(400).json({ success: false, message: 'Missing sessionId or forfeits array' });
+      return;
+    }
+
+    const result = await gardenService.forfeitBulk(sessionId, forfeits, userId);
+
+    const forfeitedCount = result.results.filter(r => r.success).length;
+    const failedCount = result.results.filter(r => !r.success).length;
+
+    res.json({
+      success: true,
+      message: `Forfeited ${forfeitedCount} monster(s)${failedCount > 0 ? `, ${failedCount} failed` : ''}`,
+      results: result.results,
+    });
+  } catch (error) {
+    console.error('Error bulk forfeiting monsters:', error);
+    const msg = error instanceof Error ? error.message : 'Error bulk forfeiting monsters';
+    if (msg === 'Session not found') {
+      res.status(404).json({ success: false, message: msg });
+      return;
+    }
+    if (msg === 'Unauthorized') {
+      res.status(403).json({ success: false, message: msg });
       return;
     }
     res.status(500).json({ success: false, message: msg });

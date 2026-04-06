@@ -26,6 +26,7 @@ import areaRoutes from './adventure/area.routes';
 
 // Item Routes Imports
 import itemsRoutes from './api/items.routes';
+import itemUseSessionRoutes from './api/item-use-session.routes';
 
 // Monster Routes Imports
 import monsterRoutes from './monsters/monster.routes';
@@ -125,6 +126,7 @@ router.use('/art-todo', artTodoRoutes);
 
 // API Routes
 router.use('/items', itemsRoutes);
+router.use('/item-sessions', itemUseSessionRoutes);
 router.use('/adoption', adoptionRoutes);
 
 // Adventure Routes

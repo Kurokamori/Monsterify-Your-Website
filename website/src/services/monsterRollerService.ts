@@ -88,10 +88,17 @@ export interface StarterSet {
   monsters: StarterMonster[];
 }
 
+export interface StarterSessionData {
+  selectedStarters: (StarterMonster | null)[];
+  starterNames: string[];
+  currentStep: number;
+}
+
 export interface StarterRollSetsResponse {
   success: boolean;
   data?: StarterSet[];
   seed?: string;
+  session?: StarterSessionData;
   message?: string;
 }
 
@@ -165,8 +172,29 @@ const monsterRollerService = {
   },
 
   // Roll 3 sets of starter monsters for the selection wizard
-  rollStarterSets: async (): Promise<StarterRollSetsResponse> => {
-    const response = await api.post('/starter-roller/roll', {});
+  // If trainerId is provided, will check for an existing session first
+  rollStarterSets: async (trainerId?: number | string): Promise<StarterRollSetsResponse> => {
+    const response = await api.post('/starter-roller/roll', {
+      ...(trainerId ? { trainerId: Number(trainerId) } : {}),
+    });
+    return response.data;
+  },
+
+  // Save starter session progress (selections, names, current step)
+  saveStarterSession: async (
+    trainerId: number | string,
+    data: {
+      seed: string;
+      starterSets: StarterSet[];
+      selectedStarters: (StarterMonster | null)[];
+      starterNames: string[];
+      currentStep: number;
+    },
+  ): Promise<{ success: boolean }> => {
+    const response = await api.post('/starter-roller/save-session', {
+      trainerId: Number(trainerId),
+      ...data,
+    });
     return response.data;
   },
 

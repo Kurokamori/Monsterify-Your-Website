@@ -72,6 +72,8 @@ export { default as guidesService } from './guidesService';
 export type { GuideCategory, GuideContent } from './guidesService';
 export { default as itemsService } from './itemsService';
 export type { Item } from './itemsService';
+export { default as itemSessionService } from './itemSessionService';
+export type { ItemUseSessionType, ItemUseSession } from './itemSessionService';
 export { default as megaMartService } from './megaMartService';
 export type { MonsterAbilities, AbilitySlot } from './megaMartService';
 export { default as monsterService } from './monsterService';

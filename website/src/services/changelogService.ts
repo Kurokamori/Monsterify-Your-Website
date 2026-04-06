@@ -42,6 +42,16 @@ const changelogService = {
     return res.data.data;
   },
 
+  /** Returns all published versions newer than `lastSeenVersion` (newest first). */
+  async getUnseenSince(lastSeenVersion: string | null): Promise<ChangelogVersion[]> {
+    const all: ChangelogVersion[] = await this.getPublished();
+    if (!lastSeenVersion) return all;
+    const idx = all.findIndex((v) => v.version === lastSeenVersion);
+    // If the last-seen version isn't found, show everything
+    if (idx === -1) return all;
+    return all.slice(0, idx);
+  },
+
   // Admin
   async getAll(): Promise<ChangelogVersion[]> {
     const res = await api.get('/changelog');

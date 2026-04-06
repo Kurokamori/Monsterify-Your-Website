@@ -416,7 +416,7 @@ const ExternalArtSubmissionPage = () => {
               className="button primary"
               disabled={submitting || !title || (!imageFile && !imageUrl)}
             >
-              {submitting ? <LoadingSpinner /> : 'Submit External Art'}
+              {submitting ? <><i className="fas fa-spinner fa-spin"></i> Submitting...</> : 'Submit External Art'}
             </button>
           </div>
         </form>

@@ -238,7 +238,7 @@ export function Garden({ className = '' }: GardenProps) {
             disabled={actionLoading || !gardenState?.can_tend}
           >
             {actionLoading ? (
-              <><LoadingSpinner /> Tending...</>
+              <><i className="fas fa-spinner fa-spin"></i> Tending...</>
             ) : (
               <><i className="fas fa-seedling"></i> Tend Garden</>
             )}
@@ -250,7 +250,7 @@ export function Garden({ className = '' }: GardenProps) {
             disabled={actionLoading || !gardenState?.can_harvest}
           >
             {actionLoading ? (
-              <><LoadingSpinner /> Harvesting...</>
+              <><i className="fas fa-spinner fa-spin"></i> Harvesting...</>
             ) : (
               <><i className="fas fa-hand-holding-heart"></i> Harvest</>
             )}

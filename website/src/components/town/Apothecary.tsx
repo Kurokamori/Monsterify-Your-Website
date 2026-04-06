@@ -15,7 +15,7 @@ import {
   berryRequiresSpeciesSelection,
   BERRY_CATEGORIES
 } from '../../utils/itemHelpers';
-import { itemsService } from '../../services';
+import { itemsService, itemSessionService } from '../../services';
 import { getItemImageUrl, handleItemImageError } from '../../utils/imageUtils';
 import { extractErrorMessage } from '../../utils/errorUtils';
 
@@ -87,6 +87,7 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
   const [rolledSpecies, setRolledSpecies] = useState<string[]>([]);
   const [selectedSpecies, setSelectedSpecies] = useState('');
   const [speciesImages, setSpeciesImages] = useState<SpeciesImagesMap>({});
+  const [sessionChecked, setSessionChecked] = useState(false);
 
   // Fetch available berries for a trainer
   const fetchAvailableBerries = useCallback(async (trainerId: string) => {
@@ -104,6 +105,54 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
       setAvailableBerries({});
     }
   }, []);
+
+  // Check for a pending item-use session to resume after data loads
+  useEffect(() => {
+    if (sessionChecked || !isAuthenticated || userTrainers.length === 0) return;
+
+    const resumeSession = async () => {
+      try {
+        const session = await itemSessionService.get('apothecary');
+        if (!session) { setSessionChecked(true); return; }
+
+        const data = session.sessionData as {
+          berryName: string;
+          monsterId: number;
+          trainerId: number;
+          rolledSpecies: string[];
+          speciesImages: SpeciesImagesMap;
+        };
+
+        // Select the trainer from the session
+        const trainerIdStr = String(data.trainerId);
+        setSelectedTrainer(trainerIdStr);
+
+        // Fetch monsters directly for the saved trainer
+        const monstersRes = await api.get(`/monsters/trainer/${trainerIdStr}`);
+        const monsters: Monster[] = monstersRes.data.monsters || [];
+        setTrainerMonsters(monsters);
+        setFilteredMonsters(monsters);
+
+        const monster = monsters.find((m: Monster) => m.id === data.monsterId);
+        if (monster) {
+          setSelectedMonster(monster);
+          setShowMonsterModal(true);
+          setSelectedBerry(data.berryName);
+          setRolledSpecies(data.rolledSpecies);
+          setSpeciesImages(data.speciesImages);
+          setShowSpeciesModal(true);
+        }
+
+        await fetchAvailableBerries(trainerIdStr);
+      } catch (err) {
+        console.error('Error resuming item-use session:', err);
+      } finally {
+        setSessionChecked(true);
+      }
+    };
+
+    resumeSession();
+  }, [isAuthenticated, userTrainers, sessionChecked, fetchAvailableBerries]);
 
   // Helper function to check if a berry is available
   const isBerryAvailable = useCallback((berryName: string): boolean => {
@@ -270,6 +319,8 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
       setBerryLoading(false);
       setShowSpeciesModal(false);
       setSpeciesImages({});
+      // Clean up persisted session after berry is applied (or fails)
+      itemSessionService.delete('apothecary').catch(() => {});
     }
   }, [selectedMonster, selectedBerry, selectedTrainer, trainerMonsters, fetchAvailableBerries, divestName]);
 
@@ -289,11 +340,13 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
         const rolledSpeciesList = response.data.species || [];
         setRolledSpecies(rolledSpeciesList);
 
+        let fetchedSpeciesImages: SpeciesImagesMap = {};
         if (rolledSpeciesList.length > 0) {
           try {
             const speciesImagesResponse = await api.post('/species/images', { species: rolledSpeciesList });
             if (speciesImagesResponse.data.success) {
-              setSpeciesImages(speciesImagesResponse.data.speciesImages || {});
+              fetchedSpeciesImages = speciesImagesResponse.data.speciesImages || {};
+              setSpeciesImages(fetchedSpeciesImages);
             }
           } catch (imgError) {
             console.error('Error fetching species images:', imgError);
@@ -302,6 +355,15 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
 
         setBerryLoading(false);
         setShowSpeciesModal(true);
+
+        // Persist session so the roll survives a page refresh
+        itemSessionService.save('apothecary', {
+          berryName: selectedBerry,
+          monsterId: selectedMonster.id,
+          trainerId: parseInt(selectedTrainer),
+          rolledSpecies: rolledSpeciesList,
+          speciesImages: fetchedSpeciesImages,
+        }).catch(() => {});
       } catch (err) {
         setBerryError(extractErrorMessage(err, 'Failed to roll species. Please try again.'));
         setBerryLoading(false);
@@ -310,7 +372,7 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
     }
 
     await applyBerry();
-  }, [selectedBerry, selectedMonster, applyBerry]);
+  }, [selectedBerry, selectedMonster, selectedTrainer, applyBerry]);
 
   // Handle species selection
   const handleSpeciesSelect = useCallback((species: string) => {
@@ -681,6 +743,7 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
           setShowSpeciesModal(false);
           setSpeciesImages({});
           setSelectedSpecies('');
+          itemSessionService.delete('apothecary').catch(() => {});
         }}
         title="Select Species"
         size="large"
@@ -724,6 +787,7 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
                 setShowSpeciesModal(false);
                 setSpeciesImages({});
                 setSelectedSpecies('');
+                itemSessionService.delete('apothecary').catch(() => {});
               }}
             >
               Cancel

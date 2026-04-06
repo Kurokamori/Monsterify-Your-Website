@@ -10,7 +10,7 @@ const LAST_SEEN_KEY = 'whats-new-last-seen-version';
 
 export function WhatsNewModal() {
   const { currentUser } = useAuth();
-  const [version, setVersion] = useState<ChangelogVersion | null>(null);
+  const [versions, setVersions] = useState<ChangelogVersion[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -18,12 +18,10 @@ export function WhatsNewModal() {
 
     const checkForUpdates = async () => {
       try {
-        const latest = await changelogService.getLatest();
-        if (!latest) return;
-
         const lastSeen = localStorage.getItem(LAST_SEEN_KEY);
-        if (lastSeen !== latest.version) {
-          setVersion(latest);
+        const unseen = await changelogService.getUnseenSince(lastSeen);
+        if (unseen.length > 0) {
+          setVersions(unseen);
           setIsOpen(true);
         }
       } catch {
@@ -35,19 +33,23 @@ export function WhatsNewModal() {
   }, [currentUser]);
 
   const handleClose = () => {
-    if (version) {
-      localStorage.setItem(LAST_SEEN_KEY, version.version);
+    if (versions.length > 0) {
+      localStorage.setItem(LAST_SEEN_KEY, versions[0].version);
     }
     setIsOpen(false);
   };
 
-  if (!version) return null;
+  if (versions.length === 0) return null;
+
+  const title = versions.length === 1
+    ? `What's New — v${versions[0].version}`
+    : `What's New — ${versions.length} Updates`;
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title={`What's New — v${version.version}`}
+      title={title}
       size="large"
       footer={
         <div className="whats-new-modal__footer">
@@ -60,19 +62,26 @@ export function WhatsNewModal() {
         </div>
       }
     >
-      <div>
-        <span className="whats-new-modal__version-tag">v{version.version}</span>
-        <h2 style={{ margin: '0 0 0.25rem' }}>{version.title}</h2>
-        {version.publishedAt && (
-          <div className="whats-new-modal__date">
-            {new Date(version.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+      <div className="whats-new-modal__versions">
+        {versions.map((version, i) => (
+          <div key={version.id}>
+            {i > 0 && <hr className="whats-new-modal__divider" />}
+            <div>
+              <span className="whats-new-modal__version-tag">v{version.version}</span>
+              <h2 style={{ margin: '0 0 0.25rem' }}>{version.title}</h2>
+              {version.publishedAt && (
+                <div className="whats-new-modal__date">
+                  {new Date(version.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </div>
+              )}
+              {version.content ? (
+                <MarkdownRenderer content={version.content} className="whats-new-modal__content" />
+              ) : (
+                <p><em>No details for this version.</em></p>
+              )}
+            </div>
           </div>
-        )}
-        {version.content ? (
-          <MarkdownRenderer content={version.content} className="whats-new-modal__content" />
-        ) : (
-          <p><em>No details for this version.</em></p>
-        )}
+        ))}
       </div>
     </Modal>
   );

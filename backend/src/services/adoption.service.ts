@@ -152,7 +152,7 @@ export class AdoptionService {
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
 
-    await this.ensureCurrentMonthAdopts(year, month);
+    await this.ensureMissingMonthsAdopts();
     return this.adoptRepository.findByYearAndMonth(year, month, { page, limit });
   }
 
@@ -161,10 +161,7 @@ export class AdoptionService {
   }
 
   async getAdoptsByYearAndMonth(year: number, month: number, page = 1, limit = 10): Promise<PaginatedMonthlyAdopts> {
-    const now = new Date();
-    if (year === now.getFullYear() && month === now.getMonth() + 1) {
-      await this.ensureCurrentMonthAdopts(year, month);
-    }
+    await this.ensureMissingMonthsAdopts();
     return this.adoptRepository.findByYearAndMonth(year, month, { page, limit });
   }
 
@@ -422,10 +419,43 @@ export class AdoptionService {
   // Private Helpers
   // ==========================================================================
 
-  private async ensureCurrentMonthAdopts(year: number, month: number): Promise<void> {
-    const count = await this.adoptRepository.getCountForMonth(year, month);
-    if (count === 0) {
-      await this.generateMonthlyAdopts(year, month);
+  /**
+   * Ensures adopts exist for every month from the earliest data (or current month)
+   * up to and including the current month. Generates adopts for any missing months.
+   */
+  private async ensureMissingMonthsAdopts(): Promise<void> {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    // Find the earliest month that has data to know where to start backfilling
+    const earliest = await this.adoptRepository.getEarliestMonth();
+
+    let startYear: number;
+    let startMonth: number;
+
+    if (earliest) {
+      startYear = earliest.year;
+      startMonth = earliest.month;
+    } else {
+      // No data at all — just generate the current month
+      startYear = currentYear;
+      startMonth = currentMonth;
+    }
+
+    // Walk from the start month to the current month, generating any that are missing
+    let y = startYear;
+    let m = startMonth;
+    while (y < currentYear || (y === currentYear && m <= currentMonth)) {
+      const count = await this.adoptRepository.getCountForMonth(y, m);
+      if (count === 0) {
+        await this.generateMonthlyAdopts(y, m);
+      }
+      m++;
+      if (m > 12) {
+        m = 1;
+        y++;
+      }
     }
   }
 

@@ -7,7 +7,7 @@ import { TypeBadge } from '../common/TypeBadge';
 import { AttributeBadge } from '../common/AttributeBadge';
 import { ActionButtonGroup } from '../common/ActionButtonGroup';
 import api from '../../services/api';
-import { itemsService } from '../../services';
+import { itemsService, itemSessionService } from '../../services';
 import { getItemImageUrl, handleItemImageError } from '../../utils/imageUtils';
 import { extractErrorMessage } from '../../utils/errorUtils';
 import {
@@ -109,7 +109,7 @@ export function AdoptionItemModal({
     }).catch(() => {});
   }, []);
 
-  // Reset state when monster changes
+  // Reset state when monster changes, and check for pending session
   useEffect(() => {
     if (isOpen) {
       setCurrentMonster(monster);
@@ -118,6 +118,32 @@ export function AdoptionItemModal({
       setResults([]);
       setCurrentStep('selection');
       setCurrentQueueIndex(0);
+
+      // Check for a pending session to resume
+      itemSessionService.get('adoption_item').then(session => {
+        if (!session) return;
+        const data = session.sessionData as {
+          pendingItem: QueuedItem;
+          monsterId: number;
+          trainerId: string | number;
+          rolledSpecies: string[];
+          speciesImages: SpeciesImagesMap;
+          remainingQueue: QueuedItem[];
+          completedResults: ItemOperationResult[];
+          currentQueueIndex: number;
+        };
+
+        // Only resume if it's for the same monster
+        if (data.monsterId !== monster.id) return;
+
+        setPendingSpeciesItem(data.pendingItem);
+        setRolledSpecies(data.rolledSpecies);
+        setSpeciesImages(data.speciesImages);
+        setResults(data.completedResults || []);
+        setCurrentQueueIndex(data.currentQueueIndex);
+        if (data.remainingQueue) setItemQueue(data.remainingQueue);
+        setCurrentStep('speciesSelection');
+      }).catch(() => {});
     }
   }, [isOpen, monster, trainerInventory]);
 
@@ -262,10 +288,12 @@ export function AdoptionItemModal({
 
           if (species.length > 0) {
             // Fetch species images
+            let fetchedImages: SpeciesImagesMap = {};
             try {
               const imagesResponse = await api.post('/species/images', { species });
               if (imagesResponse.data.success) {
-                setSpeciesImages(imagesResponse.data.speciesImages || {});
+                fetchedImages = imagesResponse.data.speciesImages || {};
+                setSpeciesImages(fetchedImages);
               }
             } catch (err) {
               console.error('Error fetching species images:', err);
@@ -275,6 +303,19 @@ export function AdoptionItemModal({
             setPendingSpeciesItem(item);
             setCurrentStep('speciesSelection');
             setProcessing(false);
+
+            // Persist session so the roll survives a page refresh
+            itemSessionService.save('adoption_item', {
+              pendingItem: item,
+              monsterId: monster.id,
+              trainerId,
+              rolledSpecies: species,
+              speciesImages: fetchedImages,
+              remainingQueue: itemQueue.slice(i + 1),
+              completedResults: newResults,
+              currentQueueIndex: i,
+            }).catch(() => {});
+
             return; // Wait for user selection
           }
         }
@@ -397,6 +438,9 @@ export function AdoptionItemModal({
     setRolledSpecies([]);
     setSpeciesImages({});
 
+    // Clean up persisted session
+    itemSessionService.delete('adoption_item').catch(() => {});
+
     // Continue processing remaining items
     const remainingItems = itemQueue.slice(currentQueueIndex + 1);
     if (remainingItems.length > 0) {
@@ -415,6 +459,7 @@ export function AdoptionItemModal({
     if (onComplete && currentMonster !== originalMonster) {
       onComplete(currentMonster);
     }
+    itemSessionService.delete('adoption_item').catch(() => {});
     onClose();
   }, [currentMonster, originalMonster, onComplete, onClose]);
 

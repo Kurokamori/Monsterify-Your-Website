@@ -4,6 +4,7 @@ import { useAuth } from '@contexts/useAuth';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { LoadingSpinner } from '@components/common/LoadingSpinner';
 import { ErrorMessage } from '@components/common/ErrorMessage';
+import { ErrorModal } from '@components/common/ErrorModal';
 import { ActivityRewardGrid } from '@components/town/ActivityRewardGrid';
 import { type BallInventoryEntry } from '@components/common/BallSelector';
 import townService from '@services/townService';
@@ -58,7 +59,7 @@ export default function ActivityRewardsPage() {
   const [itemImages, setItemImages] = useState<Record<string, string | null>>({});
   const [monsterNames, setMonsterNames] = useState<Record<string | number, string>>({});
   const [selectedBalls, setSelectedBalls] = useState<Record<string | number, string>>({});
-  const [ballInventory, setBallInventory] = useState<BallInventoryEntry[]>([]);
+  const [ballInventoryMap, setBallInventoryMap] = useState<Record<string | number, BallInventoryEntry[]>>({});
 
   // Fetch session and rewards data
   useEffect(() => {
@@ -164,26 +165,62 @@ export default function ActivityRewardsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps -- priority_trainer_ids only affects initial trainer selection, not data fetching
   }, [isAuthenticated, sessionId]);
 
-  // Fetch ball inventory for the default (priority) trainer
+  // Fetch ball inventory for a trainer (lazy-loads and caches)
+  const fetchBallInventory = useCallback((trainerId: string | number) => {
+    setBallInventoryMap(prev => {
+      if (prev[trainerId]) return prev; // Already fetched
+      // Kick off async fetch outside setState
+      trainerService.getTrainerInventory(trainerId).then(inv => {
+        const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
+        const balls: BallInventoryEntry[] = Array.isArray(raw)
+          ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
+          : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
+        setBallInventoryMap(p => ({ ...p, [trainerId]: balls }));
+      }).catch(() => {
+        setBallInventoryMap(p => ({ ...p, [trainerId]: [] }));
+      });
+      return prev;
+    });
+  }, []);
+
+  // Seed ball inventory for the default trainer on load
   useEffect(() => {
     if (trainers.length === 0) return;
     const priorityIds = currentUser?.priority_trainer_ids ?? [];
-    const firstTrainerId = (trainers.find(t => priorityIds.includes(Number(t.id))) ?? trainers[0]).id;
-    trainerService.getTrainerInventory(firstTrainerId).then(inv => {
-      const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
-      const balls: BallInventoryEntry[] = Array.isArray(raw)
-        ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
-        : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
-      setBallInventory(balls);
-    }).catch(() => setBallInventory([]));
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-run when trainers list changes, not on every priority_trainer_ids reference change
-  }, [trainers]);
+    const defaultTrainer = trainers.find(t => priorityIds.includes(Number(t.id))) ?? trainers[0];
+    fetchBallInventory(defaultTrainer.id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-run when trainers list changes
+  }, [trainers, fetchBallInventory]);
 
-  // Trainer selection handler
+  // Trainer selection handler — also fetches ball inventory for newly selected trainer
   const handleTrainerSelect = useCallback((rewardId: string | number, trainerId: string | number | null) => {
     if (trainerId == null) return;
     setSelectedTrainers(prev => ({ ...prev, [rewardId]: trainerId }));
-  }, []);
+    fetchBallInventory(trainerId);
+  }, [fetchBallInventory]);
+
+  // When inventory loads or trainer changes, reset ball if the trainer doesn't have it
+  useEffect(() => {
+    setSelectedBalls(prev => {
+      const updated = { ...prev };
+      let changed = false;
+      for (const reward of rewards) {
+        if (reward.claimed || reward.type !== 'monster') continue;
+        const trainerId = selectedTrainers[reward.id];
+        if (!trainerId) continue;
+        const inventory = ballInventoryMap[trainerId];
+        if (!inventory) continue; // Not loaded yet
+        const currentBall = prev[reward.id] || 'Poke Ball';
+        const hasCurrentBall = inventory.some(b => b.name === currentBall && b.quantity > 0);
+        if (!hasCurrentBall) {
+          const firstAvailable = inventory.find(b => b.quantity > 0);
+          updated[reward.id] = firstAvailable?.name || 'Poke Ball';
+          changed = true;
+        }
+      }
+      return changed ? updated : prev;
+    });
+  }, [ballInventoryMap, selectedTrainers, rewards]);
 
   // Refresh rewards from server
   const refreshRewards = useCallback(async () => {
@@ -204,8 +241,13 @@ export default function ActivityRewardsPage() {
           setRewards(response.session.rewards as ActivityReward[]);
         }
       }
-    } catch {
-      // Refresh failed silently — optimistic update already applied
+    } catch (err) {
+      // Session was deleted (all rewards claimed/forfeited) — mark everything as claimed
+      const status = (err as { response?: { status?: number } }).response?.status;
+      if (status === 404) {
+        setRewards(prev => prev.map(r => r.claimed ? r : { ...r, claimed: true, claimed_at: new Date().toISOString() }));
+      }
+      // Other errors: optimistic update already applied, fail silently
     }
   }, [sessionId, isGardenHarvest]);
 
@@ -300,6 +342,189 @@ export default function ActivityRewardsPage() {
       setError(extractErrorMessage(err, 'Failed to forfeit reward. Please try again later.'));
     } finally {
       setClaimingReward(null);
+    }
+  }, [sessionId, rewards, isGardenHarvest, refreshRewards, monsterNames]);
+
+  // Assign random trainers to all unclaimed berry rewards
+  const assignRandomBerries = useCallback(() => {
+    if (trainers.length === 0) return;
+    setSelectedTrainers(prev => {
+      const updated = { ...prev };
+      rewards.forEach(reward => {
+        if (reward.type !== 'monster' && !reward.claimed) {
+          updated[reward.id] = trainers[Math.floor(Math.random() * trainers.length)].id;
+        }
+      });
+      return updated;
+    });
+  }, [rewards, trainers]);
+
+  // Collect all unclaimed berry rewards with their currently selected trainers
+  const collectAllBerries = useCallback(async () => {
+    if (!sessionId) return;
+    const unclaimed = rewards.filter(r => r.type !== 'monster' && !r.claimed);
+    if (unclaimed.length === 0) return;
+
+    setBatchClaiming(true);
+    setError(null);
+
+    try {
+      if (isGardenHarvest) {
+        const claims = unclaimed
+          .filter(r => selectedTrainers[r.id])
+          .map(r => ({ rewardId: String(r.id), trainerId: selectedTrainers[r.id] as number }));
+        if (claims.length === 0) { setError('Please select trainers for all berries.'); setBatchClaiming(false); return; }
+
+        const response = await townService.bulkClaimGardenRewards(sessionId, claims);
+        const failed = response.results.filter(r => !r.success).length;
+        const succeeded = response.results.filter(r => r.success).length;
+
+        if (failed > 0) setError(`Claimed ${succeeded} berries, but ${failed} failed.`);
+      } else {
+        // Non-garden: fall back to sequential
+        for (const reward of unclaimed) {
+          const trainerId = selectedTrainers[reward.id];
+          if (trainerId) await townService.claimActivityReward(sessionId, reward.id, trainerId, undefined, undefined);
+        }
+      }
+      await refreshRewards();
+    } catch (err) {
+      setError(extractErrorMessage(err, 'Failed to collect berries.'));
+    } finally {
+      setBatchClaiming(false);
+    }
+  }, [sessionId, rewards, selectedTrainers, isGardenHarvest, refreshRewards]);
+
+  // Claim all unclaimed berries for a specific trainer
+  const claimAllBerriesFor = useCallback(async (trainerId: string | number) => {
+    if (!sessionId) return;
+    const unclaimed = rewards.filter(r => r.type !== 'monster' && !r.claimed);
+    if (unclaimed.length === 0) return;
+
+    setBatchClaiming(true);
+    setError(null);
+
+    try {
+      if (isGardenHarvest) {
+        const claims = unclaimed.map(r => ({ rewardId: String(r.id), trainerId: trainerId as number }));
+        const response = await townService.bulkClaimGardenRewards(sessionId, claims);
+        const failed = response.results.filter(r => !r.success).length;
+        const succeeded = response.results.filter(r => r.success).length;
+        if (failed > 0) setError(`Claimed ${succeeded} berries, but ${failed} failed.`);
+      } else {
+        for (const reward of unclaimed) {
+          await townService.claimActivityReward(sessionId, reward.id, trainerId, undefined, undefined);
+        }
+      }
+      await refreshRewards();
+    } catch (err) {
+      setError(extractErrorMessage(err, 'Failed to claim berries.'));
+    } finally {
+      setBatchClaiming(false);
+    }
+  }, [sessionId, rewards, isGardenHarvest, refreshRewards]);
+
+  // Claim all unclaimed monster rewards with their currently selected trainers
+  const claimAllMonsters = useCallback(async () => {
+    if (!sessionId) return;
+    const unclaimed = rewards.filter(r => r.type === 'monster' && !r.claimed);
+    if (unclaimed.length === 0) return;
+
+    setBatchClaiming(true);
+    setError(null);
+
+    try {
+      if (isGardenHarvest) {
+        const claims = unclaimed
+          .filter(r => selectedTrainers[r.id])
+          .map(r => ({
+            rewardId: String(r.id),
+            trainerId: selectedTrainers[r.id] as number,
+            monsterName: monsterNames[r.id] || '',
+            ball: selectedBalls[r.id] || undefined,
+          }));
+        if (claims.length === 0) { setError('Please select trainers for all monsters.'); setBatchClaiming(false); return; }
+
+        const response = await townService.bulkClaimGardenRewards(sessionId, claims);
+        const failed = response.results.filter(r => !r.success).length;
+        const succeeded = response.results.filter(r => r.success).length;
+        if (failed > 0) setError(`Claimed ${succeeded} monsters, but ${failed} failed.`);
+      } else {
+        for (const reward of unclaimed) {
+          const trainerId = selectedTrainers[reward.id];
+          if (trainerId) {
+            await townService.claimActivityReward(sessionId, reward.id, trainerId, monsterNames[reward.id] || undefined, selectedBalls[reward.id] || undefined);
+          }
+        }
+      }
+      await refreshRewards();
+    } catch (err) {
+      setError(extractErrorMessage(err, 'Failed to claim monsters.'));
+    } finally {
+      setBatchClaiming(false);
+    }
+  }, [sessionId, rewards, selectedTrainers, isGardenHarvest, refreshRewards, monsterNames, selectedBalls]);
+
+  // Claim all unclaimed monsters for a specific trainer
+  const claimAllMonstersFor = useCallback(async (trainerId: string | number) => {
+    if (!sessionId) return;
+    const unclaimed = rewards.filter(r => r.type === 'monster' && !r.claimed);
+    if (unclaimed.length === 0) return;
+
+    setBatchClaiming(true);
+    setError(null);
+
+    try {
+      if (isGardenHarvest) {
+        const claims = unclaimed.map(r => ({
+          rewardId: String(r.id),
+          trainerId: trainerId as number,
+          monsterName: monsterNames[r.id] || '',
+          ball: selectedBalls[r.id] || undefined,
+        }));
+        const response = await townService.bulkClaimGardenRewards(sessionId, claims);
+        const failed = response.results.filter(r => !r.success).length;
+        const succeeded = response.results.filter(r => r.success).length;
+        if (failed > 0) setError(`Claimed ${succeeded} monsters, but ${failed} failed.`);
+      } else {
+        for (const reward of unclaimed) {
+          await townService.claimActivityReward(sessionId, reward.id, trainerId, monsterNames[reward.id] || undefined, selectedBalls[reward.id] || undefined);
+        }
+      }
+      await refreshRewards();
+    } catch (err) {
+      setError(extractErrorMessage(err, 'Failed to claim monsters.'));
+    } finally {
+      setBatchClaiming(false);
+    }
+  }, [sessionId, rewards, isGardenHarvest, refreshRewards, monsterNames, selectedBalls]);
+
+  // Forfeit all unclaimed monster rewards to the bazar
+  const forfeitRemainingMonsters = useCallback(async () => {
+    if (!sessionId) return;
+    const unclaimed = rewards.filter(r => r.type === 'monster' && !r.claimed);
+    if (unclaimed.length === 0) return;
+
+    setBatchClaiming(true);
+    setError(null);
+
+    try {
+      if (isGardenHarvest) {
+        const forfeits = unclaimed.map(r => ({ rewardId: String(r.id), monsterName: monsterNames[r.id] || '' }));
+        const response = await townService.bulkForfeitGardenMonsters(sessionId, forfeits);
+        const failed = response.results.filter(r => !r.success).length;
+        const succeeded = response.results.filter(r => r.success).length;
+        if (failed > 0) setError(`Forfeited ${succeeded} monsters, but ${failed} failed.`);
+      } else {
+        for (const reward of unclaimed) {
+          await townService.forfeitActivityReward(sessionId, reward.id, monsterNames[reward.id] || undefined);
+        }
+      }
+      await refreshRewards();
+    } catch (err) {
+      setError(extractErrorMessage(err, 'Failed to forfeit monsters.'));
+    } finally {
+      setBatchClaiming(false);
     }
   }, [sessionId, rewards, isGardenHarvest, refreshRewards, monsterNames]);
 
@@ -427,6 +652,72 @@ export default function ActivityRewardsPage() {
   const locationName = formatName(session.location);
   const activityName = formatName(session.activity);
   const hasUnclaimed = rewards.some(r => !r.claimed);
+  const allClaimed = rewards.length > 0 && !hasUnclaimed;
+
+  // Garden harvest completed — all rewards claimed/forfeited
+  if (isGardenHarvest && allClaimed) {
+    const claimedMonsters = rewards.filter(r => r.type === 'monster' && !r.forfeited);
+    const claimedItems = rewards.filter(r => r.type === 'item');
+    const forfeitedMonsters = rewards.filter(r => r.type === 'monster' && r.forfeited);
+
+    return (
+      <div className="activity-page">
+        <div className="activity-page__breadcrumb">
+          <Link to="/town" className="breadcrumb-link">
+            <i className="fas fa-arrow-left"></i> Back to Town
+          </Link>
+        </div>
+
+        <div className="activity-page__header">
+          <div className="activity-page__icon">
+            <i className="fas fa-seedling"></i>
+          </div>
+          <div>
+            <h1>Garden Harvest Complete!</h1>
+            <p className="activity-page__description">
+              All rewards from your garden harvest have been collected.
+            </p>
+          </div>
+        </div>
+
+        <div className="card-container" style={{ textAlign: 'center', padding: '2rem' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>
+            <i className="fas fa-check-circle text-success"></i>
+          </div>
+          <h2 style={{ marginBottom: '1rem' }}>Harvest Summary</h2>
+          <ul style={{ listStyle: 'none', padding: 0, lineHeight: '2' }}>
+            {claimedItems.length > 0 && (
+              <li>
+                <i className="fas fa-apple-alt text-success"></i>{' '}
+                {claimedItems.length} {claimedItems.length === 1 ? 'berry' : 'berries'} collected
+              </li>
+            )}
+            {claimedMonsters.length > 0 && (
+              <li>
+                <i className="fas fa-dragon text-warning"></i>{' '}
+                {claimedMonsters.length} {claimedMonsters.length === 1 ? 'monster' : 'monsters'} claimed
+              </li>
+            )}
+            {forfeitedMonsters.length > 0 && (
+              <li>
+                <i className="fas fa-store text-info"></i>{' '}
+                {forfeitedMonsters.length} {forfeitedMonsters.length === 1 ? 'monster' : 'monsters'} sent to the Bazar
+              </li>
+            )}
+          </ul>
+        </div>
+
+        <div className="activity-page__actions">
+          <Link to="/town" className="button secondary">
+            <i className="fas fa-arrow-left"></i> Back to Town
+          </Link>
+          <Link to="/town/activities/garden" className="button primary">
+            <i className="fas fa-seedling"></i> Back to Garden
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="activity-page">
@@ -465,7 +756,16 @@ export default function ActivityRewardsPage() {
         onBallChange={(rewardId, ball) => {
           setSelectedBalls(prev => ({ ...prev, [rewardId]: ball }));
         }}
-        ballInventory={ballInventory}
+        ballInventoryMap={ballInventoryMap}
+        {...(isGardenHarvest ? {
+          onAssignRandomBerries: assignRandomBerries,
+          onCollectAllBerries: collectAllBerries,
+          onClaimAllBerriesFor: claimAllBerriesFor,
+          onClaimAllMonsters: claimAllMonsters,
+          onClaimAllMonstersFor: claimAllMonstersFor,
+          onForfeitRemainingMonsters: forfeitRemainingMonsters,
+          bulkProcessing: batchClaiming,
+        } : {})}
       />
 
       {/* Footer actions */}
@@ -493,12 +793,11 @@ export default function ActivityRewardsPage() {
         </Link>
       </div>
 
-      {/* Error display */}
-      {error && (
-        <div className="mt-md">
-          <ErrorMessage message={error} onDismiss={() => setError(null)} />
-        </div>
-      )}
+      <ErrorModal
+        isOpen={!!error}
+        onClose={() => setError(null)}
+        message={error || undefined}
+      />
     </div>
   );
 }

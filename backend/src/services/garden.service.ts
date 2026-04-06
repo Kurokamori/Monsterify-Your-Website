@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import {
   GardenPointRepository,
+  GardenHarvestSessionRepository,
   TrainerRepository,
   TrainerInventoryRepository,
   MonsterRepository,
@@ -122,6 +123,7 @@ const GARDEN_TYPES = ['Grass', 'Bug', 'Ground', 'Normal', 'Water', 'Rock'];
 
 export class GardenService {
   private gardenPointRepository: GardenPointRepository;
+  private sessionRepository: GardenHarvestSessionRepository;
   private trainerRepository: TrainerRepository;
   private inventoryRepository: TrainerInventoryRepository;
   private monsterRepository: MonsterRepository;
@@ -129,9 +131,6 @@ export class GardenService {
   private itemRepository: ItemRepository;
   private bazarRepository: BazarRepository;
   private initializerService: MonsterInitializerService;
-
-  // In-memory storage for active harvest sessions
-  private static activeHarvestSessions = new Map<string, HarvestSession>();
 
   constructor(
     gardenPointRepository?: GardenPointRepository,
@@ -141,9 +140,11 @@ export class GardenService {
     userRepository?: UserRepository,
     itemRepository?: ItemRepository,
     bazarRepository?: BazarRepository,
-    initializerService?: MonsterInitializerService
+    initializerService?: MonsterInitializerService,
+    sessionRepository?: GardenHarvestSessionRepository
   ) {
     this.gardenPointRepository = gardenPointRepository ?? new GardenPointRepository();
+    this.sessionRepository = sessionRepository ?? new GardenHarvestSessionRepository();
     this.trainerRepository = trainerRepository ?? new TrainerRepository();
     this.inventoryRepository = inventoryRepository ?? new TrainerInventoryRepository();
     this.monsterRepository = monsterRepository ?? new MonsterRepository();
@@ -167,6 +168,19 @@ export class GardenService {
   // ==========================================================================
 
   async harvestGarden(userId: number, discordId: string): Promise<HarvestResult> {
+    // Check for existing active session — return it instead of creating a new one
+    const existingRow = await this.sessionRepository.findByUserId(userId);
+    if (existingRow) {
+      const session = existingRow.session_data as unknown as HarvestSession;
+      return {
+        success: true,
+        message: 'Resuming existing harvest session',
+        sessionId: session.id,
+        session,
+        rewards: session.rewards,
+      };
+    }
+
     const gardenPoints = await this.gardenPointRepository.findByUserId(userId);
 
     if (!gardenPoints || gardenPoints.points <= 0) {
@@ -199,8 +213,8 @@ export class GardenService {
     // Update last harvested time (points reset when all rewards claimed)
     await this.gardenPointRepository.updateLastHarvested(userId);
 
-    // Store in memory
-    GardenService.activeHarvestSessions.set(sessionId, session);
+    // Persist session to database
+    await this.sessionRepository.create(sessionId, userId, session as unknown as Record<string, unknown>);
 
     return {
       success: true,
@@ -215,15 +229,24 @@ export class GardenService {
   // Get Harvest Session
   // ==========================================================================
 
-  getHarvestSession(sessionId: string, userId: number): HarvestSession | null {
-    const session = GardenService.activeHarvestSessions.get(sessionId);
-    if (!session) {
+  async getHarvestSession(sessionId: string, userId: number): Promise<HarvestSession | null> {
+    const row = await this.sessionRepository.findById(sessionId);
+    if (!row) {
       return null;
     }
+    const session = row.session_data as unknown as HarvestSession;
     if (session.userId !== userId) {
       throw new Error('Unauthorized');
     }
     return session;
+  }
+
+  async getActiveSession(userId: number): Promise<HarvestSession | null> {
+    const row = await this.sessionRepository.findByUserId(userId);
+    if (!row) {
+      return null;
+    }
+    return row.session_data as unknown as HarvestSession;
   }
 
   // ==========================================================================
@@ -238,14 +261,134 @@ export class GardenService {
     monsterName?: string,
     ball?: string
   ): Promise<ClaimResult> {
-    const session = GardenService.activeHarvestSessions.get(sessionId);
-    if (!session) {
+    const row = await this.sessionRepository.findById(sessionId);
+    if (!row) {
       throw new Error('Session not found');
     }
+    const session = row.session_data as unknown as HarvestSession;
     if (session.userId !== userId) {
       throw new Error('Unauthorized');
     }
 
+    const result = await this.processClaimReward(session, rewardId, trainerId, userId, monsterName, ball);
+
+    // Persist session state
+    await this.persistSessionState(sessionId, session, userId);
+
+    return result;
+  }
+
+  // ==========================================================================
+  // Bulk Claim Rewards
+  // ==========================================================================
+
+  async claimBulk(
+    sessionId: string,
+    claims: { rewardId: string; trainerId: number; monsterName?: string; ball?: string }[],
+    userId: number
+  ): Promise<{ results: { rewardId: string; success: boolean; error?: string; reward?: HarvestReward; claimResult?: Record<string, unknown> }[] }> {
+    // Read session once for the entire bulk operation
+    const row = await this.sessionRepository.findById(sessionId);
+    if (!row) {
+      throw new Error('Session not found');
+    }
+    const session = row.session_data as unknown as HarvestSession;
+    if (session.userId !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    const results: { rewardId: string; success: boolean; error?: string; reward?: HarvestReward; claimResult?: Record<string, unknown> }[] = [];
+
+    for (const claim of claims) {
+      try {
+        const result = await this.processClaimReward(session, claim.rewardId, claim.trainerId, userId, claim.monsterName, claim.ball);
+        results.push({ rewardId: claim.rewardId, success: true, reward: result.reward, claimResult: result.claimResult });
+      } catch (err) {
+        results.push({ rewardId: claim.rewardId, success: false, error: err instanceof Error ? err.message : 'Unknown error' });
+      }
+    }
+
+    // Persist session state once after all claims
+    await this.persistSessionState(sessionId, session, userId);
+
+    return { results };
+  }
+
+  // ==========================================================================
+  // Bulk Forfeit Monsters
+  // ==========================================================================
+
+  async forfeitBulk(
+    sessionId: string,
+    forfeits: { rewardId: string; monsterName?: string }[],
+    userId: number
+  ): Promise<{ results: { rewardId: string; success: boolean; error?: string; bazarMonsterId?: number }[] }> {
+    // Read session once for the entire bulk operation
+    const row = await this.sessionRepository.findById(sessionId);
+    if (!row) {
+      throw new Error('Session not found');
+    }
+    const session = row.session_data as unknown as HarvestSession;
+    if (session.userId !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    const results: { rewardId: string; success: boolean; error?: string; bazarMonsterId?: number }[] = [];
+
+    for (const forfeit of forfeits) {
+      try {
+        const result = await this.processForfeitReward(session, forfeit.rewardId, userId, forfeit.monsterName);
+        results.push({ rewardId: forfeit.rewardId, success: true, bazarMonsterId: result.bazarMonsterId });
+      } catch (err) {
+        results.push({ rewardId: forfeit.rewardId, success: false, error: err instanceof Error ? err.message : 'Unknown error' });
+      }
+    }
+
+    // Persist session state once after all forfeits
+    await this.persistSessionState(sessionId, session, userId);
+
+    return { results };
+  }
+
+  // ==========================================================================
+  // Forfeit Monster
+  // ==========================================================================
+
+  async forfeitMonster(
+    sessionId: string,
+    rewardId: string,
+    userId: number,
+    monsterName?: string
+  ): Promise<ForfeitResult> {
+    const row = await this.sessionRepository.findById(sessionId);
+    if (!row) {
+      throw new Error('Session not found');
+    }
+    const session = row.session_data as unknown as HarvestSession;
+    if (session.userId !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    const result = await this.processForfeitReward(session, rewardId, userId, monsterName);
+
+    // Persist session state
+    await this.persistSessionState(sessionId, session, userId);
+
+    return result;
+  }
+
+  // ==========================================================================
+  // Internal: process a single claim against an in-memory session
+  // ==========================================================================
+
+  private async processClaimReward(
+    session: HarvestSession,
+    rewardId: string,
+    trainerId: number,
+    userId: number,
+    monsterName?: string,
+    ball?: string
+  ): Promise<ClaimResult> {
     const reward = session.rewards.find((r) => r.id === rewardId);
     if (!reward) {
       throw new Error('Reward not found');
@@ -283,16 +426,10 @@ export class GardenService {
         throw new Error(`Unsupported reward type: ${reward.type}`);
     }
 
-    // Mark reward as claimed
+    // Mark reward as claimed in the session object
     reward.claimed = true;
     reward.claimedBy = trainerId;
-
-    // Check if all rewards are claimed
-    const allClaimed = session.rewards.every((r) => r.claimed);
-    if (allClaimed) {
-      await this.gardenPointRepository.resetPoints(userId);
-      GardenService.activeHarvestSessions.delete(sessionId);
-    }
+    reward.claimedAt = new Date().toISOString();
 
     return {
       reward: { ...reward, claimed: true, claimedBy: trainerId },
@@ -301,23 +438,15 @@ export class GardenService {
   }
 
   // ==========================================================================
-  // Forfeit Monster
+  // Internal: process a single forfeit against an in-memory session
   // ==========================================================================
 
-  async forfeitMonster(
-    sessionId: string,
+  private async processForfeitReward(
+    session: HarvestSession,
     rewardId: string,
     userId: number,
     monsterName?: string
   ): Promise<ForfeitResult> {
-    const session = GardenService.activeHarvestSessions.get(sessionId);
-    if (!session) {
-      throw new Error('Session not found');
-    }
-    if (session.userId !== userId) {
-      throw new Error('Unauthorized');
-    }
-
     const reward = session.rewards.find((r) => r.id === rewardId);
     if (!reward) {
       throw new Error('Reward not found');
@@ -369,13 +498,27 @@ export class GardenService {
       console.error('Error recording garden monster forfeit transaction:', txError);
     }
 
-    // Mark reward as claimed/forfeited
+    // Mark reward as claimed/forfeited in the session object
     reward.claimed = true;
     reward.claimedAt = new Date().toISOString();
     reward.forfeited = true;
     reward.claimedBy = 'Garden-Forfeit';
 
     return { success: true, bazarMonsterId: bazarMonster.id };
+  }
+
+  // ==========================================================================
+  // Internal: persist session state (update or delete if all done)
+  // ==========================================================================
+
+  private async persistSessionState(sessionId: string, session: HarvestSession, userId: number): Promise<void> {
+    const allClaimed = session.rewards.every((r) => r.claimed);
+    if (allClaimed) {
+      await this.gardenPointRepository.resetPoints(userId);
+      await this.sessionRepository.delete(sessionId);
+    } else {
+      await this.sessionRepository.updateSessionData(sessionId, session as unknown as Record<string, unknown>);
+    }
   }
 
   // ==========================================================================

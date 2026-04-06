@@ -39,7 +39,7 @@ const TrainerDetailPage = () => {
     achievements, achievementStats, achievementsLoading, achievementFilter, setAchievementFilter,
     handleClaimAchievement, handleClaimAllAchievements, isClaimingAll,
     showRewardPopup, setShowRewardPopup, rewardPopupData,
-    showMassEditModal, setShowMassEditModal, handleOpenMassEdit, handleMassEditComplete,
+    showMassEditModal, setShowMassEditModal, handleOpenMassEdit, handleMassEditComplete, hasPendingMassEditSession,
     relatedTrainers, relatedMonsters,
     showImageModal, modalImageSrc, modalImageAlt, handleImageClick, closeImageModal,
     fetchTrainerData, id,
@@ -102,6 +102,7 @@ const TrainerDetailPage = () => {
           setCurrentPCBox={setCurrentPCBox}
           setActiveTab={setActiveTab}
           handleOpenMassEdit={handleOpenMassEdit}
+          hasPendingMassEditSession={hasPendingMassEditSession}
         />
       ),
     },

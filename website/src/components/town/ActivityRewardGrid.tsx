@@ -34,7 +34,18 @@ export interface ActivityRewardGridProps {
   rewardExtras?: Record<string | number, RewardExtraData>;
   selectedBalls?: Record<string | number, string>;
   onBallChange?: (rewardId: string | number, ball: string) => void;
-  ballInventory?: BallInventoryEntry[];
+  /** Per-trainer ball inventory map (trainer ID → inventory) */
+  ballInventoryMap?: Record<string | number, BallInventoryEntry[]>;
+  /** Bulk berry actions (garden harvest) */
+  onAssignRandomBerries?: () => void;
+  onCollectAllBerries?: () => void;
+  onClaimAllBerriesFor?: (trainerId: string | number) => void;
+  /** Bulk monster actions (garden harvest) */
+  onClaimAllMonsters?: () => void;
+  onClaimAllMonstersFor?: (trainerId: string | number) => void;
+  onForfeitRemainingMonsters?: () => void;
+  /** Whether bulk operations are in progress */
+  bulkProcessing?: boolean;
 }
 
 /**
@@ -135,14 +146,28 @@ export function ActivityRewardGrid({
   rewardExtras,
   selectedBalls,
   onBallChange,
-  ballInventory,
+  ballInventoryMap,
+  onAssignRandomBerries,
+  onCollectAllBerries,
+  onClaimAllBerriesFor,
+  onClaimAllMonsters,
+  onClaimAllMonstersFor,
+  onForfeitRemainingMonsters,
+  bulkProcessing,
 }: ActivityRewardGridProps) {
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
   const [lightbox, setLightbox] = useState<{ url: string; species: string } | null>(null);
+  const [berryClaimForPicker, setBerryClaimForPicker] = useState(false);
+  const [monsterClaimForPicker, setMonsterClaimForPicker] = useState(false);
 
   const normalized = rewards.map(normalizeReward);
   const monsterRewards = normalized.filter(r => r.type === 'monster');
   const otherRewards = normalized.filter(r => r.type !== 'monster');
+
+  const hasUnclaimedBerries = otherRewards.some(r => !r.claimed);
+  const hasUnclaimedMonsters = monsterRewards.some(r => !r.claimed);
+  const hasBerryBulkActions = !!(onAssignRandomBerries || onCollectAllBerries || onClaimAllBerriesFor);
+  const hasMonsterBulkActions = !!(onClaimAllMonsters || onClaimAllMonstersFor || onForfeitRemainingMonsters);
 
   const handleImgError = (key: string) => {
     setImgErrors(prev => ({ ...prev, [key]: true }));
@@ -157,6 +182,61 @@ export function ActivityRewardGrid({
             <i className="fas fa-box"></i>
             <h2>Items & Rewards</h2>
           </div>
+
+          {hasBerryBulkActions && hasUnclaimedBerries && (
+            <div className="activity-reward-grid__bulk-actions">
+              {onAssignRandomBerries && (
+                <button
+                  className="button secondary sm"
+                  onClick={onAssignRandomBerries}
+                  disabled={bulkProcessing}
+                >
+                  <i className="fas fa-random"></i> Assign Random
+                </button>
+              )}
+              {onCollectAllBerries && (
+                <button
+                  className="button primary sm"
+                  onClick={onCollectAllBerries}
+                  disabled={bulkProcessing}
+                >
+                  {bulkProcessing ? (
+                    <><i className="fas fa-spinner fa-spin"></i> Processing...</>
+                  ) : (
+                    <><i className="fas fa-check-double"></i> Collect All</>
+                  )}
+                </button>
+              )}
+              {onClaimAllBerriesFor && (
+                <div className="activity-reward-grid__claim-for-wrapper">
+                  <button
+                    className="button primary sm"
+                    onClick={() => setBerryClaimForPicker(prev => !prev)}
+                    disabled={bulkProcessing}
+                  >
+                    <i className="fas fa-user-check"></i> Claim All For...
+                  </button>
+                  {berryClaimForPicker && (
+                    <div className="activity-reward-grid__claim-for-picker">
+                      <TrainerAutocomplete
+                        trainers={trainers}
+                        selectedTrainerId={undefined}
+                        onChange={(id) => {
+                          if (id != null) {
+                            onClaimAllBerriesFor(id);
+                            setBerryClaimForPicker(false);
+                          }
+                        }}
+                        label=""
+                        placeholder="Pick a trainer..."
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="activity-reward-grid__items">
             {otherRewards.map(reward => {
               const data = rd(reward);
@@ -254,6 +334,61 @@ export function ActivityRewardGrid({
             <i className="fas fa-dragon"></i>
             <h2>Monsters</h2>
           </div>
+
+          {hasMonsterBulkActions && hasUnclaimedMonsters && (
+            <div className="activity-reward-grid__bulk-actions">
+              {onClaimAllMonsters && (
+                <button
+                  className="button primary sm"
+                  onClick={onClaimAllMonsters}
+                  disabled={bulkProcessing}
+                >
+                  {bulkProcessing ? (
+                    <><i className="fas fa-spinner fa-spin"></i> Processing...</>
+                  ) : (
+                    <><i className="fas fa-check-double"></i> Claim All</>
+                  )}
+                </button>
+              )}
+              {onClaimAllMonstersFor && (
+                <div className="activity-reward-grid__claim-for-wrapper">
+                  <button
+                    className="button primary sm"
+                    onClick={() => setMonsterClaimForPicker(prev => !prev)}
+                    disabled={bulkProcessing}
+                  >
+                    <i className="fas fa-user-check"></i> Claim All For...
+                  </button>
+                  {monsterClaimForPicker && (
+                    <div className="activity-reward-grid__claim-for-picker">
+                      <TrainerAutocomplete
+                        trainers={trainers}
+                        selectedTrainerId={undefined}
+                        onChange={(id) => {
+                          if (id != null) {
+                            onClaimAllMonstersFor(id);
+                            setMonsterClaimForPicker(false);
+                          }
+                        }}
+                        label=""
+                        placeholder="Pick a trainer..."
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+              {onForfeitRemainingMonsters && (
+                <button
+                  className="button danger sm"
+                  onClick={onForfeitRemainingMonsters}
+                  disabled={bulkProcessing}
+                >
+                  <i className="fas fa-times-circle"></i> Forfeit Remaining
+                </button>
+              )}
+            </div>
+          )}
+
           <div className="activity-reward-grid__monsters">
             {monsterRewards.map(reward => {
               const data = rd(reward);
@@ -356,7 +491,7 @@ export function ActivityRewardGrid({
                             <BallSelector
                               selectedBall={selectedBalls?.[reward.id] || 'Poke Ball'}
                               onBallChange={(ball) => onBallChange(reward.id, ball)}
-                              inventory={ballInventory}
+                              inventory={selectedTrainers[reward.id] ? ballInventoryMap?.[selectedTrainers[reward.id]] : undefined}
                             />
                           )}
                           <div className="activity-reward-grid__buttons">

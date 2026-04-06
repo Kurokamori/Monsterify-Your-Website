@@ -203,7 +203,7 @@ export function ReviewStep({ selectedStarters, starterNames, onNameChange, onGoB
                 />
                 {starterNames[index] && (
                   <button
-                    className="button danger icon"
+                    className="button danger icon no-flex"
                     onClick={() => onNameChange(index, '')}
                     type="button"
                     aria-label="Clear name"

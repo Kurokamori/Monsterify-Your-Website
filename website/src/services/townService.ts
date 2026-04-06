@@ -337,6 +337,11 @@ const townService = {
     return response.data;
   },
 
+  getActiveGardenSession: async (): Promise<{ success: boolean; hasActiveSession: boolean; sessionId?: string; session?: Record<string, unknown>; rewards?: unknown[] }> => {
+    const response = await api.get('/garden/active-session');
+    return response.data;
+  },
+
   getGardenHarvestSession: async (sessionId: string): Promise<GardenHarvestSession> => {
     const response = await api.get(`/garden/session/${sessionId}`);
     return response.data;
@@ -370,6 +375,30 @@ const townService = {
       monsterName,
     });
     return response.data;
+  },
+
+  bulkClaimGardenRewards: async (
+    sessionId: string,
+    claims: { rewardId: string; trainerId: number | string; monsterName?: string; ball?: string }[],
+  ) => {
+    const response = await api.post('/garden/claim-bulk', { sessionId, claims });
+    return response.data as {
+      success: boolean;
+      message: string;
+      results: { rewardId: string; success: boolean; error?: string }[];
+    };
+  },
+
+  bulkForfeitGardenMonsters: async (
+    sessionId: string,
+    forfeits: { rewardId: string; monsterName?: string }[],
+  ) => {
+    const response = await api.post('/garden/forfeit-bulk', { sessionId, forfeits });
+    return response.data as {
+      success: boolean;
+      message: string;
+      results: { rewardId: string; success: boolean; error?: string }[];
+    };
   },
 
   // ── Activity sessions ────────────────────────────────────────────

@@ -7,6 +7,9 @@ export type {
   DiscordProfile,
 } from './user.service';
 
+// Item Use Session Service
+export { ItemUseSessionService } from './item-use-session.service';
+
 // Special Berry Service
 export { SpecialBerryService } from './special-berry.service';
 export type {

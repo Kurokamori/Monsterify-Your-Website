@@ -51,6 +51,13 @@ export {
   batchUpdateItemImages,
 } from './api/items.controller';
 
+// Item Use Session Controller
+export {
+  getItemUseSession,
+  saveItemUseSession,
+  deleteItemUseSession,
+} from './api/item-use-session.controller';
+
 // User Controller (Admin)
 export {
   getAdminUsers,
@@ -215,6 +222,7 @@ export {
 export {
   rollStarterSets,
   selectStarters,
+  saveStarterSession,
 } from './monsters/starter-roller.controller';
 
 // Evolution Controller

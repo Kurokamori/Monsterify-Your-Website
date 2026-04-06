@@ -31,6 +31,34 @@
   color: var(--text-color);
 }
 
+/* ---------- Bulk Actions ---------- */
+
+.activity-reward-grid__bulk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-medium);
+}
+
+.activity-reward-grid__claim-for-wrapper {
+  position: relative;
+}
+
+.activity-reward-grid__claim-for-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  margin-top: var(--spacing-xxsmall);
+  min-width: 220px;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-xsmall);
+  box-shadow: var(--shadow-medium);
+}
+
 /* ---------- Grid Layouts ---------- */
 
 .activity-reward-grid__items,

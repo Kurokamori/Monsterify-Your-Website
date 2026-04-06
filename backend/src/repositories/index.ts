@@ -339,6 +339,10 @@ export type {
   GardenPointUpdateInput,
 } from './garden-point.repository';
 
+// Garden Harvest Session Repository
+export { GardenHarvestSessionRepository } from './garden-harvest-session.repository';
+export type { GardenHarvestSessionRow } from './garden-harvest-session.repository';
+
 // Ability Repository
 export { AbilityRepository } from './ability.repository';
 export type {
@@ -747,3 +751,17 @@ export { NurserySessionRepository } from './nursery-session.repository';
 export type {
   NurserySessionRow,
 } from './nursery-session.repository';
+
+// Item Use Session Repository
+export { ItemUseSessionRepository } from './item-use-session.repository';
+export type {
+  ItemUseSessionType,
+  ItemUseSessionRow,
+  ItemUseSession,
+} from './item-use-session.repository';
+
+// Starter Session Repository
+export { StarterSessionRepository } from './starter-session.repository';
+export type {
+  StarterSessionRow,
+} from './starter-session.repository';

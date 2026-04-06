@@ -10,7 +10,6 @@ import { FormInput } from '@components/common/FormInput';
 import { FormTextArea } from '@components/common/FormTextArea';
 import { FormSelect } from '@components/common/FormSelect';
 import { ErrorModal } from '@components/common/ErrorModal';
-import { LoadingSpinner } from '@components/common/LoadingSpinner';
 import submissionService, { type ExternalRewardResult } from '../../services/submissionService';
 import { extractErrorMessage } from '../../utils/errorUtils';
 
@@ -456,7 +455,7 @@ const ExternalWritingSubmissionPage = () => {
               className="button primary"
               disabled={submitting || !title || wordCount <= 0}
             >
-              {submitting ? <LoadingSpinner /> : 'Submit External Writing'}
+              {submitting ? <><i className="fas fa-spinner fa-spin"></i> Submitting...</> : 'Submit External Writing'}
             </button>
           </div>
         </form>

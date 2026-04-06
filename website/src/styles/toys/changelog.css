@@ -241,6 +241,12 @@
   margin-bottom: 1rem;
 }
 
+.whats-new-modal__divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 1.25rem 0;
+}
+
 .whats-new-modal__footer {
   display: flex;
   justify-content: space-between;

@@ -7,6 +7,7 @@ import { TypeBadge } from '../common/TypeBadge';
 import { AttributeBadge } from '../common/AttributeBadge';
 import { ActionButtonGroup } from '../common/ActionButtonGroup';
 import api from '../../services/api';
+import { itemSessionService } from '../../services';
 import {
   getBerryDescription,
   getPastryDescription,
@@ -179,7 +180,7 @@ export function MassEditModal({
     return remaining;
   }, [editData, trainerInventory.berries]);
 
-  // Fetch trainer inventory
+  // Fetch trainer inventory and check for pending session
   useEffect(() => {
     const fetchTrainerInventory = async () => {
       if (!isOpen || !trainerId) return;
@@ -194,6 +195,30 @@ export function MassEditModal({
         }
       } catch (error) {
         console.error('Error fetching trainer inventory:', error);
+      }
+
+      // Check for a pending session to resume
+      try {
+        const session = await itemSessionService.get('mass_edit');
+        if (!session) return;
+
+        const data = session.sessionData as {
+          trainerId: string | number;
+          pendingOperations: Operation[];
+          rolledSpeciesForOperations: Record<string, string[]>;
+          speciesImages: SpeciesImages;
+          processingResults: OperationResult[];
+        };
+
+        if (String(data.trainerId) !== String(trainerId)) return;
+
+        setPendingBerryOperations(data.pendingOperations);
+        setRolledSpeciesForOperations(data.rolledSpeciesForOperations);
+        setSpeciesImages(data.speciesImages);
+        setProcessingResults(data.processingResults || []);
+        setStep('speciesSelection');
+      } catch {
+        // Ignore errors checking session
       }
     };
 
@@ -565,11 +590,13 @@ export function MassEditModal({
           setRolledSpeciesForOperations(rolledSpeciesMap);
 
           // Fetch species images
+          let fetchedSpeciesImages: SpeciesImages = {};
           if (allSpecies.size > 0) {
             try {
               const imagesResponse = await api.post('/species/images', { species: Array.from(allSpecies) });
               if (imagesResponse.data.success) {
-                setSpeciesImages(imagesResponse.data.speciesImages);
+                fetchedSpeciesImages = imagesResponse.data.speciesImages;
+                setSpeciesImages(fetchedSpeciesImages);
               }
             } catch (error) {
               console.error('Error fetching species images:', error);
@@ -579,6 +606,16 @@ export function MassEditModal({
           setProcessingResults(results);
           updateInventoryAfterOperations(results);
           setStep('speciesSelection');
+
+          // Persist session so the roll survives a page refresh
+          itemSessionService.save('mass_edit', {
+            trainerId,
+            pendingOperations: berriesToSelectSpecies,
+            rolledSpeciesForOperations: rolledSpeciesMap,
+            speciesImages: fetchedSpeciesImages,
+            processingResults: results,
+          }).catch(() => {});
+
           return;
         } catch (error) {
           console.error('Error rolling species:', error);
@@ -698,6 +735,8 @@ export function MassEditModal({
       setSelectedSpeciesForOperations({});
       setRolledSpeciesForOperations({});
       setSpeciesImages({});
+      // Clean up persisted session
+      itemSessionService.delete('mass_edit').catch(() => {});
     }
   }, [monsters, pendingBerryOperations, processingResults, selectedSpeciesForOperations, trainerId, updateInventoryAfterOperations]);
 
@@ -707,6 +746,9 @@ export function MassEditModal({
       onComplete(processingResults);
     }
     onClose();
+
+    // Clean up persisted session
+    itemSessionService.delete('mass_edit').catch(() => {});
 
     // Reset state
     setStep('edit');

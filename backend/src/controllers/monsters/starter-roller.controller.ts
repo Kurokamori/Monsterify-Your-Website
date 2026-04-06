@@ -3,6 +3,7 @@ import {
   MonsterRepository,
   TrainerRepository,
   UserRepository,
+  StarterSessionRepository,
 } from '../../repositories';
 import type { MonsterRollerSettings } from '../../repositories';
 import { MonsterRollerService } from '../../services/monster-roller.service';
@@ -48,9 +49,46 @@ function parseUserSettings(settings: MonsterRollerSettings | null): UserSettings
 
 export async function rollStarterSets(req: Request, res: Response): Promise<void> {
   try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
+
     const rollerSettings = req.user?.monster_roller_settings ?? null;
     const userSettings = parseUserSettings(rollerSettings);
-    const body = req.body as RollParams & { seed?: string };
+    const body = req.body as RollParams & { seed?: string; trainerId?: number };
+    const { trainerId } = body;
+
+    // If trainerId provided, check the trainer has 0 monsters before rolling
+    if (trainerId) {
+      const trainerRepo = new TrainerRepository();
+      const trainer = await trainerRepo.findById(trainerId);
+      if (!trainer) {
+        res.status(404).json({ success: false, message: `Trainer with ID ${trainerId} not found` });
+        return;
+      }
+      if (Number(trainer.monster_count) > 0) {
+        res.status(400).json({ success: false, message: 'This trainer already has monsters' });
+        return;
+      }
+
+      const sessionRepo = new StarterSessionRepository();
+      const existing = await sessionRepo.findByUserAndTrainer(userId, trainerId);
+      if (existing) {
+        res.json({
+          success: true,
+          data: existing.starter_sets,
+          seed: existing.seed,
+          session: {
+            selectedStarters: existing.selected_starters,
+            starterNames: existing.starter_names,
+            currentStep: existing.current_step,
+          },
+        });
+        return;
+      }
+    }
 
     const roller = new MonsterRollerService({
       seed: body.seed ?? Date.now().toString(),
@@ -93,14 +131,67 @@ export async function rollStarterSets(req: Request, res: Response): Promise<void
       });
     }
 
+    const seed = roller.getSeed();
+
+    // If trainerId provided, save the fresh roll as a session
+    if (trainerId) {
+      const sessionRepo = new StarterSessionRepository();
+      await sessionRepo.save(userId, trainerId, {
+        seed,
+        starterSets,
+        selectedStarters: [null, null, null],
+        starterNames: ['', '', ''],
+        currentStep: 0,
+      });
+    }
+
     res.json({
       success: true,
       data: starterSets,
-      seed: roller.getSeed(),
+      seed,
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Error rolling starter monsters';
     console.error('Error rolling starter monsters:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+export async function saveStarterSession(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
+
+    const { trainerId, seed, starterSets, selectedStarters, starterNames, currentStep } = req.body as {
+      trainerId: number;
+      seed: string;
+      starterSets: unknown[];
+      selectedStarters: unknown[];
+      starterNames: string[];
+      currentStep: number;
+    };
+
+    if (!trainerId || !seed || !starterSets) {
+      res.status(400).json({ success: false, message: 'trainerId, seed, and starterSets are required' });
+      return;
+    }
+
+    const sessionRepo = new StarterSessionRepository();
+    await sessionRepo.save(userId, trainerId, {
+      seed,
+      starterSets,
+      selectedStarters: selectedStarters ?? [null, null, null],
+      starterNames: starterNames ?? ['', '', ''],
+      currentStep: currentStep ?? 0,
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Error saving starter session';
+    console.error('Error saving starter session:', error);
     res.status(500).json({ success: false, message: msg });
   }
 }
@@ -214,6 +305,10 @@ export async function selectStarters(req: Request, res: Response): Promise<void>
 
       createdMonsters.push(newMonster);
     }
+
+    // Delete the starter session now that starters are claimed
+    const sessionRepo = new StarterSessionRepository();
+    await sessionRepo.deleteByUserAndTrainer(userId, trainerId);
 
     res.json({
       success: true,
