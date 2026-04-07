@@ -231,7 +231,7 @@ export async function getPublicUserProfile(req: Request, res: Response): Promise
     const numericId = parseInt(idParam);
 
     // Try numeric user ID first, then fall back to discord ID lookup
-    let profile = !isNaN(numericId) && String(numericId) === idParam
+    let profile = !isNaN(numericId) && numericId <= 2147483647 && String(numericId) === idParam
       ? await userService.getPublicProfile(numericId)
       : null;
     profile ??= await userService.getPublicProfileByDiscordId(idParam);
@@ -250,7 +250,7 @@ export async function getPublicUserProfile(req: Request, res: Response): Promise
 
 async function resolveUser(idParam: string) {
   const numericId = parseInt(idParam);
-  if (!isNaN(numericId) && String(numericId) === idParam) {
+  if (!isNaN(numericId) && numericId <= 2147483647 && String(numericId) === idParam) {
     return userService.findById(numericId);
   }
   // Treat as discord_id
