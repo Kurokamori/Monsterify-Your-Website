@@ -2236,6 +2236,22 @@
   object-fit: contain;
 }
 
+.monster-claim-card .monster-species-images {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  gap: var(--spacing-xxsmall);
+  align-items: center;
+  justify-content: center;
+}
+
+.monster-claim-card .monster-species-images img {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  object-fit: contain;
+}
+
 .monster-claim-card .monster-placeholder {
   width: 100%;
   height: 100%;

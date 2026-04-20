@@ -556,7 +556,9 @@ export default function NurserySessionPage() {
               <i className="fas fa-magic"></i> Special Options
             </h4>
             <div className="nursery-special-actions__grid">
-              {session.specialBerries['Forget-Me-Not'] > 0 && (
+              {session.specialBerries['Forget-Me-Not'] > 0 &&
+                (session.claimedMonsters?.length ?? 0) === 0 &&
+                Object.keys(session.selectedMonsters ?? {}).length === 0 && (
                 <button
                   className="nursery-special-button nursery-special-button--forget-me-not"
                   onClick={handleRerollEgg}

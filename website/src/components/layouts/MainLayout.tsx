@@ -351,6 +351,7 @@ export const MainLayout = () => {
               {isAuthenticated && (
                 <>
                   <Link to="/submissions?tab=submit">Submit</Link>
+                  
                   <Link to="/submissions?tab=my-submissions">My Submissions</Link>
                 </>
               )}

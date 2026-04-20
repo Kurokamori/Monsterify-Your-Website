@@ -1919,7 +1919,7 @@ export class SubmissionService {
     }
 
     const monster = monstersArray[monsterIndex];
-    if (monster.claimed) {
+    if (monster.claimed === true) {
       throw new Error('Monster has already been claimed');
     }
 
@@ -1956,6 +1956,7 @@ export class SubmissionService {
     await this.promptSubmissionRepo.updateRewardsGranted(submissionId, JSON.stringify(rewards));
 
     return {
+      success: true,
       monster: { ...initializedMonster, claimed: true },
     };
   }

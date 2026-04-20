@@ -18,8 +18,14 @@ export type HatchParams = {
   useIncubator?: boolean;
   imageUrl?: string | null;
   imageFile?: string | null;
+  // Legacy globals — apply to every egg when per-egg maps are absent.
   selectedItems?: Record<string, number>;
   speciesInputs?: SpeciesInputs;
+  // Per-egg overrides keyed by egg index (0-based). When present, they
+  // replace the globals for that egg so items placed on a single egg
+  // only affect that egg's roll.
+  perEggItems?: Record<number, Record<string, number>>;
+  perEggSpeciesInputs?: Record<number, SpeciesInputs>;
 };
 
 export type SpeciesInputs = {
@@ -214,54 +220,22 @@ export class EggHatcherService {
       eggCount,
       selectedItems = {},
       speciesInputs = {},
+      perEggItems,
+      perEggSpeciesInputs,
     } = params;
 
     console.log('Starting egg hatching with params:', params);
 
-    // Process selected items to build roll parameters
-    const rollParams = await this.processEggItems(selectedItems, speciesInputs);
-
-    // Extract franchise table names from includeTypes/excludeTypes and use them
-    // to override enabledTables. Items like "Worker's Permit" (pals) or
-    // "Complex Core" (nexomon) should add tables even if the user has them
-    // disabled in their preferences.
-    let adjustedTables = [...this.enabledTables];
-    const adjustedSettings = { ...this.userSettings };
-
-    if (rollParams.includeTypes && rollParams.includeTypes.length > 0) {
-      const franchisesToAdd = rollParams.includeTypes.filter(isMonsterTable);
-      for (const franchise of franchisesToAdd) {
-        if (!adjustedTables.includes(franchise)) {
-          adjustedTables.push(franchise);
-        }
-        // Override user setting so MonsterRollerService won't re-filter it out
-        adjustedSettings[franchise as keyof UserSettings] = true;
-      }
-      // Remove franchise names so they don't pollute the SQL type conditions
-      rollParams.includeTypes = rollParams.includeTypes.filter((t) => !isMonsterTable(t));
-    }
-
-    if (rollParams.excludeTypes && rollParams.excludeTypes.length > 0) {
-      const franchisesToRemove = rollParams.excludeTypes.filter(isMonsterTable);
-      adjustedTables = adjustedTables.filter((t) => !franchisesToRemove.includes(t));
-      for (const franchise of franchisesToRemove) {
-        // Override user setting so MonsterRollerService won't re-add it
-        adjustedSettings[franchise as keyof UserSettings] = false;
-      }
-      // Remove franchise names so they don't pollute the SQL type conditions
-      rollParams.excludeTypes = rollParams.excludeTypes.filter((t) => !isMonsterTable(t));
-    }
-
-    // Apply adjusted settings (with item overrides) to roll parameters
-    rollParams.userSettings = adjustedSettings;
-    rollParams.enabledTables = adjustedTables;
-
-    console.log('Final roll parameters:', rollParams);
-
     const hatchedEggs: HatchedEgg[] = [];
 
-    // Hatch each egg
+    // Hatch each egg with its own item/species scope. Items placed on a
+    // specific egg must only influence that egg's roll.
     for (let i = 0; i < eggCount; i++) {
+      const itemsForEgg = perEggItems?.[i] ?? selectedItems;
+      const speciesForEgg = perEggSpeciesInputs?.[i] ?? speciesInputs;
+
+      const rollParams = await this.buildEggRollParams(itemsForEgg, speciesForEgg);
+
       const eggSeed = `${this.seed}-egg-${i}`;
       const eggResults = await this.hatchSingleEgg(eggSeed, rollParams);
 
@@ -273,6 +247,46 @@ export class EggHatcherService {
     }
 
     return hatchedEggs;
+  }
+
+  /**
+   * Build roll parameters for a single egg, honoring franchise overrides
+   * introduced by items (e.g. Worker's Permit adds `pals` even if the user
+   * has it disabled; Broken Bell removes `pokemon`).
+   */
+  private async buildEggRollParams(
+    selectedItems: Record<string, number>,
+    speciesInputs: SpeciesInputs,
+  ): Promise<EggRollParams> {
+    const rollParams = await this.processEggItems(selectedItems, speciesInputs);
+
+    let adjustedTables = [...this.enabledTables];
+    const adjustedSettings = { ...this.userSettings };
+
+    if (rollParams.includeTypes && rollParams.includeTypes.length > 0) {
+      const franchisesToAdd = rollParams.includeTypes.filter(isMonsterTable);
+      for (const franchise of franchisesToAdd) {
+        if (!adjustedTables.includes(franchise)) {
+          adjustedTables.push(franchise);
+        }
+        adjustedSettings[franchise as keyof UserSettings] = true;
+      }
+      rollParams.includeTypes = rollParams.includeTypes.filter((t) => !isMonsterTable(t));
+    }
+
+    if (rollParams.excludeTypes && rollParams.excludeTypes.length > 0) {
+      const franchisesToRemove = rollParams.excludeTypes.filter(isMonsterTable);
+      adjustedTables = adjustedTables.filter((t) => !franchisesToRemove.includes(t));
+      for (const franchise of franchisesToRemove) {
+        adjustedSettings[franchise as keyof UserSettings] = false;
+      }
+      rollParams.excludeTypes = rollParams.excludeTypes.filter((t) => !isMonsterTable(t));
+    }
+
+    rollParams.userSettings = adjustedSettings;
+    rollParams.enabledTables = adjustedTables;
+
+    return rollParams;
   }
 
   /**

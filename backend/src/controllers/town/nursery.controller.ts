@@ -112,6 +112,8 @@ export async function startNurture(req: Request, res: Response): Promise<void> {
       imageUrl?: string;
       selectedItems?: string | Record<string, number>;
       speciesInputs?: string | SpeciesInputs;
+      perEggItems?: string | Record<number, Record<string, number>>;
+      perEggSpeciesInputs?: string | Record<number, SpeciesInputs>;
       ball?: string;
     };
 
@@ -129,6 +131,20 @@ export async function startNurture(req: Request, res: Response): Promise<void> {
       speciesInputs = body.speciesInputs;
     }
 
+    let perEggItems: Record<number, Record<string, number>> | undefined;
+    if (typeof body.perEggItems === 'string') {
+      try { perEggItems = JSON.parse(body.perEggItems); } catch { /* empty */ }
+    } else if (body.perEggItems) {
+      perEggItems = body.perEggItems;
+    }
+
+    let perEggSpeciesInputs: Record<number, SpeciesInputs> | undefined;
+    if (typeof body.perEggSpeciesInputs === 'string') {
+      try { perEggSpeciesInputs = JSON.parse(body.perEggSpeciesInputs); } catch { /* empty */ }
+    } else if (body.perEggSpeciesInputs) {
+      perEggSpeciesInputs = body.perEggSpeciesInputs;
+    }
+
     const result = await nurseryService.startNurture({
       trainerId: body.trainerId,
       userId,
@@ -139,6 +155,8 @@ export async function startNurture(req: Request, res: Response): Promise<void> {
       file: req.file,
       selectedItems,
       speciesInputs,
+      perEggItems,
+      perEggSpeciesInputs,
       rollerSettings: req.user?.monster_roller_settings ?? null,
       ball: body.ball,
     });

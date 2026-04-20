@@ -6,6 +6,8 @@ import { LoadingSpinner } from '../../common/LoadingSpinner';
 import { ErrorModal } from '../../common/ErrorModal';
 import { SuccessMessage } from '../../common/SuccessMessage';
 import { BallSelector, type BallInventoryEntry } from '../../common/BallSelector';
+import { TypeBadge } from '../../common/TypeBadge';
+import { AttributeBadge } from '../../common/AttributeBadge';
 import trainerService from '../../../services/trainerService';
 import { GiftRewards } from '../GiftRewards';
 import { LevelCapReallocation } from '../LevelCapReallocation';
@@ -60,9 +62,18 @@ interface PromptItem {
 
 interface UnclaimedMonster {
   species1: string;
+  species2?: string;
+  species3?: string;
   img_link?: string;
+  image_url?: string;
+  species1_image?: string;
+  species2_image?: string;
+  species3_image?: string;
   type1?: string;
   type2?: string;
+  type3?: string;
+  type4?: string;
+  type5?: string;
   attribute?: string;
   claimed?: boolean;
   final_name?: string;
@@ -634,40 +645,58 @@ export function PromptRewardsClaiming({
                 className={`monster-claim-card ${monster.claimed ? 'claimed' : ''}`}
               >
                 <div className="monster-preview">
-                  {monster.img_link ? (
-                    <img src={monster.img_link} alt={monster.species1} />
-                  ) : (
-                    <div className="monster-placeholder">
-                      <i className="fas fa-dragon"></i>
-                    </div>
-                  )}
+                  {(() => {
+                    const speciesImages = [
+                      { img: monster.species1_image || monster.img_link || monster.image_url, name: monster.species1 },
+                      { img: monster.species2_image, name: monster.species2 },
+                      { img: monster.species3_image, name: monster.species3 },
+                    ].filter(s => s.img);
+
+                    if (speciesImages.length === 0) {
+                      return (
+                        <div className="monster-placeholder">
+                          <i className="fas fa-dragon"></i>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="monster-species-images">
+                        {speciesImages.map((s, i) => (
+                          <img key={i} src={s.img} alt={s.name || ''} />
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 <div className="monster-info">
-                  <h4>{monster.species1}</h4>
-                  <div className="monster-types">
-                    {monster.type1 && (
-                      <span className={`type-badge type-${monster.type1.toLowerCase()}`}>
-                        {monster.type1}
-                      </span>
-                    )}
-                    {monster.type2 && (
-                      <span className={`type-badge type-${monster.type2.toLowerCase()}`}>
-                        {monster.type2}
-                      </span>
-                    )}
+                  <h4>
+                    {[monster.species1, monster.species2, monster.species3]
+                      .filter(Boolean)
+                      .join(' / ')}
+                  </h4>
+                  <div className="badge-group flex-wrap badge-group--gap-xs">
+                    {[monster.type1, monster.type2, monster.type3, monster.type4, monster.type5]
+                      .filter((t): t is string => Boolean(t))
+                      .map((type, idx) => (
+                        <TypeBadge key={idx} type={type} size="sm" />
+                      ))}
                   </div>
+                  <div>
                   {monster.attribute && (
-                    <span className="attribute-badge">{monster.attribute}</span>
+                    <AttributeBadge attribute={monster.attribute} size="sm" className="mt-xs" />
                   )}
+                </div>
                 </div>
 
                 {!monster.claimed ? (
                   <div className="monster-claim-form">
-                    <div className="form-group">
+                    <div className="form-group form-group--small-padding">
                       <label>Name *</label>
                       <input
                         type="text"
+                        className="input"
                         value={monsterNames[index] || ''}
                         onChange={(e) => setMonsterNames(prev => ({
                           ...prev,
@@ -678,8 +707,7 @@ export function PromptRewardsClaiming({
                       />
                     </div>
 
-                    <div className="form-group">
-                      <label>Trainer</label>
+                    <div className="form-group form-group--small-padding">
                       <TrainerAutocomplete
                         trainers={userTrainers}
                         selectedTrainerId={monsterTrainers[index]}
@@ -688,10 +716,11 @@ export function PromptRewardsClaiming({
                           [index]: id || trainerId
                         }))}
                         placeholder="Select trainer..."
+                        noPadding
                       />
                     </div>
 
-                    <div className="form-group">
+                    <div className="form-group form-group--small-padding">
                       <label>Ball</label>
                       <BallSelector
                         selectedBall={monsterBalls[index] || 'Poke Ball'}

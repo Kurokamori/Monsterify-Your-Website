@@ -155,7 +155,9 @@ export default function NurseryPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   // Per-egg item selection: eggIndex -> itemName -> quantity
   const [perEggItems, setPerEggItems] = useState<Record<number, Record<string, number>>>({ 0: {} });
-  const [speciesInputs, setSpeciesInputs] = useState<SpeciesInputs>({});
+  // Per-egg species inputs so a species-control item on one egg only forces
+  // species on that egg. Keyed by egg index (0-based).
+  const [perEggSpeciesInputs, setPerEggSpeciesInputs] = useState<Record<number, SpeciesInputs>>({ 0: {} });
   // Which egg tab is active for item selection
   const [activeEggTab, setActiveEggTab] = useState(0);
   // Ball selection for hatched monsters
@@ -248,19 +250,27 @@ export default function NurseryPage() {
       fetchTrainerData(selectedTrainerId);
       setPerEggItems({ 0: {} });
       setActiveEggTab(0);
-      setSpeciesInputs({});
+      setPerEggSpeciesInputs({ 0: {} });
     }
   }, [selectedTrainerId, fetchTrainerData]);
 
-  // Keep perEggItems in sync with eggCount
+  // Keep perEggItems and perEggSpeciesInputs in sync with eggCount
   useEffect(() => {
     setPerEggItems(prev => {
       const next = { ...prev };
-      // Add empty entries for new eggs
       for (let i = 0; i < eggCount; i++) {
         if (!next[i]) next[i] = {};
       }
-      // Remove entries for eggs beyond the count
+      for (const key of Object.keys(next)) {
+        if (Number(key) >= eggCount) delete next[Number(key)];
+      }
+      return next;
+    });
+    setPerEggSpeciesInputs(prev => {
+      const next = { ...prev };
+      for (let i = 0; i < eggCount; i++) {
+        if (!next[i]) next[i] = {};
+      }
       for (const key of Object.keys(next)) {
         if (Number(key) >= eggCount) delete next[Number(key)];
       }
@@ -317,7 +327,7 @@ export default function NurseryPage() {
     setImageFile(null);
     setPerEggItems({ 0: {} });
     setActiveEggTab(0);
-    setSpeciesInputs({});
+    setPerEggSpeciesInputs({ 0: {} });
     setSelectedBall('Poke Ball');
     setError(null);
   }, []);
@@ -387,11 +397,18 @@ export default function NurseryPage() {
   const [activeSpeciesField, setActiveSpeciesField] = useState<string | null>(null);
   const speciesSearchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleSpeciesInputChange = useCallback((key: string, value: string) => {
-    setSpeciesInputs(prev => ({ ...prev, [key]: value }));
-    setActiveSpeciesField(key);
+  // Key for autocomplete state; species inputs are per egg so the suggestion
+  // dropdown must be scoped to an egg+field pair.
+  const suggestionKey = useCallback((eggIndex: number, field: string) => `${eggIndex}:${field}`, []);
 
-    // Debounced species search
+  const handleSpeciesInputChange = useCallback((eggIndex: number, key: string, value: string) => {
+    setPerEggSpeciesInputs(prev => ({
+      ...prev,
+      [eggIndex]: { ...(prev[eggIndex] || {}), [key]: value },
+    }));
+    const sKey = suggestionKey(eggIndex, key);
+    setActiveSpeciesField(sKey);
+
     if (speciesSearchTimerRef.current) clearTimeout(speciesSearchTimerRef.current);
     if (value.trim().length >= 2) {
       speciesSearchTimerRef.current = setTimeout(async () => {
@@ -400,22 +417,26 @@ export default function NurseryPage() {
             params: { query: value, excludeLegendary: 'true', excludeMythical: 'true', limit: 10 }
           });
           if (response.data.success && response.data.species) {
-            setSpeciesSuggestions(prev => ({ ...prev, [key]: response.data.species }));
+            setSpeciesSuggestions(prev => ({ ...prev, [sKey]: response.data.species }));
           }
         } catch {
           // silently fail
         }
       }, 300);
     } else {
-      setSpeciesSuggestions(prev => ({ ...prev, [key]: [] }));
+      setSpeciesSuggestions(prev => ({ ...prev, [sKey]: [] }));
     }
-  }, []);
+  }, [suggestionKey]);
 
-  const handleSpeciesSelect = useCallback((key: string, value: string) => {
-    setSpeciesInputs(prev => ({ ...prev, [key]: value }));
-    setSpeciesSuggestions(prev => ({ ...prev, [key]: [] }));
+  const handleSpeciesSelect = useCallback((eggIndex: number, key: string, value: string) => {
+    setPerEggSpeciesInputs(prev => ({
+      ...prev,
+      [eggIndex]: { ...(prev[eggIndex] || {}), [key]: value },
+    }));
+    const sKey = suggestionKey(eggIndex, key);
+    setSpeciesSuggestions(prev => ({ ...prev, [sKey]: [] }));
     setActiveSpeciesField(null);
-  }, []);
+  }, [suggestionKey]);
 
   // Validation
   const validate = useCallback((): string | null => {
@@ -450,7 +471,8 @@ export default function NurseryPage() {
 
       if (mode === 'nurture') {
         formData.append('selectedItems', JSON.stringify(selectedItems));
-        formData.append('speciesInputs', JSON.stringify(speciesInputs));
+        formData.append('perEggItems', JSON.stringify(perEggItems));
+        formData.append('perEggSpeciesInputs', JSON.stringify(perEggSpeciesInputs));
       }
 
       const response = await api.post<HatchResponse>(`/nursery/${mode}`, formData, {
@@ -465,7 +487,7 @@ export default function NurseryPage() {
     } finally {
       setSubmitting(false);
     }
-  }, [validate, selectedTrainerId, eggCount, useIncubator, imageFile, selectedItems, speciesInputs, selectedBall, navigate]);
+  }, [validate, selectedTrainerId, eggCount, useIncubator, imageFile, selectedItems, perEggItems, perEggSpeciesInputs, selectedBall, navigate]);
 
   // Shared controls rendered in both tabs
   const renderSharedControls = (mode: 'hatch' | 'nurture') => (
@@ -592,23 +614,25 @@ export default function NurseryPage() {
   // Render special inputs for species/type control items
   const renderSpecialInputs = (itemName: string) => {
     const currentEggItems = perEggItems[activeEggTab] || {};
+    const currentSpecies = perEggSpeciesInputs[activeEggTab] || {};
     const speciesCount = SPECIES_CONTROL_COUNTS[itemName];
     if (speciesCount && (currentEggItems[itemName] || 0) > 0) {
       return (
         <div className="nursery-item__special-inputs">
           {Array.from({ length: speciesCount }, (_, i) => {
             const key = `species${i + 1}` as keyof SpeciesInputs;
-            const suggestions = speciesSuggestions[key] || [];
-            const showSuggestions = activeSpeciesField === key && suggestions.length > 0;
+            const sKey = suggestionKey(activeEggTab, key);
+            const suggestions = speciesSuggestions[sKey] || [];
+            const showSuggestions = activeSpeciesField === sKey && suggestions.length > 0;
             return (
               <div key={key} className="nursery-item__special-input nursery-species-field">
                 <label>Species {i + 1}:</label>
                 <input
                   type="text"
                   className="input"
-                  value={speciesInputs[key] || ''}
-                  onChange={e => handleSpeciesInputChange(key, e.target.value)}
-                  onFocus={() => setActiveSpeciesField(key)}
+                  value={currentSpecies[key] || ''}
+                  onChange={e => handleSpeciesInputChange(activeEggTab, key, e.target.value)}
+                  onFocus={() => setActiveSpeciesField(sKey)}
                   onBlur={() => setTimeout(() => setActiveSpeciesField(null), 200)}
                   placeholder={`Search species (no legendaries/mythicals)`}
                   autoComplete="off"
@@ -621,7 +645,7 @@ export default function NurseryPage() {
                         type="button"
                         className="nursery-species-suggestion"
                         onMouseDown={e => e.preventDefault()}
-                        onClick={() => handleSpeciesSelect(key, name)}
+                        onClick={() => handleSpeciesSelect(activeEggTab, key, name)}
                       >
                         {name}
                       </button>
@@ -645,8 +669,8 @@ export default function NurseryPage() {
             <input
               type="text"
               className="input"
-              value={speciesInputs[typeKey as keyof SpeciesInputs] || ''}
-              onChange={e => handleSpeciesInputChange(typeKey, e.target.value)}
+              value={currentSpecies[typeKey as keyof SpeciesInputs] || ''}
+              onChange={e => handleSpeciesInputChange(activeEggTab, typeKey, e.target.value)}
               placeholder={`Enter type for slot ${slotNum}`}
             />
           </div>

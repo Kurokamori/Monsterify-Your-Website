@@ -420,7 +420,7 @@ export function ArtSubmissionCalculator({
               {backgrounds.length > 1 && (
                 <button
                   type="button"
-                  className="button icon danger"
+                  className="button icon danger no-flex"
                   onClick={() => handleRemoveBackground(index)}
                 >
                   &times;

@@ -36,6 +36,8 @@ export type HatchSession = {
   useVoidStone: boolean;
   imageUrl: string | null;
   selectedItems: Record<string, number>;
+  perEggItems?: Record<number, Record<string, number>>;
+  perEggSpeciesInputs?: Record<number, SpeciesInputs>;
   hatchedEggs: HatchedEgg[];
   selectedMonsters: Record<string, SelectedMonsterInfo>;
   claimedMonsters: string[];
@@ -234,6 +236,10 @@ export class NurseryService {
       is_mythical: boolean;
     };
 
+    // Always check every franchise table, even ones the user has disabled in
+    // their roller settings — a disabled franchise is not a valid reason to
+    // accept a typo. Match case-insensitively so differently-cased valid
+    // inputs still resolve.
     const tables = Object.entries(TABLE_NAME_MAP) as [string, string][];
 
     for (const [monsterType, tableName] of tables) {
@@ -246,7 +252,7 @@ export class NurseryService {
           ${hasLegendary ? 'is_legendary' : 'false'} as is_legendary,
           ${hasMythical ? 'is_mythical' : 'false'} as is_mythical
         FROM ${tableName}
-        WHERE name = $1
+        WHERE LOWER(name) = LOWER($1)
         LIMIT 1`,
         [speciesName],
       );
@@ -263,8 +269,10 @@ export class NurseryService {
       }
     }
 
-    // Species not found in any table - let it pass through (the egg hatcher will handle unknown species)
-    return { valid: true };
+    return {
+      valid: false,
+      error: `"${speciesName}" is not a recognized species. Check your spelling and pick one from the suggestions.`,
+    };
   }
 
   // ==========================================================================
@@ -456,33 +464,45 @@ export class NurseryService {
     file?: Express.Multer.File;
     selectedItems: Record<string, number>;
     speciesInputs: SpeciesInputs;
+    perEggItems?: Record<number, Record<string, number>>;
+    perEggSpeciesInputs?: Record<number, SpeciesInputs>;
     rollerSettings: MonsterRollerSettings | null;
     ball?: string;
   }): Promise<{ success: true } & HatchSessionResult | { success: false; status: number; message: string }> {
-    const { trainerId, userId, eggCount, useIncubator, useVoidStone, selectedItems, speciesInputs, rollerSettings, ball } = params;
+    const { trainerId, userId, eggCount, useIncubator, useVoidStone, selectedItems, speciesInputs, perEggItems, perEggSpeciesInputs, rollerSettings, ball } = params;
     let { imageUrl } = params;
 
-    // Validate species inputs for species control items
-    if ((selectedItems['Input Field'] ?? 0) > 0 && !speciesInputs?.species1) {
-      return { success: false, status: 400, message: 'Input Field item requires species1 to be specified' };
-    }
-    if ((selectedItems['Drop Down'] ?? 0) > 0 && (!speciesInputs?.species1 || !speciesInputs?.species2)) {
-      return { success: false, status: 400, message: 'Drop Down item requires species1 and species2 to be specified' };
-    }
-    if ((selectedItems['Radio Buttons'] ?? 0) > 0 && (!speciesInputs?.species1 || !speciesInputs?.species2 || !speciesInputs?.species3)) {
-      return { success: false, status: 400, message: 'Radio Buttons item requires species1, species2, and species3 to be specified' };
-    }
+    // Build per-egg scopes, defaulting to the global selection when
+    // the frontend did not send a per-egg breakdown.
+    const resolveEggScope = (i: number): { items: Record<string, number>; species: SpeciesInputs } => ({
+      items: perEggItems?.[i] ?? selectedItems,
+      species: perEggSpeciesInputs?.[i] ?? speciesInputs,
+    });
 
-    // Validate species inputs are not legendary or mythical
-    const speciesFieldsToValidate: string[] = [];
-    if (speciesInputs?.species1) { speciesFieldsToValidate.push(speciesInputs.species1); }
-    if (speciesInputs?.species2) { speciesFieldsToValidate.push(speciesInputs.species2); }
-    if (speciesInputs?.species3) { speciesFieldsToValidate.push(speciesInputs.species3); }
+    // Validate species inputs for species control items, per egg.
+    for (let i = 0; i < eggCount; i++) {
+      const { items, species } = resolveEggScope(i);
+      const eggLabel = eggCount > 1 ? ` (egg ${i + 1})` : '';
+      if ((items['Input Field'] ?? 0) > 0 && !species?.species1) {
+        return { success: false, status: 400, message: `Input Field item requires species1 to be specified${eggLabel}` };
+      }
+      if ((items['Drop Down'] ?? 0) > 0 && (!species?.species1 || !species?.species2)) {
+        return { success: false, status: 400, message: `Drop Down item requires species1 and species2 to be specified${eggLabel}` };
+      }
+      if ((items['Radio Buttons'] ?? 0) > 0 && (!species?.species1 || !species?.species2 || !species?.species3)) {
+        return { success: false, status: 400, message: `Radio Buttons item requires species1, species2, and species3 to be specified${eggLabel}` };
+      }
 
-    for (const speciesName of speciesFieldsToValidate) {
-      const validation = await this.validateSpeciesInput(speciesName);
-      if (!validation.valid) {
-        return { success: false, status: 400, message: validation.error ?? 'Invalid species' };
+      const speciesFieldsToValidate: string[] = [];
+      if (species?.species1) { speciesFieldsToValidate.push(species.species1); }
+      if (species?.species2) { speciesFieldsToValidate.push(species.species2); }
+      if (species?.species3) { speciesFieldsToValidate.push(species.species3); }
+
+      for (const speciesName of speciesFieldsToValidate) {
+        const validation = await this.validateSpeciesInput(speciesName);
+        if (!validation.valid) {
+          return { success: false, status: 400, message: `${validation.error ?? 'Invalid species'}${eggLabel}` };
+        }
       }
     }
 
@@ -547,6 +567,8 @@ export class NurseryService {
       imageUrl: imageUrl ?? undefined,
       selectedItems,
       speciesInputs,
+      perEggItems,
+      perEggSpeciesInputs,
     });
 
     const specialBerries = await this.specialBerryService.getAvailableSpecialBerries(trainerId);
@@ -562,6 +584,8 @@ export class NurseryService {
       useVoidStone,
       imageUrl: imageUrl ?? null,
       selectedItems,
+      perEggItems,
+      perEggSpeciesInputs,
       hatchedEggs,
       selectedMonsters: {},
       claimedMonsters: [],
@@ -629,13 +653,17 @@ export class NurseryService {
       });
 
       for (const egg of emptyEggs) {
+        const eggIndex = egg.eggId - 1;
+        const itemsForEgg = session.perEggItems?.[eggIndex] ?? session.selectedItems;
+        const speciesForEgg = session.perEggSpeciesInputs?.[eggIndex] ?? session.speciesInputs;
+
         const retryResults = await hatcher.hatchEggs({
           trainerId: session.trainerId,
           eggCount: 1,
           useIncubator: session.useIncubator,
           imageUrl: session.imageUrl,
-          selectedItems: session.selectedItems,
-          speciesInputs: session.speciesInputs,
+          selectedItems: itemsForEgg,
+          speciesInputs: speciesForEgg,
         });
 
         if (retryResults[0] && retryResults[0].monsters.length > 0) {
@@ -854,6 +882,14 @@ export class NurseryService {
       return { success: false, status: 403, message: 'You can only access your own hatch sessions' };
     }
 
+    if (session.claimedMonsters.length > 0 || Object.keys(session.selectedMonsters).length > 0) {
+      return {
+        success: false,
+        status: 400,
+        message: 'Cannot reroll this hatch — you have already claimed one or more monsters from it.',
+      };
+    }
+
     const hasForgetMeNot = await this.specialBerryService.hasSpecialBerry(session.trainerId, 'Forget-Me-Not');
     if (!hasForgetMeNot) {
       return { success: false, status: 400, message: 'You do not have a Forget-Me-Not berry' };
@@ -876,6 +912,8 @@ export class NurseryService {
       imageUrl: session.imageUrl ?? undefined,
       selectedItems: session.selectedItems,
       speciesInputs: session.speciesInputs,
+      perEggItems: session.perEggItems,
+      perEggSpeciesInputs: session.perEggSpeciesInputs,
     });
 
     // Reset session state with new results
