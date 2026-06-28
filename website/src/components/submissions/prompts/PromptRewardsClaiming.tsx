@@ -77,6 +77,7 @@ interface UnclaimedMonster {
   attribute?: string;
   claimed?: boolean;
   final_name?: string;
+  reward_kind?: string;
 }
 
 interface PromptRewardsData {
@@ -181,9 +182,13 @@ export function PromptRewardsClaiming({
   const [monsterBalls, setMonsterBalls] = useState<Record<number, string>>({});
   const [monsterTrainers, setMonsterTrainers] = useState<Record<number, string | number>>({});
   const [claimingMonster, setClaimingMonster] = useState<number | null>(null);
+  const [rerollingMonsters, setRerollingMonsters] = useState(false);
 
   // Ball inventory per trainer
   const [ballInventoryMap, setBallInventoryMap] = useState<Record<string | number, BallInventoryEntry[]>>({});
+
+  // Forget-Me-Not berry count for the reroll trainer
+  const [forgetMeNotCount, setForgetMeNotCount] = useState<number>(0);
 
   // UI state
   const [error, setError] = useState('');
@@ -224,6 +229,24 @@ export function PromptRewardsClaiming({
       });
     });
   }, [monsterTrainers]);
+
+  // Fetch the Forget-Me-Not berry count for the reroll trainer
+  useEffect(() => {
+    if (!trainerId) return;
+    let cancelled = false;
+    trainerService.getTrainerInventory(trainerId).then(inv => {
+      const raw = (inv as unknown as { data?: { berries?: unknown } }).data?.berries ?? inv.berries;
+      let count = 0;
+      if (Array.isArray(raw)) {
+        const entry = (raw as { name: string; quantity: number }[]).find(b => b.name === 'Forget-Me-Not');
+        count = entry?.quantity ?? 0;
+      } else if (raw && typeof raw === 'object') {
+        count = (raw as Record<string, number>)['Forget-Me-Not'] ?? 0;
+      }
+      if (!cancelled) setForgetMeNotCount(count);
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [trainerId]);
 
   // Build available targets for LevelCapReallocation
   const buildAvailableTargets = () => {
@@ -350,6 +373,58 @@ export function PromptRewardsClaiming({
       setClaimingMonster(null);
     }
   };
+
+  // Reroll all unclaimed rolled monsters using a Forget-Me-Not berry
+  const handleRerollMonsters = async () => {
+    if (!promptSubmission?.id) {
+      setError('No prompt submission found');
+      return;
+    }
+
+    if (forgetMeNotCount <= 0) {
+      setError('This trainer has no Forget-Me-Not berries to reroll with.');
+      return;
+    }
+
+    try {
+      setRerollingMonsters(true);
+      setError('');
+
+      const result = await submissionService.rerollMonsters(promptSubmission.id, trainerId);
+
+      if (result.success) {
+        const refreshed: UnclaimedMonster[] = (result.newMonsters || [])
+          .filter((m: UnclaimedMonster) => !m.claimed);
+        setUnclaimedMonsters(refreshed);
+
+        const names: Record<number, string> = {};
+        const balls: Record<number, string> = {};
+        const trainers: Record<number, string | number> = {};
+        refreshed.forEach((_monster, index) => {
+          names[index] = '';
+          balls[index] = 'Poke Ball';
+          trainers[index] = trainerId;
+        });
+        setMonsterNames(names);
+        setMonsterBalls(balls);
+        setMonsterTrainers(trainers);
+
+        setForgetMeNotCount(c => Math.max(0, c - 1));
+        setSuccessMessage('Monsters rerolled with a Forget-Me-Not berry!');
+      }
+    } catch (err) {
+      console.error('Error rerolling monsters:', err);
+      const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to reroll monsters';
+      setError(errorMessage);
+    } finally {
+      setRerollingMonsters(false);
+    }
+  };
+
+  // Whether any unclaimed monster came from a random roll (and so can be rerolled)
+  const canRerollMonsters = unclaimedMonsters.some(
+    m => !m.claimed && m.reward_kind === 'roll'
+  );
 
   // Check if all rewards have been claimed
   const allRewardsClaimed = promptRewardsClaimed &&
@@ -637,6 +712,41 @@ export function PromptRewardsClaiming({
           <p className="section-description">
             Name and claim your monsters. Each monster must be given a name and assigned to a trainer.
           </p>
+
+          {canRerollMonsters && (
+            <div className="monster-reroll-bar">
+              <p className="monster-reroll-hint">
+                <i className="fas fa-leaf"></i>
+                Not the legend you hoped for? Reroll with a Forget-Me-Not berry (consumes one).
+                {' '}
+                <span className="forget-me-not-count">
+                  {trainer?.name || 'This trainer'} has {forgetMeNotCount} Forget-Me-Not berr{forgetMeNotCount === 1 ? 'y' : 'ies'}.
+                </span>
+              </p>
+              {forgetMeNotCount <= 0 && (
+                <p className="monster-reroll-empty">
+                  No Forget-Me-Not berries available — rerolling is unavailable.
+                </p>
+              )}
+              <button
+                className="button secondary"
+                onClick={handleRerollMonsters}
+                disabled={rerollingMonsters || forgetMeNotCount <= 0}
+              >
+                {rerollingMonsters ? (
+                  <>
+                    <LoadingSpinner size="small" />
+                    Rerolling...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-dice"></i>
+                    Reroll with Forget-Me-Not
+                  </>
+                )}
+              </button>
+            </div>
+          )}
 
           <div className="monster-claim-grid">
             {unclaimedMonsters.map((monster, index) => (

@@ -387,7 +387,8 @@ export class SubmissionService {
   }
 
   async getAvailablePrompts(trainerId: number, category: string): Promise<unknown[]> {
-    return this.promptRepo.findAvailableByCategory(category, trainerId);
+    const promptType = category === 'progression' ? 'progress' : category;
+    return this.promptRepo.findAvailableByCategory(promptType, trainerId);
   }
 
   // ===========================================================================

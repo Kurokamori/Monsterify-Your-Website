@@ -197,6 +197,19 @@ export async function updateMonster(req: Request, res: Response): Promise<void> 
       }
     }
 
+    // Base species, typing, attribute and level are determined by game mechanics
+    // (rolls, evolution, leveling) and may only be overridden directly by admins.
+    if (!req.user?.is_admin) {
+      const adminOnlyFields = [
+        'species1', 'species2', 'species3',
+        'type1', 'type2', 'type3', 'type4', 'type5',
+        'attribute', 'level',
+      ];
+      for (const field of adminOnlyFields) {
+        delete input[field];
+      }
+    }
+
     const updatedMonster = await monsterService.updateMonster(
       id,
       input,

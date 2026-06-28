@@ -239,7 +239,7 @@ function SubmissionTypesContent({ onNavigate }: { onNavigate: (type: string, cat
             <p>Complete specific prompts to earn special rewards and participate in events.</p>
             <div className="type-tags">
               <button className="button primary" onClick={() => onNavigate('prompt', 'general')}>General</button>
-              <button className="button primary" onClick={() => onNavigate('prompt', 'progression')}>Progression</button>
+              <button className="button primary" onClick={() => onNavigate('prompt', 'progress')}>Progression</button>
               <button className="button primary" onClick={() => onNavigate('prompt', 'monthly')}>Monthly</button>
               <button className="button primary" onClick={() => onNavigate('prompt', 'event')}>Event</button>
             </div>

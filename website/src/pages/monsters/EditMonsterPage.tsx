@@ -164,6 +164,7 @@ const EditMonsterPage = () => {
         onSubmit={handleSubmit}
         onCancel={() => navigate(`/monsters/${id}`)}
         onSuccess={handleSuccess}
+        isAdmin={!!currentUser?.is_admin}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { MonsterRollConfigurator } from './MonsterRollConfigurator';
 import type { MonsterRollConfig } from './MonsterRollConfigurator';
 import api from '../../services/api';
@@ -84,6 +84,15 @@ export function RewardConfigurator({ rewards, onChange, availableItems, isBonus 
   const [showMonsterRoll, setShowMonsterRoll] = useState(
     rewards.monster_roll?.enabled ?? false
   );
+
+  // Keep the visual toggle in sync with the incoming rewards. The rewards prop
+  // is populated asynchronously when editing an existing prompt, so the initial
+  // useState value (taken before the prompt loads) would otherwise leave the
+  // Monster Roll section collapsed even when a roll reward is configured.
+  const monsterRollEnabled = rewards.monster_roll?.enabled ?? false;
+  useEffect(() => {
+    setShowMonsterRoll(monsterRollEnabled);
+  }, [monsterRollEnabled]);
   const [speciesCache, setSpeciesCache] = useState<Record<string, SpeciesResult[]>>({});
   const [speciesSearches, setSpeciesSearches] = useState<Record<string, string>>({});
   const [loadingSpecies, setLoadingSpecies] = useState<Record<string, boolean>>({});

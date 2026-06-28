@@ -69,32 +69,67 @@ export function PromptForm({ prompt, onSuccess, onCancel }: PromptFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [availableItems, setAvailableItems] = useState<Item[]>([]);
 
-  // Initialize form data when editing
+  // Initialize form data when editing.
+  // The list endpoint returns normalized camelCase fields (e.g. maxSubmissionsPerTrainer),
+  // while this form's state uses snake_case, so every field is read from either casing.
   useEffect(() => {
     if (prompt) {
-      const rewards = typeof prompt.rewards === 'string'
-        ? JSON.parse(prompt.rewards as unknown as string)
-        : prompt.rewards || {};
+      const pick = (camel: string, snake: string): unknown => {
+        const camelValue = prompt[camel];
+        return camelValue !== undefined && camelValue !== null ? camelValue : prompt[snake];
+      };
+      const toNullableNumber = (value: unknown): number | null =>
+        value === undefined || value === null || value === '' ? null : Number(value);
 
-      const monsterConditions = prompt.monsterConditions || prompt.monster_conditions;
+      const rawRewards = pick('rewards', 'rewards');
+      const rewards = typeof rawRewards === 'string'
+        ? JSON.parse(rawRewards)
+        : (rawRewards as RewardConfig) || {};
+
+      const monsterConditions = pick('monsterConditions', 'monster_conditions');
       const parsedConditions = monsterConditions
-        ? (typeof monsterConditions === 'string' ? JSON.parse(monsterConditions as unknown as string) : monsterConditions)
+        ? (typeof monsterConditions === 'string' ? JSON.parse(monsterConditions) : monsterConditions)
         : [];
+
+      const rawTags = pick('tags', 'tags');
+      const tags = rawTags
+        ? (Array.isArray(rawTags) ? rawTags : JSON.parse(rawTags as string))
+        : [];
+
+      const startRaw = pick('startDate', 'start_date');
+      const endRaw = pick('endDate', 'end_date');
+      const maxPerTrainer = toNullableNumber(pick('maxSubmissionsPerTrainer', 'max_submissions_per_trainer'));
+      const maxTotal = toNullableNumber(pick('maxSubmissions', 'max_submissions'));
+      const maxLevel = toNullableNumber(pick('maxTrainerLevel', 'max_trainer_level'));
+      const minLevel = toNullableNumber(pick('minTrainerLevel', 'min_trainer_level'));
+      const activeValue = pick('isActive', 'is_active');
 
       setFormData({
         ...DEFAULT_FORM_DATA,
-        ...prompt,
+        title: (prompt.title as string) ?? '',
+        description: (prompt.description as string) ?? '',
+        prompt_text: (pick('promptText', 'prompt_text') as string) ?? '',
+        type: (prompt.type as string) ?? 'general',
+        difficulty: (prompt.difficulty as string) ?? 'medium',
+        is_active: activeValue === undefined ? true : Boolean(activeValue),
+        priority: Number(prompt.priority ?? 0),
+        max_submissions: maxTotal,
+        max_submissions_per_trainer: maxPerTrainer,
+        target_type: (pick('targetType', 'target_type') as string) ?? 'trainer',
+        min_trainer_level: minLevel ?? 1,
+        max_trainer_level: maxLevel,
+        active_months: (pick('activeMonths', 'active_months') as string) ?? '',
+        start_date: typeof startRaw === 'string' ? startRaw.split('T')[0] : '',
+        end_date: typeof endRaw === 'string' ? endRaw.split('T')[0] : '',
+        event_name: (pick('eventName', 'event_name') as string) ?? '',
+        image_url: (pick('imageUrl', 'image_url') as string) ?? '',
+        prerequisites: (prompt.prerequisites as string) ?? '',
+        tags,
         rewards: {
           levels: 0, coins: 0, items: [],
           monster_roll: { enabled: false, parameters: {} as never },
           ...rewards
         },
-        tags: prompt.tags
-          ? (Array.isArray(prompt.tags) ? prompt.tags : JSON.parse(prompt.tags as unknown as string))
-          : [],
-        active_months: (prompt.active_months as string) || '',
-        start_date: (prompt.startDate || prompt.start_date) && typeof (prompt.startDate || prompt.start_date) === 'string' ? String(prompt.startDate || prompt.start_date).split('T')[0] : '',
-        end_date: (prompt.endDate || prompt.end_date) && typeof (prompt.endDate || prompt.end_date) === 'string' ? String(prompt.endDate || prompt.end_date).split('T')[0] : '',
         monster_conditions: Array.isArray(parsedConditions) ? parsedConditions : [],
       });
     }

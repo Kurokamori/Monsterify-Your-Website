@@ -32,6 +32,16 @@ export interface MonsterFormData {
   likes: string;
   dislikes: string;
   lore: string;
+  // Base species, types and attribute (admin-editable)
+  species1: string;
+  species2: string;
+  species3: string;
+  type1: string;
+  type2: string;
+  type3: string;
+  type4: string;
+  type5: string;
+  attribute: string;
   // Mega evolution
   has_mega_stone: boolean;
   mega_stone_name: string;
@@ -102,6 +112,15 @@ export function monsterToFormData(monster: Monster): MonsterFormData {
     likes: str(monster[`likes`]),
     dislikes: str(monster[`dislikes`]),
     lore: str(monster[`lore`]),
+    species1: str(monster.species1),
+    species2: str(monster.species2),
+    species3: str(monster.species3),
+    type1: str(monster.type1),
+    type2: str(monster.type2),
+    type3: str(monster.type3),
+    type4: str(monster.type4),
+    type5: str(monster.type5),
+    attribute: str(monster.attribute),
     has_mega_stone: !!monster[`has_mega_stone`],
     mega_stone_name: str(monster[`mega_stone_name`]),
     mega_species1: str(monster[`mega_species1`]),
@@ -157,14 +176,30 @@ export function buildMonsterSubmitData(
   formData: MonsterFormData,
   funFacts: FormFunFact[],
   relations: FormMonsterRelation[],
+  isAdmin: boolean = false,
 ): Record<string, unknown> {
   const data: Record<string, unknown> = { ...formData };
 
-  // Level is read-only, don't send it
-  delete data.level;
   // Mega images are saved separately via API, don't include in main update
   delete data.mega_stone_img;
   delete data.mega_image;
+
+  // Base species, types, attribute and level can only be edited directly by admins
+  if (isAdmin) {
+    const parsedLevel = Number(data.level);
+    data.level = Number.isFinite(parsedLevel) ? parsedLevel : formData.level;
+  } else {
+    delete data.level;
+    delete data.species1;
+    delete data.species2;
+    delete data.species3;
+    delete data.type1;
+    delete data.type2;
+    delete data.type3;
+    delete data.type4;
+    delete data.type5;
+    delete data.attribute;
+  }
 
   // Stringify JSON fields
   data.fun_facts = JSON.stringify(funFacts);

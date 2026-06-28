@@ -9,7 +9,7 @@ import { MonsterAutocomplete } from '@components/common/MonsterAutocomplete';
 import { FileUpload } from '@components/common/FileUpload';
 import { ErrorModal } from '@components/common/ErrorModal';
 import { SuccessMessage } from '@components/common/SuccessMessage';
-import { MONSTER_NATURES, MONSTER_CHARACTERISTICS } from '@utils/staticValues';
+import { MONSTER_NATURES, MONSTER_CHARACTERISTICS, MONSTER_TYPES, MONSTER_ATTRIBUTES } from '@utils/staticValues';
 import { extractErrorMessage } from '@utils/errorUtils';
 import monsterService from '@services/monsterService';
 import trainerService from '@services/trainerService';
@@ -39,11 +39,20 @@ interface MonsterEditFormProps {
   onSubmit: (data: Record<string, unknown>) => Promise<SubmitResult>;
   onCancel: () => void;
   onSuccess?: () => void;
+  isAdmin?: boolean;
 }
+
+// Type options for the admin species/type editor. type1 is required; the rest allow a blank slot.
+const TYPE_OPTIONS = MONSTER_TYPES.map(t => ({ value: t, label: t }));
+const OPTIONAL_TYPE_OPTIONS = [{ value: '', label: '-- None --' }, ...TYPE_OPTIONS];
+const ATTRIBUTE_OPTIONS = [
+  { value: '', label: '-- None --' },
+  ...MONSTER_ATTRIBUTES.map(a => ({ value: a, label: a })),
+];
 
 // --- Component ---
 
-export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: MonsterEditFormProps) {
+export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess, isAdmin = false }: MonsterEditFormProps) {
   const [formData, setFormData] = useState<MonsterFormData>(() => monsterToFormData(monster));
   const [funFacts, setFunFacts] = useState<FormFunFact[]>(() => parseMonsterFunFacts(monster));
   const [relations, setRelations] = useState<FormMonsterRelation[]>(() => parseMonsterRelations(monster));
@@ -243,7 +252,7 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
       setError(null);
       setSuccess(null);
 
-      const submitData = buildMonsterSubmitData(formData, funFacts, relations);
+      const submitData = buildMonsterSubmitData(formData, funFacts, relations, isAdmin);
       const result = await onSubmit(submitData);
 
       if (result.success) {
@@ -257,7 +266,7 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
     } finally {
       setSaving(false);
     }
-  }, [formData, funFacts, relations, validate, onSubmit, onSuccess]);
+  }, [formData, funFacts, relations, validate, onSubmit, onSuccess, isAdmin]);
 
   const handleJumpToSubmit = useCallback(() => {
     submitRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -306,12 +315,96 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
               label="Level"
               type="number"
               value={String(formData.level)}
-              readOnly
-              disabled
-              helpText="Level cannot be changed directly"
+              onChange={isAdmin ? (e: ChangeEvent<HTMLInputElement>) => handleFieldChange('level', e.target.value) : undefined}
+              readOnly={!isAdmin}
+              disabled={!isAdmin || saving}
+              helpText={isAdmin ? 'Admin: level can be set directly' : 'Level cannot be changed directly'}
             />
           </div>
         </div>
+
+        {/* ── Species, Types & Attribute (Admin only) ── */}
+        {isAdmin && (
+          <div className="form-section">
+            <h3 className="form-section__title">Species, Types &amp; Attribute</h3>
+            <p className="form-section__description">
+              Admin-only: directly edit the monster's base species, typing and attribute.
+            </p>
+            <div className="form-grid cols-3">
+              <FormInput
+                name="species1"
+                label="Primary Species"
+                value={formData.species1}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => handleFieldChange('species1', e.target.value)}
+                disabled={saving}
+              />
+              <FormInput
+                name="species2"
+                label="Secondary Species"
+                value={formData.species2}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => handleFieldChange('species2', e.target.value)}
+                disabled={saving}
+              />
+              <FormInput
+                name="species3"
+                label="Tertiary Species"
+                value={formData.species3}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => handleFieldChange('species3', e.target.value)}
+                disabled={saving}
+              />
+            </div>
+            <div className="form-grid cols-3" style={{ marginTop: 'var(--spacing-small)' }}>
+              <FormSelect
+                name="type1"
+                label="Type 1"
+                value={formData.type1}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFieldChange('type1', e.target.value)}
+                options={OPTIONAL_TYPE_OPTIONS}
+                disabled={saving}
+              />
+              <FormSelect
+                name="type2"
+                label="Type 2"
+                value={formData.type2}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFieldChange('type2', e.target.value)}
+                options={OPTIONAL_TYPE_OPTIONS}
+                disabled={saving}
+              />
+              <FormSelect
+                name="type3"
+                label="Type 3"
+                value={formData.type3}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFieldChange('type3', e.target.value)}
+                options={OPTIONAL_TYPE_OPTIONS}
+                disabled={saving}
+              />
+              <FormSelect
+                name="type4"
+                label="Type 4"
+                value={formData.type4}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFieldChange('type4', e.target.value)}
+                options={OPTIONAL_TYPE_OPTIONS}
+                disabled={saving}
+              />
+              <FormSelect
+                name="type5"
+                label="Type 5"
+                value={formData.type5}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFieldChange('type5', e.target.value)}
+                options={OPTIONAL_TYPE_OPTIONS}
+                disabled={saving}
+              />
+              <FormSelect
+                name="attribute"
+                label="Attribute"
+                value={formData.attribute}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFieldChange('attribute', e.target.value)}
+                options={ATTRIBUTE_OPTIONS}
+                disabled={saving}
+              />
+            </div>
+          </div>
+        )}
 
         {/* ── Personality ── */}
         <div className="form-section">

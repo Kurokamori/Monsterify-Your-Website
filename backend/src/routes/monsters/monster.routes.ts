@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authenticate, requireAdmin } from '@middleware/auth.middleware';
+import { authenticate, requireAdmin, optionalAuth } from '@middleware/auth.middleware';
 import { upload } from '@middleware/upload.middleware';
 import {
   getAllMonsters,
@@ -102,7 +102,7 @@ router.delete('/admin/:id', authenticate, requireAdmin, adminDeleteMonsterContro
 router.get('/:id', getMonsterById);
 
 // Update monster
-router.put('/:id', updateMonster);
+router.put('/:id', optionalAuth, updateMonster);
 
 // Delete monster
 router.delete('/:id', deleteMonster);
