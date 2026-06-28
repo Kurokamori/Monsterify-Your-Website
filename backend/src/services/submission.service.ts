@@ -36,8 +36,17 @@ import type { RollParams, RolledMonster, UserSettings } from './monster-roller.s
 import { ItemRollerService } from './item-roller.service';
 import type { RolledItem, ItemRollOptions } from './item-roller.service';
 import { MonsterInitializerService } from './monster-initializer.service';
-import type { MonsterData } from './monster-initializer.service';
-import type { MonsterTable } from '../utils/constants';
+import type { MonsterData, InitializedMonster } from './monster-initializer.service';
+import {
+  getTableName,
+  getTableSchema,
+  getRandomElement,
+  MONSTER_TYPES,
+  DIGIMON_ATTRIBUTES,
+  MONSTER_TABLES,
+  type MonsterTable,
+} from '../utils/constants';
+import { consumeBallFromInventory } from '../utils/ballUtils';
 import cloudinary from '../utils/cloudinary';
 import { ReferenceApprovalRepository } from '../repositories/reference-approval.repository';
 import { MonsterConditionService, type ConditionResult, type ParticipatingMonster } from './monster-condition.service';
@@ -1378,7 +1387,8 @@ export class SubmissionService {
     // Generate prompt rewards preview
     const rawRewards = prompt.rewards ?? {};
     const promptRewardConfig = (typeof rawRewards === 'string' ? JSON.parse(rawRewards) : rawRewards) as Record<string, unknown>;
-    const promptRewardsPreview = await this.buildPromptRewardsPreview(promptRewardConfig);
+    const promptPreviewSettings = await this.getUserSettingsForTrainer(data.trainerId);
+    const promptRewardsPreview = await this.buildPromptRewardsPreview(promptRewardConfig, promptPreviewSettings);
 
     // Create prompt_submission record
     const { id: promptSubmissionId } = await this.promptSubmissionRepo.createPromptSubmission({
@@ -1848,8 +1858,12 @@ export class SubmissionService {
     const rewardConfig = (monsterPromptRow.rewards ?? {}) as Record<string, unknown>;
     const monstersConfig = rewardConfig.monsters as Array<Record<string, unknown>> | undefined;
     const monsterRollConfig = rewardConfig.monster_roll as { enabled: boolean; parameters?: Record<string, unknown> } | undefined;
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const hasMonsterRolls = (monstersConfig && monstersConfig.length > 0) || (monsterRollConfig?.enabled);
+    const semiRandomConfig = rewardConfig.semi_random_monsters as Array<Record<string, unknown>> | undefined;
+    const hasMonsterRolls =
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      (monstersConfig && monstersConfig.length > 0) ||
+      monsterRollConfig?.enabled ||
+      (semiRandomConfig && semiRandomConfig.length > 0);
 
     if (!hasMonsterRolls) {
       throw new Error('This submission does not have monster rolls that can be rerolled');
@@ -1865,34 +1879,20 @@ export class SubmissionService {
       throw new Error('Failed to consume Forget-Me-Not berry');
     }
 
-    // Delete old monsters
+    // Delete any already-claimed monsters so they can be regenerated
     const currentRewards = parseJsonField<Record<string, unknown>>(monsterSubRow.rewards_granted, {});
-    const oldMonsters = currentRewards.monsters as Array<{ id?: number }> | undefined;
+    const oldMonsters = currentRewards.monsters as Array<{ monster_id?: number }> | undefined;
     if (oldMonsters) {
       for (const monster of oldMonsters) {
-        if (monster.id) {
-          await this.monsterRepo.delete(monster.id);
+        if (monster.monster_id) {
+          await this.monsterRepo.delete(monster.monster_id);
         }
       }
     }
 
-    // Reroll
+    // Regenerate fresh claimable previews for every monster reward option
     const userSettings = await this.getUserSettingsForTrainer(trainerId);
-    const newMonsters: unknown[] = [];
-    if (monstersConfig && Array.isArray(monstersConfig)) {
-      for (const monsterRoll of monstersConfig) {
-        const rerolled = await this.applyMonsterRoll(trainerId, monsterRoll, userSettings);
-        if (rerolled) {
-          newMonsters.push(rerolled);
-        }
-      }
-    }
-    if (monsterRollConfig?.enabled) {
-      const rerolled = await this.applyMonsterRoll(trainerId, monsterRollConfig.parameters ?? {}, userSettings);
-      if (rerolled) {
-        newMonsters.push(rerolled);
-      }
-    }
+    const newMonsters = await this.buildMonsterRewardPreviews(rewardConfig, userSettings);
 
     currentRewards.monsters = newMonsters;
     await this.promptSubmissionRepo.updateRewardsGranted(submissionId, JSON.stringify(currentRewards));
@@ -1904,7 +1904,8 @@ export class SubmissionService {
     submissionId: number,
     trainerId: number,
     monsterIndex: number,
-    monsterName: string
+    monsterName: string,
+    ball = 'Poke Ball'
   ): Promise<unknown> {
     const claimSubRow = await this.promptSubmissionRepo.findRawById(submissionId);
     if (!claimSubRow) {
@@ -1923,24 +1924,18 @@ export class SubmissionService {
       throw new Error('Monster has already been claimed');
     }
 
-    const monsterData: Partial<MonsterData> = {
-      trainer_id: trainerId,
-      name: monsterName || String(monster.species1) || 'Unnamed',
-      species1: String(monster.species1 ?? ''),
-      species2: monster.species2 ? String(monster.species2) : undefined,
-      species3: monster.species3 ? String(monster.species3) : undefined,
-      type1: String(monster.type1 ?? ''),
-      type2: monster.type2 ? String(monster.type2) : undefined,
-      type3: monster.type3 ? String(monster.type3) : undefined,
-      type4: monster.type4 ? String(monster.type4) : undefined,
-      type5: monster.type5 ? String(monster.type5) : undefined,
-      attribute: String(monster.attribute ?? ''),
-      level: (monster.level as number) || 1,
-      img_link: monster.img_link ? String(monster.img_link) : undefined,
-      where_met: 'Prompt Submission',
-    };
+    // Look up the owning player so the created monster is attributed correctly
+    const trainer = await this.trainerRepo.findById(trainerId);
+    const playerUserId = trainer?.player_user_id ?? undefined;
 
-    const initializedMonster = await this.monsterInitService.initializeMonster(monsterData as MonsterData);
+    const finalName = monsterName?.trim() || String(monster.species1 ?? '') || 'Unnamed';
+
+    const { id: createdId, initialized } = await this.persistMonsterFromPreview(trainerId, monster, {
+      name: finalName,
+      ball,
+      whereMet: 'Prompt Submission',
+      playerUserId,
+    });
 
     // Mark as claimed
     monstersArray[monsterIndex] = {
@@ -1948,8 +1943,8 @@ export class SubmissionService {
       claimed: true,
       claimed_by: trainerId,
       claimed_at: new Date().toISOString(),
-      final_name: monsterName,
-      monster_id: (initializedMonster as { id?: number }).id,
+      final_name: finalName,
+      monster_id: createdId,
     };
 
     rewards.monsters = monstersArray;
@@ -1957,7 +1952,7 @@ export class SubmissionService {
 
     return {
       success: true,
-      monster: { ...initializedMonster, claimed: true },
+      monster: { ...initialized, id: createdId, claimed: true },
     };
   }
 
@@ -2578,28 +2573,81 @@ export class SubmissionService {
       appliedRewards.items = appliedItems;
     }
 
-    // Monsters (new format)
-    if (rewardConfig.monsters && Array.isArray(rewardConfig.monsters)) {
+    // Monsters: build previews for every reward option (rolled, legacy roll,
+    // static, semi-random) and persist each one immediately to the trainer.
+    const monsterPreviews = await this.buildMonsterRewardPreviews(rewardConfig, userSettings);
+    if (monsterPreviews.length > 0) {
+      const owner = await this.trainerRepo.findById(trainerId);
+      const playerUserId = owner?.player_user_id ?? undefined;
       const appliedMonsters: unknown[] = [];
-      for (const monsterRoll of rewardConfig.monsters as Array<Record<string, unknown>>) {
-        const rolled = await this.applyMonsterRoll(trainerId, monsterRoll, userSettings);
-        if (rolled) {
-          appliedMonsters.push(rolled);
+
+      for (const preview of monsterPreviews) {
+        try {
+          const { id, initialized } = await this.persistMonsterFromPreview(
+            trainerId,
+            preview as Record<string, unknown>,
+            { whereMet: 'Prompt Reward', playerUserId }
+          );
+          appliedMonsters.push({
+            ...(preview as Record<string, unknown>),
+            ...initialized,
+            monster_id: id,
+            claimed: true,
+          });
+        } catch (error) {
+          console.error('Error applying prompt monster reward:', error);
         }
       }
+
       appliedRewards.monsters = appliedMonsters;
     }
 
-    // Monster roll (legacy format)
-    const monsterRoll = rewardConfig.monster_roll as { enabled: boolean; parameters?: Record<string, unknown> } | undefined;
-    if (monsterRoll?.enabled) {
-      const rolled = await this.applyMonsterRoll(trainerId, monsterRoll.parameters ?? {}, userSettings);
-      if (rolled) {
-        (appliedRewards.monsters as unknown[]).push(rolled);
-      }
-    }
-
     return appliedRewards;
+  }
+
+  /**
+   * Persist a monster from a claimable preview object (the shape produced by
+   * buildMonsterRewardPreviews). Creates the row, initialises stats/moves/abilities,
+   * and consumes the selected ball. Returns the new monster id and initialised data.
+   */
+  private async persistMonsterFromPreview(
+    trainerId: number,
+    preview: Record<string, unknown>,
+    options: { name?: string; ball?: string; whereMet?: string; playerUserId?: string } = {}
+  ): Promise<{ id: number; initialized: InitializedMonster }> {
+    const image =
+      (preview.img_link as string | undefined) ??
+      (preview.image_url as string | undefined) ??
+      (preview.species1_image as string | undefined) ??
+      null;
+
+    const name = options.name?.trim() || String(preview.species1 ?? '') || 'Unnamed';
+    const ball = options.ball ?? 'Poke Ball';
+
+    const created = await this.monsterRepo.create({
+      trainerId,
+      playerUserId: options.playerUserId,
+      name,
+      species1: String(preview.species1 ?? ''),
+      species2: preview.species2 ? String(preview.species2) : null,
+      species3: preview.species3 ? String(preview.species3) : null,
+      type1: preview.type1 ? String(preview.type1) : 'Normal',
+      type2: preview.type2 ? String(preview.type2) : null,
+      type3: preview.type3 ? String(preview.type3) : null,
+      type4: preview.type4 ? String(preview.type4) : null,
+      type5: preview.type5 ? String(preview.type5) : null,
+      attribute: preview.attribute ? String(preview.attribute) : null,
+      level: (preview.level as number) || 1,
+      imgLink: image,
+      dateMet: new Date(),
+      whereMet: options.whereMet ?? 'Prompt Submission',
+      ball,
+    });
+
+    const initialized = await this.monsterInitService.initializeMonster(created.id);
+    await consumeBallFromInventory(trainerId, ball);
+
+    return { id: created.id, initialized };
   }
 
   private async applyItemReward(
@@ -2713,26 +2761,11 @@ export class SubmissionService {
     }
   }
 
-  private async applyMonsterRoll(
-    _trainerId: number,
-    rollParams: Record<string, unknown>,
-    userSettings?: UserSettings
-  ): Promise<RolledMonster | null> {
-    try {
-      const roller = new MonsterRollerService(userSettings ? { userSettings } : {});
-      const params: Partial<RollParams> = {
-        tables: (rollParams.tables as MonsterTable[]) ?? (['pokemon', 'digimon', 'yokai'] as MonsterTable[]),
-        legendary: (rollParams.legendary as boolean) || false,
-        mythical: (rollParams.mythical as boolean) || false,
-        ...rollParams,
-      };
-      return await roller.rollMonster(params as RollParams);
-    } catch {
-      return null;
-    }
-  }
 
-  private async buildPromptRewardsPreview(rewardConfig: Record<string, unknown>): Promise<Record<string, unknown>> {
+  private async buildPromptRewardsPreview(
+    rewardConfig: Record<string, unknown>,
+    userSettings?: UserSettings
+  ): Promise<Record<string, unknown>> {
     const preview: Record<string, unknown> = {
       levels: (rewardConfig.levels as number) || 0,
       coins: (rewardConfig.coins as number) || 0,
@@ -2775,37 +2808,274 @@ export class SubmissionService {
       preview.items = itemPreviews;
     }
 
-    // Roll monsters preview
-    if (rewardConfig.monsters && Array.isArray(rewardConfig.monsters)) {
-      const monsterPreviews: unknown[] = [];
-      for (const monsterRoll of rewardConfig.monsters as Array<Record<string, unknown>>) {
-        try {
-          const roller = new MonsterRollerService();
-          const rolled = await roller.rollMonster(monsterRoll as RollParams);
-          if (rolled) {
-            monsterPreviews.push({ ...rolled, claimed: false, roll_config: monsterRoll });
-          }
-        } catch {
-          // Skip failed rolls
-        }
-      }
-      preview.monsters = monsterPreviews;
-    }
-
-    // Legacy monster_roll
-    const monsterRoll = rewardConfig.monster_roll as { enabled: boolean; parameters?: Record<string, unknown> } | undefined;
-    if (monsterRoll?.enabled) {
-      try {
-        const roller = new MonsterRollerService();
-        const rolled = await roller.rollMonster((monsterRoll.parameters ?? {}) as RollParams);
-        if (rolled) {
-          (preview.monsters as unknown[]).push({ ...rolled, claimed: false, roll_config: monsterRoll.parameters });
-        }
-      } catch {
-        // Skip failed rolls
-      }
-    }
+    // Build claimable monster previews across every reward option:
+    // rolled monsters, legacy monster_roll, static monsters, and semi-random monsters.
+    preview.monsters = await this.buildMonsterRewardPreviews(rewardConfig, userSettings);
 
     return preview;
+  }
+
+  /**
+   * Build claimable monster preview objects for every configured monster reward option:
+   * rolled monsters (`monsters[]`), the legacy `monster_roll`, fixed `static_monsters`,
+   * and `semi_random_monsters`. Each preview carries the fields the claim step needs to
+   * persist the monster (species, types, attribute, level, image).
+   */
+  private async buildMonsterRewardPreviews(
+    rewardConfig: Record<string, unknown>,
+    userSettings?: UserSettings
+  ): Promise<unknown[]> {
+    const previews: unknown[] = [];
+
+    if (Array.isArray(rewardConfig.monsters)) {
+      for (const monsterRoll of rewardConfig.monsters as Array<Record<string, unknown>>) {
+        const rolled = await this.rollMonsterRewardPreview(monsterRoll, userSettings);
+        if (rolled) {
+          previews.push(rolled);
+        }
+      }
+    }
+
+    const monsterRoll = rewardConfig.monster_roll as { enabled: boolean; parameters?: Record<string, unknown> } | undefined;
+    if (monsterRoll?.enabled) {
+      const rolled = await this.rollMonsterRewardPreview(monsterRoll.parameters ?? {}, userSettings);
+      if (rolled) {
+        previews.push(rolled);
+      }
+    }
+
+    if (Array.isArray(rewardConfig.static_monsters)) {
+      for (const staticConfig of rewardConfig.static_monsters as Array<Record<string, unknown>>) {
+        const staticPreview = await this.buildStaticMonsterPreview(staticConfig);
+        if (staticPreview) {
+          previews.push(staticPreview);
+        }
+      }
+    }
+
+    if (Array.isArray(rewardConfig.semi_random_monsters)) {
+      for (const semiConfig of rewardConfig.semi_random_monsters as Array<Record<string, unknown>>) {
+        const semiPreview = await this.buildSemiRandomMonsterPreview(semiConfig);
+        if (semiPreview) {
+          previews.push(semiPreview);
+        }
+      }
+    }
+
+    return previews;
+  }
+
+  private async rollMonsterRewardPreview(
+    rollParams: Record<string, unknown>,
+    userSettings?: UserSettings
+  ): Promise<Record<string, unknown> | null> {
+    try {
+      const roller = new MonsterRollerService(userSettings ? { userSettings } : {});
+      const rolled = await roller.rollMonster(rollParams as RollParams);
+      if (!rolled) {
+        return null;
+      }
+      return { ...rolled, claimed: false, reward_kind: 'roll', roll_config: rollParams };
+    } catch {
+      return null;
+    }
+  }
+
+  private async buildStaticMonsterPreview(
+    config: Record<string, unknown>
+  ): Promise<Record<string, unknown> | null> {
+    const table = (config.table as MonsterTable) ?? 'pokemon';
+    const speciesData = await this.fetchSpeciesRow(
+      table,
+      config.species_id as number | undefined,
+      config.species_name as string | undefined
+    );
+    if (!speciesData) {
+      return null;
+    }
+
+    const schema = getTableSchema(table);
+    const name = String(speciesData[schema.nameField] ?? config.species_name ?? '');
+    if (!name) {
+      return null;
+    }
+
+    const types = this.extractSpeciesTypes(speciesData, table);
+    const attribute = schema.attributeField
+      ? ((speciesData[schema.attributeField] as string | null) ?? null)
+      : null;
+    const image =
+      (config.image_url as string) ?? (speciesData[schema.imageField] as string) ?? null;
+
+    return {
+      id: 0,
+      species1: name,
+      species2: null,
+      species3: null,
+      species1_image: image,
+      type1: types[0] ?? 'Normal',
+      type2: types[1] ?? null,
+      type3: types[2] ?? null,
+      type4: types[3] ?? null,
+      type5: types[4] ?? null,
+      attribute,
+      image_url: image,
+      img_link: image,
+      level: (config.level as number) ?? 5,
+      monster_type: table,
+      claimed: false,
+      reward_kind: 'static',
+      roll_config: config,
+    };
+  }
+
+  private async buildSemiRandomMonsterPreview(
+    config: Record<string, unknown>
+  ): Promise<Record<string, unknown> | null> {
+    const table = (config.table as MonsterTable) ?? 'pokemon';
+    const speciesData = await this.fetchSpeciesRow(
+      table,
+      config.species_id as number | undefined,
+      config.species_name as string | undefined
+    );
+    if (!speciesData) {
+      return null;
+    }
+
+    const schema = getTableSchema(table);
+    const primaryName = String(speciesData[schema.nameField] ?? config.species_name ?? '');
+    if (!primaryName) {
+      return null;
+    }
+
+    const baseImage =
+      (config.image_url as string) ?? (speciesData[schema.imageField] as string) ?? null;
+
+    // Optional fusion with a random species from any table
+    let species2: string | null = null;
+    let species2Image: string | null = null;
+    if (config.allow_fusion) {
+      const fusion = await this.getRandomFusionSpecies();
+      if (fusion) {
+        species2 = fusion.name;
+        species2Image = fusion.image_url;
+      }
+    }
+
+    // Types: fixed list or a random count between the configured bounds
+    let types: string[];
+    if (config.type_mode === 'fixed' && Array.isArray(config.fixed_types) && (config.fixed_types as string[]).length > 0) {
+      types = [...(config.fixed_types as string[])];
+    } else {
+      const minTypes = (config.types_min as number) ?? 1;
+      const maxTypes = (config.types_max as number) ?? 2;
+      const numTypes = Math.max(1, Math.floor(Math.random() * (maxTypes - minTypes + 1)) + minTypes);
+      const shuffled = [...MONSTER_TYPES].sort(() => Math.random() - 0.5);
+      types = shuffled.slice(0, numTypes);
+    }
+
+    // Attribute: fixed or random
+    let attribute: string | null;
+    if (config.attribute_mode === 'fixed' && config.fixed_attribute) {
+      attribute = String(config.fixed_attribute);
+    } else {
+      attribute = getRandomElement([...DIGIMON_ATTRIBUTES]);
+    }
+
+    // Level: fixed or random within range
+    let level: number;
+    if (config.level_mode === 'fixed') {
+      level = (config.fixed_level as number) ?? 5;
+    } else {
+      const minLevel = (config.level_min as number) ?? 1;
+      const maxLevel = (config.level_max as number) ?? 10;
+      level = Math.floor(Math.random() * (maxLevel - minLevel + 1)) + minLevel;
+    }
+
+    return {
+      id: 0,
+      species1: primaryName,
+      species2,
+      species3: null,
+      species1_image: baseImage,
+      species2_image: species2Image,
+      type1: types[0] ?? 'Normal',
+      type2: types[1] ?? null,
+      type3: types[2] ?? null,
+      type4: types[3] ?? null,
+      type5: types[4] ?? null,
+      attribute,
+      image_url: baseImage,
+      img_link: baseImage,
+      level,
+      monster_type: table,
+      claimed: false,
+      reward_kind: 'semi_random',
+      roll_config: config,
+    };
+  }
+
+  private async fetchSpeciesRow(
+    table: MonsterTable,
+    speciesId?: number,
+    speciesName?: string
+  ): Promise<Record<string, unknown> | null> {
+    try {
+      const tableName = getTableName(table);
+      const schema = getTableSchema(table);
+
+      if (speciesId !== undefined && speciesId !== null) {
+        const result = await db.query<Record<string, unknown>>(
+          `SELECT * FROM ${tableName} WHERE ${schema.idField} = $1`,
+          [speciesId]
+        );
+        if (result.rows[0]) {
+          return result.rows[0];
+        }
+      }
+
+      if (speciesName) {
+        const result = await db.query<Record<string, unknown>>(
+          `SELECT * FROM ${tableName} WHERE ${schema.nameField} = $1`,
+          [speciesName]
+        );
+        if (result.rows[0]) {
+          return result.rows[0];
+        }
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  private extractSpeciesTypes(row: Record<string, unknown>, table: MonsterTable): string[] {
+    const schema = getTableSchema(table);
+    const types: string[] = [];
+    for (const field of schema.typeFields) {
+      const value = row[field];
+      if (typeof value === 'string' && value) {
+        types.push(value);
+      }
+    }
+    return types;
+  }
+
+  private async getRandomFusionSpecies(): Promise<{ name: string; image_url: string | null } | null> {
+    try {
+      const randomTable = getRandomElement([...MONSTER_TABLES]);
+      const tableName = getTableName(randomTable);
+      const schema = getTableSchema(randomTable);
+      const result = await db.query<{ name: string; image_url: string | null }>(
+        `SELECT ${schema.nameField} AS name, ${schema.imageField} AS image_url
+         FROM ${tableName}
+         ORDER BY RANDOM()
+         LIMIT 1`
+      );
+      return result.rows[0] ?? null;
+    } catch {
+      return null;
+    }
   }
 }

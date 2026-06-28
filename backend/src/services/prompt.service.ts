@@ -7,9 +7,7 @@ import {
   type PromptCreateInput,
   type PromptUpdateInput,
   type PromptQueryOptions,
-  type PromptSubmissionCreateInput,
 } from '../repositories';
-import { ImmediateRewardService, type AppliedRewards } from './immediate-reward.service';
 
 // ============================================================================
 // Types
@@ -65,27 +63,6 @@ export type TrainerProgressEntry = {
   approvedCount: number;
 };
 
-export type SubmitResult = {
-  submission: {
-    id: number;
-    promptId: number;
-    trainerId: number;
-    status: string;
-    appliedRewards: AppliedRewards | null;
-  };
-};
-
-export type ReviewResult = {
-  submission: {
-    id: number;
-    promptId: number;
-    trainerId: number;
-    status: string;
-    reviewedBy: string | null;
-    appliedRewards: AppliedRewards | null;
-  };
-};
-
 export type DifficultyInfo = {
   value: string;
   label: string;
@@ -106,18 +83,15 @@ export class PromptService {
   private promptRepository: PromptRepository;
   private submissionRepository: PromptSubmissionRepository;
   private trainerRepository: TrainerRepository;
-  private immediateRewardService: ImmediateRewardService;
 
   constructor(
     promptRepository?: PromptRepository,
     submissionRepository?: PromptSubmissionRepository,
-    trainerRepository?: TrainerRepository,
-    immediateRewardService?: ImmediateRewardService
+    trainerRepository?: TrainerRepository
   ) {
     this.promptRepository = promptRepository ?? new PromptRepository();
     this.submissionRepository = submissionRepository ?? new PromptSubmissionRepository();
     this.trainerRepository = trainerRepository ?? new TrainerRepository();
-    this.immediateRewardService = immediateRewardService ?? new ImmediateRewardService();
   }
 
   // ==========================================================================
@@ -251,127 +225,6 @@ export class PromptService {
     }
 
     return { available: true };
-  }
-
-  // ==========================================================================
-  // Submission
-  // ==========================================================================
-
-  async submitToPrompt(
-    promptId: number,
-    trainerId: number,
-    submissionId: number
-  ): Promise<SubmitResult> {
-    const prompt = await this.promptRepository.findById(promptId);
-    if (!prompt) {
-      throw new Error('Prompt not found');
-    }
-
-    // Check availability
-    const availability = await this.checkPromptAvailability(promptId, trainerId);
-    if (!availability.available) {
-      throw new Error(availability.reason ?? 'Prompt not available');
-    }
-
-    // Create submission - auto approved
-    const submissionInput: PromptSubmissionCreateInput = {
-      promptId,
-      submissionId,
-      trainerId,
-      status: 'approved',
-      submittedAt: new Date(),
-    };
-
-    const submission = await this.submissionRepository.create(submissionInput);
-
-    // Calculate and apply rewards immediately
-    let appliedRewards: AppliedRewards | null = null;
-    if (prompt.rewards) {
-      appliedRewards = await this.immediateRewardService.calculateAndApplyRewards(
-        { rewards: prompt.rewards as Record<string, unknown> },
-        { trainer_id: trainerId },
-        7, // Default quality score
-        false
-      );
-    }
-
-    // Update progress for progress-type prompts
-    if (prompt.type === 'progress') {
-      await this.updateTrainerProgress(trainerId, promptId, {
-        submitted: true,
-      });
-    }
-
-    return {
-      submission: {
-        id: submission.id,
-        promptId: submission.promptId,
-        trainerId: submission.trainerId,
-        status: submission.status,
-        appliedRewards,
-      },
-    };
-  }
-
-  // ==========================================================================
-  // Review
-  // ==========================================================================
-
-  async reviewSubmission(
-    submissionId: number,
-    status: string,
-    reviewedBy: string,
-    qualityScore?: number,
-    bonusApplied?: boolean
-  ): Promise<ReviewResult> {
-    if (!['approved', 'rejected', 'under_review'].includes(status)) {
-      throw new Error('Invalid status');
-    }
-
-    const submission = await this.submissionRepository.findById(submissionId);
-    if (!submission) {
-      throw new Error('Submission not found');
-    }
-
-    // Update submission status
-    const updated = await this.submissionRepository.updateStatus(
-      submissionId,
-      status as 'approved' | 'rejected',
-      reviewedBy
-    );
-
-    // Distribute rewards if approved
-    let appliedRewards: AppliedRewards | null = null;
-    if (status === 'approved') {
-      const prompt = await this.promptRepository.findById(submission.promptId);
-      if (prompt?.rewards) {
-        appliedRewards = await this.immediateRewardService.calculateAndApplyRewards(
-          { rewards: prompt.rewards as Record<string, unknown> },
-          { trainer_id: submission.trainerId },
-          qualityScore ?? 5,
-          bonusApplied ?? false
-        );
-      }
-
-      // Mark progress for progress-type prompts
-      if (prompt?.type === 'progress') {
-        await this.updateTrainerProgress(submission.trainerId, submission.promptId, {
-          completed: true,
-          completedAt: new Date().toISOString(),
-        });
-      }
-    }
-
-    return {
-      submission: {
-        id: updated.id,
-        promptId: updated.promptId,
-        trainerId: updated.trainerId,
-        status: updated.status,
-        reviewedBy: updated.reviewedBy,
-        appliedRewards,
-      },
-    };
   }
 
   // ==========================================================================
@@ -651,81 +504,4 @@ export class PromptService {
     return { valid: errors.length === 0, errors };
   }
 
-  // ==========================================================================
-  // Reroll Monster
-  // ==========================================================================
-
-  async rerollMonster(
-    trainerId: number,
-    monsterId: number,
-    originalParams: Record<string, unknown> = {}
-  ): Promise<unknown> {
-    return this.immediateRewardService.rerollMonsterWithForgetMeNot(
-      trainerId,
-      monsterId,
-      originalParams
-    );
-  }
-
-  // ==========================================================================
-  // Helpers
-  // ==========================================================================
-
-  private async updateTrainerProgress(
-    trainerId: number,
-    promptId: number,
-    progressData: {
-      submitted?: boolean;
-      completed?: boolean;
-      completedAt?: string;
-      progressData?: unknown;
-    }
-  ): Promise<void> {
-    const existingResult = await db.query<{ id: number }>(
-      'SELECT id FROM trainer_prompt_progress WHERE trainer_id = $1 AND prompt_id = $2',
-      [trainerId, promptId]
-    );
-
-    const existing = existingResult.rows[0];
-
-    if (existing) {
-      const updates: string[] = [];
-      const params: unknown[] = [];
-
-      if (progressData.completed !== undefined) {
-        params.push(progressData.completed);
-        updates.push(`is_completed = $${params.length}`);
-      }
-
-      if (progressData.completedAt) {
-        params.push(progressData.completedAt);
-        updates.push(`completed_at = $${params.length}`);
-      }
-
-      if (progressData.progressData) {
-        params.push(JSON.stringify(progressData.progressData));
-        updates.push(`progress_data = $${params.length}`);
-      }
-
-      if (updates.length > 0) {
-        params.push(trainerId, promptId);
-        await db.query(
-          `UPDATE trainer_prompt_progress SET ${updates.join(', ')} WHERE trainer_id = $${params.length - 1} AND prompt_id = $${params.length}`,
-          params
-        );
-      }
-    } else {
-      await db.query(
-        `INSERT INTO trainer_prompt_progress (trainer_id, prompt_id, is_completed, completed_at, progress_data, started_at)
-         VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)`,
-        [
-          trainerId,
-          promptId,
-          progressData.completed ?? false,
-          progressData.completedAt ?? null,
-          progressData.progressData ? JSON.stringify(progressData.progressData) : null,
-        ]
-      );
-    }
-  }
 }

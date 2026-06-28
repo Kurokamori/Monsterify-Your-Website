@@ -13,6 +13,7 @@ import type { User } from '@services/userService';
 
 type UserScope = 'self' | 'all' | 'specific';
 type RollType = 'both' | 'trainers' | 'monsters';
+type ImageFilter = 'all' | 'has-image' | 'no-image';
 
 interface RolledResult {
   kind: 'trainer' | 'monster';
@@ -36,7 +37,7 @@ interface RollConfig {
   selectedTrainerId: number | null;
   selectedTrainerName: string;
   rollCount: number;
-  requireImage: boolean;
+  imageFilter: ImageFilter;
 }
 
 const DEFAULT_CONFIG: RollConfig = {
@@ -48,7 +49,7 @@ const DEFAULT_CONFIG: RollConfig = {
   selectedTrainerId: null,
   selectedTrainerName: '',
   rollCount: 1,
-  requireImage: false,
+  imageFilter: 'all',
 };
 
 // --- Helpers ---
@@ -283,17 +284,26 @@ const WhoShouldIDrawPage = () => {
         }
       }
 
-      // Apply "require image" filter
-      const filtered = config.requireImage
-        ? pool.filter(r => hasValidImage(r.image))
-        : pool;
+      // Apply image filter
+      let filtered: RolledResult[];
+      if (config.imageFilter === 'has-image') {
+        filtered = pool.filter(r => hasValidImage(r.image));
+      } else if (config.imageFilter === 'no-image') {
+        filtered = pool.filter(r => !hasValidImage(r.image));
+      } else {
+        filtered = pool;
+      }
 
       if (filtered.length === 0) {
-        setError(
-          config.requireImage
-            ? 'No results with valid images found. Try disabling the image filter.'
-            : 'No trainers or monsters found with the current filters.'
-        );
+        let message: string;
+        if (config.imageFilter === 'has-image') {
+          message = 'No results with images found. Try a different image filter.';
+        } else if (config.imageFilter === 'no-image') {
+          message = 'No results without images found. Try a different image filter.';
+        } else {
+          message = 'No trainers or monsters found with the current filters.';
+        }
+        setError(message);
         setHasRolled(true);
         setRolling(false);
         return;
@@ -534,16 +544,22 @@ const WhoShouldIDrawPage = () => {
             <label className="wsid-config__label">Image Filter</label>
             <div className="wsid-config__option-group">
               <button
-                className={`wsid-config__option ${!config.requireImage ? 'wsid-config__option--active' : ''}`}
-                onClick={() => updateConfig({ requireImage: false })}
+                className={`wsid-config__option ${config.imageFilter === 'all' ? 'wsid-config__option--active' : ''}`}
+                onClick={() => updateConfig({ imageFilter: 'all' })}
               >
                 All
               </button>
               <button
-                className={`wsid-config__option ${config.requireImage ? 'wsid-config__option--active' : ''}`}
-                onClick={() => updateConfig({ requireImage: true })}
+                className={`wsid-config__option ${config.imageFilter === 'has-image' ? 'wsid-config__option--active' : ''}`}
+                onClick={() => updateConfig({ imageFilter: 'has-image' })}
               >
-                With Image Only
+                Has Image
+              </button>
+              <button
+                className={`wsid-config__option ${config.imageFilter === 'no-image' ? 'wsid-config__option--active' : ''}`}
+                onClick={() => updateConfig({ imageFilter: 'no-image' })}
+              >
+                No Image
               </button>
             </div>
           </div>

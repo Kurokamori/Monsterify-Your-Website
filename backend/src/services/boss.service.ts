@@ -74,6 +74,41 @@ export type ClaimResult = {
   message: string;
 };
 
+/**
+ * Resolve a reward monster template down to a single effective monster.
+ *
+ * A template may either be a legacy/single monster object
+ * (`{ name, species, types, attribute }`) or a selection of whole-monster
+ * options (`{ selectionMode, options: [...] }`). When a selection is present,
+ * the effective monster is chosen either at random (selectionMode 'random')
+ * or by the claiming player (selectionMode 'player', via selectedOptionIndex).
+ */
+function resolveRewardOption(
+  template: Record<string, unknown>,
+  selectedOptionIndex: number | null,
+): Record<string, unknown> {
+  const options = template.options;
+  if (!Array.isArray(options) || options.length === 0) {
+    return template;
+  }
+
+  const mode = template.selectionMode === 'player' ? 'player' : 'random';
+  let index: number;
+  if (mode === 'player') {
+    index = selectedOptionIndex ?? 0;
+  } else {
+    index = Math.floor(Math.random() * options.length);
+  }
+  if (index < 0 || index >= options.length) {
+    index = 0;
+  }
+
+  const option = options[index];
+  return option && typeof option === 'object'
+    ? (option as Record<string, unknown>)
+    : template;
+}
+
 // ============================================================================
 // Service
 // ============================================================================
@@ -369,6 +404,7 @@ export class BossService {
     userId: number,
     monsterName: string,
     trainerId: number,
+    selectedOptionIndex: number | null = null,
   ): Promise<ClaimResult> {
     // 1. Mark the claim as claimed in the DB
     const claim = await this.bossRepo.claimReward(bossId, userId, monsterName, trainerId);
@@ -387,17 +423,21 @@ export class BossService {
     }
 
     // 3. Determine which monster template to use
-    let template: Record<string, unknown> | null = null;
+    let rawTemplate: Record<string, unknown> | null = null;
     if (claim.rewardType === 'boss_monster') {
-      template = boss.rewardMonsterData;
+      rawTemplate = boss.rewardMonsterData;
     } else if (boss.gruntMonsterData && boss.gruntMonsterData.length > 0) {
       const idx = claim.gruntIndex ?? 0;
-      template = boss.gruntMonsterData[idx] ?? boss.gruntMonsterData[0] ?? null;
+      rawTemplate = boss.gruntMonsterData[idx] ?? boss.gruntMonsterData[0] ?? null;
     }
 
-    if (!template) {
+    if (!rawTemplate) {
       return { success: true, claim, message: 'Reward claimed but no monster template configured' };
     }
+
+    // 3b. A reward template may either be a single monster or a selection of
+    // whole-monster options. Resolve it down to the single effective monster.
+    const template = resolveRewardOption(rawTemplate, selectedOptionIndex);
 
     // 4. Get the trainer so we have their player_user_id
     const trainer = await this.trainerRepo.findById(trainerId);

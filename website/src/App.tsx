@@ -116,6 +116,7 @@ import { MonthlyDistributionPage } from './pages/admin/monthly-distribution'
 import { FactionManagerPage } from './pages/admin/faction-manager'
 import { ChangelogManagerPage } from './pages/admin/changelog-manager'
 import { CalendarManagerPage } from './pages/admin/calendar-manager'
+import { EvolutionCacheManagerPage } from './pages/admin/evolution-cache'
 import CalendarPage from './pages/guides-and-tools/guides/CalendarPage'
 import InteractiveMapPage from './pages/guides-and-tools/guides/InteractiveMapPage'
 import LandmassGuidePage from './pages/guides-and-tools/guides/LandmassGuidePage'
@@ -257,6 +258,7 @@ function App() {
         <Route path="admin/faction-manager" element={<FactionManagerPage />} />
         <Route path="admin/changelog-manager" element={<ChangelogManagerPage />} />
         <Route path="admin/calendar-manager" element={<CalendarManagerPage />} />
+        <Route path="admin/evolution-cache" element={<EvolutionCacheManagerPage />} />
 
         {/* Statistics Routes */}
         <Route path="statistics" element={<StatisticsPage />} />

@@ -156,6 +156,15 @@ export class AdoptionService {
     return this.adoptRepository.findByYearAndMonth(year, month, { page, limit });
   }
 
+  /**
+   * Proactively ensures the current month (and any missing prior months) have a
+   * full set of adopts. Intended for the monthly cron job and server-startup
+   * catch-up so the roll never depends on whoever views the page first.
+   */
+  async ensureCurrentMonthAdopts(): Promise<void> {
+    await this.ensureMissingMonthsAdopts();
+  }
+
   async getAllAdopts(page = 1, limit = 10): Promise<PaginatedMonthlyAdopts> {
     return this.adoptRepository.findAll({ page, limit });
   }
@@ -348,26 +357,33 @@ export class AdoptionService {
     const adopts: MonthlyAdopt[] = [];
 
     for (let i = 0; i < targetCount; i++) {
-      const monster = await roller.rollMonster();
-      if (!monster) {
-        continue;
+      try {
+        const monster = await roller.rollMonster();
+        if (!monster) {
+          continue;
+        }
+
+        const adopt = await this.adoptRepository.create({
+          year: targetYear,
+          month: targetMonth,
+          species1: monster.species1 ?? monster.name,
+          species2: monster.species2,
+          species3: monster.species3,
+          type1: monster.type1 ?? monster.type_primary ?? 'Normal',
+          type2: monster.type2 ?? monster.type_secondary,
+          type3: monster.type3,
+          type4: monster.type4,
+          type5: monster.type5,
+          attribute: monster.attribute,
+        });
+
+        adopts.push(adopt);
+      } catch (error) {
+        // A single failed roll or insert must not abort the whole batch — log it
+        // and continue so the rest of the month still generates. Any shortfall is
+        // topped up on the next ensure pass.
+        console.error(`Failed to generate adopt ${i + 1}/${targetCount} for ${targetYear}-${targetMonth}:`, error);
       }
-
-      const adopt = await this.adoptRepository.create({
-        year: targetYear,
-        month: targetMonth,
-        species1: monster.species1 ?? monster.name,
-        species2: monster.species2,
-        species3: monster.species3,
-        type1: monster.type1 ?? monster.type_primary ?? 'Normal',
-        type2: monster.type2 ?? monster.type_secondary,
-        type3: monster.type3,
-        type4: monster.type4,
-        type5: monster.type5,
-        attribute: monster.attribute,
-      });
-
-      adopts.push(adopt);
     }
 
     return { count: adopts.length, adopts };
@@ -421,42 +437,61 @@ export class AdoptionService {
 
   /**
    * Ensures adopts exist for every month from the earliest data (or current month)
-   * up to and including the current month. Generates adopts for any missing months.
+   * up to and including the current month. Generates (or tops up to a full set)
+   * any month that is missing or incomplete.
+   *
+   * Generation is serialized behind an advisory lock so that concurrent first-of-
+   * the-month page views cannot race and double- or partially-generate a month.
+   * A lock-free fast path short-circuits the common case where the current month
+   * is already complete, so the lock is only ever taken at a month boundary.
    */
   private async ensureMissingMonthsAdopts(): Promise<void> {
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
 
-    // Find the earliest month that has data to know where to start backfilling
-    const earliest = await this.adoptRepository.getEarliestMonth();
-
-    let startYear: number;
-    let startMonth: number;
-
-    if (earliest) {
-      startYear = earliest.year;
-      startMonth = earliest.month;
-    } else {
-      // No data at all — just generate the current month
-      startYear = currentYear;
-      startMonth = currentMonth;
+    // Fast path: the current month is already fully populated, so there is
+    // nothing to do. Avoids acquiring the advisory lock (and a dedicated DB
+    // connection) on every adoption-center page view.
+    const currentCount = await this.adoptRepository.getCountForMonth(currentYear, currentMonth);
+    if (currentCount >= ADOPTS_PER_MONTH) {
+      return;
     }
 
-    // Walk from the start month to the current month, generating any that are missing
-    let y = startYear;
-    let m = startMonth;
-    while (y < currentYear || (y === currentYear && m <= currentMonth)) {
-      const count = await this.adoptRepository.getCountForMonth(y, m);
-      if (count === 0) {
-        await this.generateMonthlyAdopts(y, m);
+    await this.adoptRepository.withGenerationLock(async () => {
+      // Find the earliest month that has data to know where to start backfilling.
+      const earliest = await this.adoptRepository.getEarliestMonth();
+
+      let startYear: number;
+      let startMonth: number;
+
+      if (earliest) {
+        startYear = earliest.year;
+        startMonth = earliest.month;
+      } else {
+        // No data at all — just generate the current month.
+        startYear = currentYear;
+        startMonth = currentMonth;
       }
-      m++;
-      if (m > 12) {
-        m = 1;
-        y++;
+
+      // Walk from the start month to the current month, topping up any month that
+      // is missing or incomplete to a full set. The count is re-read here, inside
+      // the lock, so a generation that completed in another request while we were
+      // waiting is not duplicated.
+      let y = startYear;
+      let m = startMonth;
+      while (y < currentYear || (y === currentYear && m <= currentMonth)) {
+        const count = await this.adoptRepository.getCountForMonth(y, m);
+        if (count < ADOPTS_PER_MONTH) {
+          await this.generateMonthlyAdopts(y, m, ADOPTS_PER_MONTH - count);
+        }
+        m++;
+        if (m > 12) {
+          m = 1;
+          y++;
+        }
       }
-    }
+    });
   }
 
   private resolveClaimItem(

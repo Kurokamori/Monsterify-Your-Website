@@ -45,6 +45,7 @@ const ADMIN_CATEGORIES: AdminCategory[] = [
       { name: 'Content Manager', icon: 'fas fa-file-alt', description: 'Manage guide content and pages', path: '/admin/content-manager' },
       { name: 'Interactive Map Manager', icon: 'fas fa-map', description: 'Edit interactive map data and regions', path: '/admin/interactive-map-manager' },
       { name: 'Calendar Manager', icon: 'fas fa-calendar-plus', description: 'Manage miscellaneous calendar dates', path: '/admin/calendar-manager' },
+      { name: 'Evolution Cache', icon: 'fas fa-sync-alt', description: 'Clear the Evolution Explorer cache for all users', path: '/admin/evolution-cache' },
     ],
   },
   {

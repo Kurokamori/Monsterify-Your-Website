@@ -238,6 +238,84 @@
   letter-spacing: 0.05em;
 }
 
+/* Reward Template (single monster vs selection) */
+.boss-manager__reward-template {
+  background: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.boss-manager__reward-template-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.boss-manager__reward-template-head h4 {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.boss-manager__reward-template-help {
+  margin: 0 0 var(--spacing-small) 0;
+}
+
+.boss-manager__mode-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.boss-manager__mode-btn {
+  background: var(--background-color);
+  border: none;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.boss-manager__mode-btn:not(:last-child) {
+  border-right: 1px solid var(--border-color);
+}
+
+.boss-manager__mode-btn--active {
+  background: var(--accent-color);
+  color: white;
+}
+
+.boss-manager__selection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.boss-manager__selection-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.boss-manager__selection-option {
+  position: relative;
+  border-left: 2px solid var(--accent-color);
+  padding-left: var(--spacing-small);
+}
+
 /* Grunt Options */
 .boss-manager__grunt-options {
   margin-bottom: var(--spacing-medium);

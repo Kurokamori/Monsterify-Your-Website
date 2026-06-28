@@ -38,6 +38,7 @@ const CACHE_PREFIX = {
 } as const;
 
 const STATS_KEY = 'evolution_cache_stats';
+const VERSION_KEY = 'evolution_cache_version';
 
 // Cache expiry times (milliseconds)
 const CACHE_DURATION = 24 * 60 * 60 * 1000;       // 24 hours
@@ -126,6 +127,14 @@ function isExpired(entry: CacheEntry, maxAge: number): boolean {
   return Date.now() - entry.timestamp > maxAge;
 }
 
+// Qualify evolution cache keys by monster type so species that share a name
+// across franchises (e.g. nexomon "Grimmon" vs digimon "Grimmon") do not
+// collide in the cache.
+function cacheKeyFor(speciesName: string, type?: string): string {
+  const base = speciesName.toLowerCase();
+  return type ? `${type.toLowerCase()}:${base}` : base;
+}
+
 function clearOldestEntries(): void {
   const allKeys = getKeysWithPrefix(CACHE_PREFIX.EVOLUTION);
   const entries: { key: string; timestamp: number }[] = [];
@@ -208,8 +217,8 @@ const evolutionCacheService = {
 
   // ── Evolution data ────────────────────────────────────────────────
 
-  getEvolutionData: (speciesName: string): unknown | null => {
-    const key = `${CACHE_PREFIX.EVOLUTION}${speciesName.toLowerCase()}`;
+  getEvolutionData: (speciesName: string, type?: string): unknown | null => {
+    const key = `${CACHE_PREFIX.EVOLUTION}${cacheKeyFor(speciesName, type)}`;
     const cached = getFromStorage(key);
 
     if (cached && !isExpired(cached, CACHE_DURATION)) {
@@ -218,8 +227,8 @@ const evolutionCacheService = {
     return null;
   },
 
-  setEvolutionData: (speciesName: string, data: unknown): void => {
-    const key = `${CACHE_PREFIX.EVOLUTION}${speciesName.toLowerCase()}`;
+  setEvolutionData: (speciesName: string, data: unknown, type?: string): void => {
+    const key = `${CACHE_PREFIX.EVOLUTION}${cacheKeyFor(speciesName, type)}`;
     const entry: CacheEntry = { data, timestamp: Date.now() };
 
     if (setToStorage(key, entry) && Math.random() < 0.1) {
@@ -229,8 +238,8 @@ const evolutionCacheService = {
 
   // ── Reverse evolution data ────────────────────────────────────────
 
-  getReverseEvolutionData: (speciesName: string): unknown | null => {
-    const key = `${CACHE_PREFIX.REVERSE}${speciesName.toLowerCase()}`;
+  getReverseEvolutionData: (speciesName: string, type?: string): unknown | null => {
+    const key = `${CACHE_PREFIX.REVERSE}${cacheKeyFor(speciesName, type)}`;
     const cached = getFromStorage(key);
 
     if (cached && !isExpired(cached, CACHE_DURATION)) {
@@ -239,8 +248,8 @@ const evolutionCacheService = {
     return null;
   },
 
-  setReverseEvolutionData: (speciesName: string, data: unknown): void => {
-    const key = `${CACHE_PREFIX.REVERSE}${speciesName.toLowerCase()}`;
+  setReverseEvolutionData: (speciesName: string, data: unknown, type?: string): void => {
+    const key = `${CACHE_PREFIX.REVERSE}${cacheKeyFor(speciesName, type)}`;
     const entry: CacheEntry = { data, timestamp: Date.now() };
 
     if (setToStorage(key, entry) && Math.random() < 0.1) {
@@ -308,6 +317,36 @@ const evolutionCacheService = {
         console.warn(`Failed to cache data for species ${species}:`, error);
       }
     }
+  },
+
+  // ── Version syncing ───────────────────────────────────────────────
+
+  // Drops the evolution/reverse/search caches when the server-side cache
+  // version changes, so an admin bumping the version invalidates stale data
+  // (e.g. wrong cross-franchise evolution links) for every user.
+  syncVersion: (serverVersion: number): boolean => {
+    if (!isLocalStorageAvailable()) return false;
+
+    let stored: number | null = null;
+    try {
+      const raw = localStorage.getItem(VERSION_KEY);
+      stored = raw !== null ? Number(raw) : null;
+    } catch {
+      stored = null;
+    }
+
+    if (stored === serverVersion) return false;
+
+    evolutionCacheService.clearEvolutionCache();
+    evolutionCacheService.clearReverseEvolutionCache();
+    evolutionCacheService.clearSearchCache();
+
+    try {
+      localStorage.setItem(VERSION_KEY, String(serverVersion));
+    } catch {
+      // Version persistence is best-effort; caches were still cleared.
+    }
+    return true;
   },
 
   // ── Cache clearing ────────────────────────────────────────────────

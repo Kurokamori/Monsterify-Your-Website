@@ -39,6 +39,26 @@
   gap: var(--spacing-xsmall);
 }
 
+/* ---------- Disambiguation ---------- */
+
+.evolution-explorer__disambiguation {
+  margin-top: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  border: 1px solid var(--border-color, #333);
+  border-radius: var(--radius-medium, 0.5rem);
+  background: var(--surface-color, rgba(255, 255, 255, 0.03));
+}
+
+.evolution-explorer__disambiguation h3 {
+  margin: 0 0 var(--spacing-small);
+}
+
+.evolution-explorer__disambiguation-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xsmall);
+}
+
 /* ---------- Tree Section ---------- */
 
 .evolution-explorer__tree {

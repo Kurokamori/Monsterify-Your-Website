@@ -1,10 +1,23 @@
 import { Request, Response } from 'express';
 import { EvolutionService } from '../../services/evolution.service';
 import type { SpeciesSlot, EvolveInput, MultiEvolveInput, MultiEvolutionSlot } from '../../services/evolution.service';
+import { MONSTER_TABLES } from '../../utils/constants';
+import type { MonsterTable } from '../../utils/constants';
+import { CacheVersionRepository } from '../../repositories';
 
 const VALID_SPECIES_SLOTS: SpeciesSlot[] = ['species1', 'species2', 'species3'];
 
+const EVOLUTION_CACHE_KEY = 'evolution_explorer';
+
 const evolutionService = new EvolutionService();
+const cacheVersionRepository = new CacheVersionRepository();
+
+function parseMonsterTable(value: unknown): MonsterTable | undefined {
+  if (typeof value === 'string' && (MONSTER_TABLES as readonly string[]).includes(value)) {
+    return value as MonsterTable;
+  }
+  return undefined;
+}
 
 // ============================================================================
 // Controllers
@@ -159,7 +172,8 @@ export async function getEvolutionOptionsBySpecies(req: Request, res: Response):
       return;
     }
 
-    const options = await evolutionService.getEvolutionOptionsBySpecies(speciesName);
+    const type = parseMonsterTable(req.query.type);
+    const options = await evolutionService.getEvolutionOptionsBySpecies(speciesName, type);
 
     res.json({ success: true, data: options });
   } catch (error) {
@@ -182,12 +196,69 @@ export async function getReverseEvolutionOptions(req: Request, res: Response): P
       return;
     }
 
-    const options = await evolutionService.getReverseEvolutionOptions(speciesName);
+    const type = parseMonsterTable(req.query.type);
+    const options = await evolutionService.getReverseEvolutionOptions(speciesName, type);
 
     res.json({ success: true, data: options });
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Error getting reverse evolution options';
     console.error('Error getting reverse evolution options:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+/**
+ * Get every monster table (franchise) a species name appears in.
+ * Used to disambiguate cross-franchise name collisions.
+ * GET /api/evolution/tables/:speciesName
+ */
+export async function getSpeciesTablesByName(req: Request, res: Response): Promise<void> {
+  try {
+    const speciesName = decodeURIComponent(req.params.speciesName as string);
+
+    if (!speciesName) {
+      res.status(400).json({ success: false, message: 'Species name is required' });
+      return;
+    }
+
+    const tables = await evolutionService.getSpeciesTables(speciesName);
+
+    res.json({ success: true, data: tables });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Error getting species tables';
+    console.error('Error getting species tables:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+/**
+ * Get the current Evolution Explorer cache version. Clients compare this
+ * against their stored version and clear their local cache when it changes.
+ * GET /api/evolution/cache-version
+ */
+export async function getEvolutionCacheVersion(_req: Request, res: Response): Promise<void> {
+  try {
+    const cacheVersion = await cacheVersionRepository.getVersion(EVOLUTION_CACHE_KEY);
+    res.json({ success: true, data: { version: cacheVersion.version, updatedAt: cacheVersion.updatedAt } });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Error getting cache version';
+    console.error('Error getting evolution cache version:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+/**
+ * Bump the Evolution Explorer cache version, invalidating every user's cached
+ * evolution data on their next visit. Admin only.
+ * POST /api/evolution/cache-version/bump
+ */
+export async function bumpEvolutionCacheVersion(_req: Request, res: Response): Promise<void> {
+  try {
+    const cacheVersion = await cacheVersionRepository.bumpVersion(EVOLUTION_CACHE_KEY);
+    res.json({ success: true, data: { version: cacheVersion.version, updatedAt: cacheVersion.updatedAt } });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Error bumping cache version';
+    console.error('Error bumping evolution cache version:', error);
     res.status(500).json({ success: false, message: msg });
   }
 }

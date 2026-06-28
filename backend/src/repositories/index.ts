@@ -724,6 +724,9 @@ export type {
   BookmarkTextNoteUpdateInput,
 } from './bookmark.repository';
 
+export { CacheVersionRepository } from './cache-version.repository';
+export type { CacheVersion } from './cache-version.repository';
+
 // Admin Connect Repository
 export { AdminConnectRepository } from './admin-connect.repository';
 export type {

@@ -3,6 +3,7 @@ import { useDebounce } from '../../../hooks/useDebounce';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import speciesService from '../../../services/speciesService';
 import evolutionCacheService from '../../../services/evolutionCacheService';
+import evolutionService from '../../../services/evolutionService';
 import api from '../../../services/api';
 import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
 import { ErrorMessage } from '../../../components/common/ErrorMessage';
@@ -15,6 +16,27 @@ import type {
 
 const MAX_DEPTH = 8;
 
+// Display labels for each monster table/franchise, used when a species name
+// is shared across franchises and the user must disambiguate.
+const TYPE_LABELS: Record<string, string> = {
+  pokemon: 'Pokémon',
+  digimon: 'Digimon',
+  yokai: 'Yo-kai',
+  nexomon: 'Nexomon',
+  pals: 'Pals',
+  fakemon: 'Fakemon',
+  finalfantasy: 'Final Fantasy',
+  monsterhunter: 'Monster Hunter',
+  dragonquest: 'Dragon Quest',
+};
+
+const typeLabel = (type: string): string => TYPE_LABELS[type] ?? type;
+
+interface Disambiguation {
+  name: string;
+  types: string[];
+}
+
 const EvolutionExplorerPage = () => {
   useDocumentTitle('Evolution Explorer - Guides');
 
@@ -26,39 +48,62 @@ const EvolutionExplorerPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [expandedDigimon, setExpandedDigimon] = useState<Set<string>>(new Set());
   const [showSearch, setShowSearch] = useState(true);
+  const [selectedType, setSelectedType] = useState<string | undefined>(undefined);
+  const [disambiguation, setDisambiguation] = useState<Disambiguation | null>(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
+  // Sync the local evolution cache against the server cache version on mount,
+  // clearing stale data if an admin has bumped the version.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const serverVersion = await evolutionService.getCacheVersion();
+      if (!cancelled && serverVersion) {
+        evolutionCacheService.syncVersion(serverVersion.version);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
   // --- API helpers ---
 
-  const getEvolutionOptions = async (speciesName: string): Promise<EvolutionOption[]> => {
+  const getEvolutionOptions = async (
+    speciesName: string,
+    type?: string
+  ): Promise<EvolutionOption[]> => {
     if (!speciesName || speciesName.trim() === '') return [];
     const trimmed = speciesName.trim();
 
     try {
-      const cachedData = evolutionCacheService.getEvolutionData(trimmed);
+      const cachedData = evolutionCacheService.getEvolutionData(trimmed, type);
       if (cachedData) return cachedData as EvolutionOption[];
 
-      const response = await api.get(`/evolution/options/${encodeURIComponent(trimmed)}`);
+      const typeQuery = type ? `?type=${encodeURIComponent(type)}` : '';
+      const response = await api.get(`/evolution/options/${encodeURIComponent(trimmed)}${typeQuery}`);
       const data: EvolutionOption[] = response.data.success ? response.data.data : [];
-      evolutionCacheService.setEvolutionData(trimmed, data);
+      evolutionCacheService.setEvolutionData(trimmed, data, type);
       return data;
     } catch {
       return [];
     }
   };
 
-  const getReverseEvolutionOptions = async (speciesName: string): Promise<EvolutionOption[]> => {
+  const getReverseEvolutionOptions = async (
+    speciesName: string,
+    type?: string
+  ): Promise<EvolutionOption[]> => {
     if (!speciesName || speciesName.trim() === '') return [];
     const trimmed = speciesName.trim();
 
     try {
-      const cachedData = evolutionCacheService.getReverseEvolutionData(trimmed);
+      const cachedData = evolutionCacheService.getReverseEvolutionData(trimmed, type);
       if (cachedData) return cachedData as EvolutionOption[];
 
-      const response = await api.get(`/evolution/reverse/${encodeURIComponent(trimmed)}`);
+      const typeQuery = type ? `?type=${encodeURIComponent(type)}` : '';
+      const response = await api.get(`/evolution/reverse/${encodeURIComponent(trimmed)}${typeQuery}`);
       const data: EvolutionOption[] = response.data.success ? response.data.data : [];
-      evolutionCacheService.setReverseEvolutionData(trimmed, data);
+      evolutionCacheService.setReverseEvolutionData(trimmed, data, type);
       return data;
     } catch {
       return [];
@@ -90,21 +135,11 @@ const EvolutionExplorerPage = () => {
     return species;
   };
 
-  const isSpeciesDigimon = async (speciesName: string): Promise<boolean> => {
-    try {
-      const evolutionOptions = await getEvolutionOptions(speciesName);
-      const reverseOptions = await getReverseEvolutionOptions(speciesName);
-      const allOptions = [...evolutionOptions, ...reverseOptions];
-      return allOptions.some(option => option?.type === 'digimon');
-    } catch {
-      return false;
-    }
-  };
-
   // --- Tree building ---
 
   const buildEvolutionDirection = async (
     speciesName: string,
+    type: string | undefined,
     direction: 'forward' | 'reverse',
     maxTreeDepth: number,
     visited: Set<string>,
@@ -116,8 +151,8 @@ const EvolutionExplorerPage = () => {
     newVisited.add(speciesName);
 
     const options = direction === 'forward'
-      ? await getEvolutionOptions(speciesName)
-      : await getReverseEvolutionOptions(speciesName);
+      ? await getEvolutionOptions(speciesName, type)
+      : await getReverseEvolutionOptions(speciesName, type);
 
     const validOptions = options.filter(
       opt => opt && typeof opt === 'object' && opt.name && opt.name.trim() !== ''
@@ -129,8 +164,11 @@ const EvolutionExplorerPage = () => {
       if (!newVisited.has(optionName)) {
         const speciesData = await getSpeciesWithImage(optionName);
         if (speciesData) {
+          // Evolution chains stay within one franchise, so resolve each child
+          // within its own table — preventing name collisions across tables
+          // (e.g. nexomon "Grimmon" vs digimon "Grimmon") from bleeding chains.
           const subChildren = await buildEvolutionDirection(
-            optionName, direction, maxTreeDepth, newVisited, depth + 1
+            optionName, option.type, direction, maxTreeDepth, newVisited, depth + 1
           );
           children.push({ species: speciesData, children: subChildren, depth: depth + 1 });
         }
@@ -140,20 +178,33 @@ const EvolutionExplorerPage = () => {
     return children;
   };
 
-  const buildEvolutionChain = useCallback(async (startSpecies: string): Promise<BidirectionalEvolution[]> => {
+  const buildEvolutionChain = useCallback(async (
+    startSpecies: string,
+    forcedType?: string
+  ): Promise<BidirectionalEvolution[]> => {
     if (!startSpecies || startSpecies.trim() === '') return [];
     const trimmed = startSpecies.trim();
 
     const species = await getSpeciesWithImage(trimmed);
     if (!species) return [];
 
-    const isDigimon = await isSpeciesDigimon(trimmed);
+    // Resolve the root species' own table so the traversal stays within its
+    // franchise. When the caller already disambiguated the franchise we use
+    // that; otherwise the evolution options carry the resolved table type.
+    let rootType = forcedType;
+    if (!rootType) {
+      const rootForward = await getEvolutionOptions(trimmed);
+      const rootReverse = await getReverseEvolutionOptions(trimmed);
+      rootType = rootForward[0]?.type ?? rootReverse[0]?.type;
+    }
+
+    const isDigimon = rootType === 'digimon';
     const isExpanded = expandedDigimon.has(trimmed);
     const shouldLimitDepth = isDigimon && !isExpanded;
     const maxTreeDepth = shouldLimitDepth ? 1 : MAX_DEPTH;
 
-    const forwardEvolutions = await buildEvolutionDirection(trimmed, 'forward', maxTreeDepth, new Set());
-    const reverseEvolutions = await buildEvolutionDirection(trimmed, 'reverse', maxTreeDepth, new Set());
+    const forwardEvolutions = await buildEvolutionDirection(trimmed, rootType, 'forward', maxTreeDepth, new Set());
+    const reverseEvolutions = await buildEvolutionDirection(trimmed, rootType, 'reverse', maxTreeDepth, new Set());
 
     return [{
       species,
@@ -203,19 +254,42 @@ const EvolutionExplorerPage = () => {
 
   // --- Handlers ---
 
-  const handleSpeciesSelect = async (speciesName: string) => {
+  const loadSpecies = async (speciesName: string, type?: string) => {
+    setDisambiguation(null);
     setSelectedSpecies(speciesName);
+    setSelectedType(type);
     setShowSearch(false);
     setLoading(true);
     setError(null);
 
     try {
-      const chain = await buildEvolutionChain(speciesName);
+      const chain = await buildEvolutionChain(speciesName, type);
       setEvolutionChain(chain);
     } catch {
       setError('Failed to load evolution chain');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSpeciesSelect = async (speciesName: string) => {
+    try {
+      const tables = await evolutionService.getSpeciesTables(speciesName);
+      // When a name exists in multiple franchises, ask the user which one.
+      if (tables.length > 1) {
+        setDisambiguation({ name: speciesName, types: tables });
+        return;
+      }
+      await loadSpecies(speciesName, tables[0]);
+    } catch {
+      // If the lookup fails, fall back to loading without a forced type.
+      await loadSpecies(speciesName);
+    }
+  };
+
+  const handleDisambiguationChoice = (type: string) => {
+    if (disambiguation) {
+      void loadSpecies(disambiguation.name, type);
     }
   };
 
@@ -231,7 +305,7 @@ const EvolutionExplorerPage = () => {
     if (selectedSpecies) {
       setLoading(true);
       try {
-        const chain = await buildEvolutionChain(selectedSpecies);
+        const chain = await buildEvolutionChain(selectedSpecies, selectedType);
         setEvolutionChain(chain);
       } catch {
         setError('Failed to reload evolution chain');
@@ -247,6 +321,8 @@ const EvolutionExplorerPage = () => {
 
   const resetToSearch = () => {
     setSelectedSpecies(null);
+    setSelectedType(undefined);
+    setDisambiguation(null);
     setEvolutionChain([]);
     setShowSearch(true);
     setSearchTerm('');
@@ -496,6 +572,31 @@ const EvolutionExplorerPage = () => {
                     {name}
                   </button>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {disambiguation && (
+            <div className="evolution-explorer__disambiguation">
+              <h3>
+                There are multiple species named &ldquo;{disambiguation.name}&rdquo;. Which one?
+              </h3>
+              <div className="evolution-explorer__disambiguation-options">
+                {disambiguation.types.map(type => (
+                  <button
+                    key={type}
+                    className="button primary sm"
+                    onClick={() => handleDisambiguationChoice(type)}
+                  >
+                    {disambiguation.name} ({typeLabel(type)})
+                  </button>
+                ))}
+                <button
+                  className="button ghost sm"
+                  onClick={() => setDisambiguation(null)}
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           )}

@@ -190,10 +190,11 @@ export async function claimBossReward(req: Request, res: Response): Promise<void
       return;
     }
 
-    const { userId, monsterName, trainerId } = req.body as {
+    const { userId, monsterName, trainerId, selectedOptionIndex } = req.body as {
       userId?: number;
       monsterName?: string;
       trainerId?: number;
+      selectedOptionIndex?: number;
     };
 
     if (!userId || !monsterName || !trainerId) {
@@ -204,7 +205,12 @@ export async function claimBossReward(req: Request, res: Response): Promise<void
       return;
     }
 
-    const result = await bossService.claimReward(bossId, userId, monsterName, trainerId);
+    const optionIndex =
+      typeof selectedOptionIndex === 'number' && Number.isFinite(selectedOptionIndex)
+        ? selectedOptionIndex
+        : null;
+
+    const result = await bossService.claimReward(bossId, userId, monsterName, trainerId, optionIndex);
     res.json(result);
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Failed to claim boss reward';

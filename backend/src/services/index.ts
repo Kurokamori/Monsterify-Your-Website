@@ -46,18 +46,6 @@ export type {
   CronJobsStatus,
 } from './cron.service';
 
-// Immediate Reward Service
-export { ImmediateRewardService } from './immediate-reward.service';
-export type {
-  RewardItem,
-  PromptRewards,
-  MonsterRollParameters,
-  RolledMonster,
-  AppliedRewards,
-  RerollResult,
-  RewardSummary,
-} from './immediate-reward.service';
-
 // Adventure Services (from adventure folder)
 export {
   // Adventure Reward Service
@@ -294,26 +282,6 @@ export type {
   DailyCleanupResult,
   WeeklyStatisticsResult,
 } from './prompt-automation.service';
-
-// Prompt Reward Service
-export { PromptRewardService } from './prompt-reward.service';
-export type {
-  StaticMonsterConfig,
-  SemiRandomMonsterConfig,
-  RewardItemConfig,
-  SpecialItemConfig,
-  MonsterRollConfig,
-  BonusConditions,
-  PromptRewardConfig,
-  PromptBonusRewardConfig,
-  CreatedMonster,
-  DistributedRewards,
-  PromptInput,
-  SubmissionInput,
-  RewardHistoryEntry,
-  TotalRewardsSummary,
-  UnclaimedMonsterRoll,
-} from './prompt-reward.service';
 
 // Shop Service
 export { ShopService } from './shop.service';

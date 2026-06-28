@@ -70,17 +70,72 @@ function serializeMonsterData(data: MonsterData): Record<string, unknown> | null
   };
 }
 
-function serializeGruntMonsterDataArray(dataList: MonsterData[]): Record<string, unknown>[] | null {
-  const serialized = dataList
-    .map(serializeMonsterData)
+// ============================================================================
+// Reward Template model
+//
+// A reward is either a single monster, or a "selection" of whole-monster
+// options from which one is granted — chosen at random by the server, or by
+// the claiming player. Both forms serialize into the same JSON columns the
+// backend already stores: a single monster keeps its legacy shape, while a
+// selection is `{ options: [...], selectionMode }`.
+// ============================================================================
+
+type RewardSelectionMode = 'random' | 'player';
+
+interface RewardTemplate {
+  mode: 'single' | 'selection';
+  single: MonsterData;
+  selectionMode: RewardSelectionMode;
+  options: MonsterData[];
+}
+
+function cloneEmptyRewardTemplate(): RewardTemplate {
+  return {
+    mode: 'single',
+    single: { ...EMPTY_MONSTER_DATA },
+    selectionMode: 'random',
+    options: [{ ...EMPTY_MONSTER_DATA }],
+  };
+}
+
+function parseRewardTemplate(raw: Record<string, unknown> | null): RewardTemplate {
+  if (raw && Array.isArray(raw.options) && raw.options.length > 0) {
+    return {
+      mode: 'selection',
+      single: { ...EMPTY_MONSTER_DATA },
+      selectionMode: raw.selectionMode === 'player' ? 'player' : 'random',
+      options: (raw.options as Record<string, unknown>[]).map(parseMonsterData),
+    };
+  }
+  return {
+    mode: 'single',
+    single: parseMonsterData(raw),
+    selectionMode: 'random',
+    options: [{ ...EMPTY_MONSTER_DATA }],
+  };
+}
+
+function serializeRewardTemplate(tpl: RewardTemplate): Record<string, unknown> | null {
+  if (tpl.mode === 'selection') {
+    const options = tpl.options
+      .map(serializeMonsterData)
+      .filter((d): d is Record<string, unknown> => d !== null);
+    if (options.length === 0) return null;
+    return { options, selectionMode: tpl.selectionMode };
+  }
+  return serializeMonsterData(tpl.single);
+}
+
+function serializeRewardTemplateArray(list: RewardTemplate[]): Record<string, unknown>[] | null {
+  const serialized = list
+    .map(serializeRewardTemplate)
     .filter((d): d is Record<string, unknown> => d !== null);
   return serialized.length > 0 ? serialized : null;
 }
 
-function parseGruntMonsterDataArray(raw: Record<string, unknown>[] | null): MonsterData[] {
-  if (!raw || !Array.isArray(raw)) return [{ ...EMPTY_MONSTER_DATA }];
-  if (raw.length === 0) return [{ ...EMPTY_MONSTER_DATA }];
-  return raw.map(parseMonsterData);
+function parseRewardTemplateArray(raw: Record<string, unknown>[] | null): RewardTemplate[] {
+  if (!raw || !Array.isArray(raw) || raw.length === 0) return [cloneEmptyRewardTemplate()];
+  return raw.map(parseRewardTemplate);
 }
 
 const EMPTY_BOSS_FORM = {
@@ -237,6 +292,115 @@ function MonsterDataEditor({
 }
 
 // ============================================================================
+// Reward Editor (single monster OR selection of options)
+// ============================================================================
+
+function RewardEditor({
+  label,
+  helpText,
+  template,
+  onChange,
+}: {
+  label: string;
+  helpText?: string;
+  template: RewardTemplate;
+  onChange: (template: RewardTemplate) => void;
+}) {
+  const setMode = (mode: 'single' | 'selection') => onChange({ ...template, mode });
+
+  const updateOption = (index: number, data: MonsterData) => {
+    onChange({ ...template, options: template.options.map((o, i) => (i === index ? data : o)) });
+  };
+
+  const addOption = () => {
+    onChange({ ...template, options: [...template.options, { ...EMPTY_MONSTER_DATA }] });
+  };
+
+  const removeOption = (index: number) => {
+    onChange({ ...template, options: template.options.filter((_, i) => i !== index) });
+  };
+
+  return (
+    <div className="boss-manager__reward-template">
+      <div className="boss-manager__reward-template-head">
+        <h4>{label}</h4>
+        <div className="boss-manager__mode-toggle">
+          <button
+            type="button"
+            className={`boss-manager__mode-btn${template.mode === 'single' ? ' boss-manager__mode-btn--active' : ''}`}
+            onClick={() => setMode('single')}
+          >
+            <i className="fas fa-dragon" /> Single Monster
+          </button>
+          <button
+            type="button"
+            className={`boss-manager__mode-btn${template.mode === 'selection' ? ' boss-manager__mode-btn--active' : ''}`}
+            onClick={() => setMode('selection')}
+          >
+            <i className="fas fa-layer-group" /> Selection
+          </button>
+        </div>
+      </div>
+
+      {helpText && <p className="boss-manager__muted boss-manager__reward-template-help">{helpText}</p>}
+
+      {template.mode === 'single' ? (
+        <MonsterDataEditor
+          label="Monster"
+          data={template.single}
+          onChange={(data) => onChange({ ...template, single: data })}
+        />
+      ) : (
+        <div className="boss-manager__selection">
+          <div className="boss-manager__field">
+            <label>How is the reward chosen?</label>
+            <select
+              value={template.selectionMode}
+              onChange={(e) => onChange({ ...template, selectionMode: e.target.value as RewardSelectionMode })}
+              className="boss-manager__input"
+            >
+              <option value="random">Random — the server rolls one option</option>
+              <option value="player">Player picks — the claimer chooses one option</option>
+            </select>
+          </div>
+
+          <div className="boss-manager__selection-head">
+            <span className="boss-manager__muted">
+              {template.options.length} option{template.options.length !== 1 ? 's' : ''} —{' '}
+              {template.selectionMode === 'player'
+                ? 'the player chooses one when claiming'
+                : 'one is granted at random when claiming'}
+            </span>
+            <button type="button" className="button secondary sm" onClick={addOption}>
+              <i className="fas fa-plus" /> Add Option
+            </button>
+          </div>
+
+          {template.options.map((opt, idx) => (
+            <div key={idx} className="boss-manager__selection-option">
+              <MonsterDataEditor
+                label={`Option #${idx + 1}`}
+                data={opt}
+                onChange={(data) => updateOption(idx, data)}
+              />
+              {template.options.length > 1 && (
+                <button
+                  type="button"
+                  className="button danger sm boss-manager__grunt-remove"
+                  onClick={() => removeOption(idx)}
+                >
+                  <i className="fas fa-trash" /> Remove Option #{idx + 1}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================================
 // Main Component
 // ============================================================================
 
@@ -254,8 +418,8 @@ export default function BossManagerPage() {
   const [editingBoss, setEditingBoss] = useState<AdminBoss | null>(null);
   const [creatingBoss, setCreatingBoss] = useState(false);
   const [bossForm, setBossForm] = useState(EMPTY_BOSS_FORM);
-  const [rewardMonster, setRewardMonster] = useState<MonsterData>({ ...EMPTY_MONSTER_DATA });
-  const [gruntMonsters, setGruntMonsters] = useState<MonsterData[]>([{ ...EMPTY_MONSTER_DATA }]);
+  const [rewardTemplate, setRewardTemplate] = useState<RewardTemplate>(cloneEmptyRewardTemplate());
+  const [gruntTemplates, setGruntTemplates] = useState<RewardTemplate[]>([cloneEmptyRewardTemplate()]);
   const [imagePreviewError, setImagePreviewError] = useState(false);
 
   // ── Damage state ────────────────────────────────────────────────
@@ -313,8 +477,8 @@ export default function BossManagerPage() {
   const handleStartCreateBoss = () => {
     setEditingBoss(null);
     setBossForm({ ...EMPTY_BOSS_FORM });
-    setRewardMonster({ ...EMPTY_MONSTER_DATA });
-    setGruntMonsters([{ ...EMPTY_MONSTER_DATA }]);
+    setRewardTemplate(cloneEmptyRewardTemplate());
+    setGruntTemplates([cloneEmptyRewardTemplate()]);
     setImagePreviewError(false);
     setCreatingBoss(true);
     setStatusMsg(null);
@@ -333,8 +497,8 @@ export default function BossManagerPage() {
       year: boss.year || new Date().getFullYear(),
       status: boss.status,
     });
-    setRewardMonster(parseMonsterData(boss.rewardMonsterData));
-    setGruntMonsters(parseGruntMonsterDataArray(boss.gruntMonsterData));
+    setRewardTemplate(parseRewardTemplate(boss.rewardMonsterData));
+    setGruntTemplates(parseRewardTemplateArray(boss.gruntMonsterData));
     setImagePreviewError(false);
     setStatusMsg(null);
   };
@@ -357,8 +521,8 @@ export default function BossManagerPage() {
     setSaving(true);
     setStatusMsg(null);
     try {
-      const rewardData = serializeMonsterData(rewardMonster);
-      const gruntData = serializeGruntMonsterDataArray(gruntMonsters);
+      const rewardData = serializeRewardTemplate(rewardTemplate);
+      const gruntData = serializeRewardTemplateArray(gruntTemplates);
 
       if (editingBoss) {
         await bossService.adminUpdateBoss(editingBoss.id, {
@@ -658,42 +822,44 @@ export default function BossManagerPage() {
           )}
 
           {/* Reward Editors */}
-          <MonsterDataEditor
+          <RewardEditor
             label="Winner Reward (Rank #1)"
-            data={rewardMonster}
-            onChange={setRewardMonster}
+            helpText="Grant a single monster, or a selection the winner rolls / picks from."
+            template={rewardTemplate}
+            onChange={setRewardTemplate}
           />
-          {/* Grunt Monster Options */}
+          {/* Grunt Monster Entries */}
           <div className="boss-manager__grunt-options">
             <div className="boss-manager__grunt-header">
               <h4>Participant Rewards (All Others)</h4>
               <span className="boss-manager__muted">
-                {gruntMonsters.length} option{gruntMonsters.length !== 1 ? 's' : ''} — one is randomly assigned per player
+                {gruntTemplates.length} entr{gruntTemplates.length !== 1 ? 'ies' : 'y'} — one entry is randomly assigned per player
               </span>
               <button
                 type="button"
                 className="button secondary sm"
-                onClick={() => setGruntMonsters(prev => [...prev, { ...EMPTY_MONSTER_DATA }])}
+                onClick={() => setGruntTemplates(prev => [...prev, cloneEmptyRewardTemplate()])}
               >
-                <i className="fas fa-plus" /> Add Grunt Option
+                <i className="fas fa-plus" /> Add Participant Entry
               </button>
             </div>
-            {gruntMonsters.map((grunt, idx) => (
+            {gruntTemplates.map((grunt, idx) => (
               <div key={idx} className="boss-manager__grunt-option">
-                <MonsterDataEditor
-                  label={`Grunt Option #${idx + 1}`}
-                  data={grunt}
+                <RewardEditor
+                  label={`Participant Entry #${idx + 1}`}
+                  helpText="Grant a single monster, or a selection the player rolls / picks from."
+                  template={grunt}
                   onChange={(updated) => {
-                    setGruntMonsters(prev => prev.map((g, i) => i === idx ? updated : g));
+                    setGruntTemplates(prev => prev.map((g, i) => i === idx ? updated : g));
                   }}
                 />
-                {gruntMonsters.length > 1 && (
+                {gruntTemplates.length > 1 && (
                   <button
                     type="button"
                     className="button danger sm boss-manager__grunt-remove"
-                    onClick={() => setGruntMonsters(prev => prev.filter((_, i) => i !== idx))}
+                    onClick={() => setGruntTemplates(prev => prev.filter((_, i) => i !== idx))}
                   >
-                    <i className="fas fa-trash" /> Remove Option #{idx + 1}
+                    <i className="fas fa-trash" /> Remove Entry #{idx + 1}
                   </button>
                 )}
               </div>

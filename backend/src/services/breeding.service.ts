@@ -863,10 +863,13 @@ export class BreedingService {
       ball: ball ?? 'Poke Ball',
     };
 
-    const savedMonster = await this.monsterRepo.create(monsterToCreate);
-
-    // Consume the ball from trainer inventory
+    // Consume the ball before creating the monster. If the chosen ball is
+    // unavailable (e.g. a scarce ball already spent on another offspring),
+    // this throws cleanly without leaving an orphaned, unclaimed monster
+    // behind — which would otherwise prevent the card from being marked claimed.
     await consumeBallFromInventory(targetTrainerId, ball ?? 'Poke Ball');
+
+    const savedMonster = await this.monsterRepo.create(monsterToCreate);
 
     // Add automatic lineage tracking
     try {

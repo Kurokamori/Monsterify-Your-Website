@@ -371,18 +371,18 @@ export class GameCornerService {
 
   private calculateBaseCoinAmount(input: GameCornerSessionInput, multiplier: number): number {
     return Math.floor(
-      (80 + input.completedSessions * 15 + input.totalFocusMinutes * 2) * multiplier,
+      (50 + input.completedSessions * 10 + input.totalFocusMinutes * 1.25) * multiplier,
     );
   }
 
   private calculateRewardSlotCount(input: GameCornerSessionInput): number {
-    const base = Math.max(2, Math.floor(1 + input.completedSessions * 0.8));
-    const bonus = Math.floor(Math.random() * Math.max(1, Math.floor(input.totalFocusMinutes / 30)));
+    const base = Math.max(1, Math.floor(1 + input.completedSessions * 0.5));
+    const bonus = Math.floor(Math.random() * Math.max(1, Math.floor(input.totalFocusMinutes / 45)));
 
     // Chance for bonus burst slots (more likely with longer sessions)
-    const burstChance = Math.min(0.25, input.totalFocusMinutes / 400);
+    const burstChance = Math.min(0.12, input.totalFocusMinutes / 800);
     const burstSlots = Math.random() < burstChance
-      ? Math.floor(Math.random() * 3) + 1
+      ? Math.floor(Math.random() * 2) + 1
       : 0;
 
     if (burstSlots > 0) {
@@ -400,14 +400,14 @@ export class GameCornerService {
     // Jitter adds +/- 15% variance per session for unpredictability
     const jitter = () => 0.85 + Math.random() * 0.3;
 
-    // Coins: ~30-40% base chance per slot
-    const coin = Math.min(0.45, (0.30 + multiplier * 0.03)) * jitter();
-    // Items: ~30-40% base chance per slot (moderately common — small items should show up often)
-    const item = Math.min(0.50, (0.32 + multiplier * 0.04)) * jitter();
-    // Levels: ~15-20% base chance per slot
-    const level = Math.min(0.25, (0.14 + multiplier * 0.02)) * jitter();
-    // Monsters: ~8-12% base chance per slot (somewhat more likely than before)
-    const monster = Math.min(0.15, (0.06 + multiplier * 0.02)) * jitter();
+    // Coins: ~28-35% base chance per slot
+    const coin = Math.min(0.40, (0.28 + multiplier * 0.02)) * jitter();
+    // Items: ~25-32% base chance per slot
+    const item = Math.min(0.40, (0.26 + multiplier * 0.03)) * jitter();
+    // Levels: ~10-14% base chance per slot
+    const level = Math.min(0.18, (0.10 + multiplier * 0.015)) * jitter();
+    // Monsters: ~2-3% base chance per slot (significantly rarer — a real treat)
+    const monster = Math.min(0.04, (0.015 + multiplier * 0.005)) * jitter();
     return { coin, item, level, monster };
   }
 
@@ -420,22 +420,22 @@ export class GameCornerService {
     let gamblingMultiplier: number;
     const fate = Math.random();
 
-    if (fate < 0.05) {
-      // 5% — JACKPOT: 4x to 8x base
-      gamblingMultiplier = 4 + Math.random() * 4;
+    if (fate < 0.03) {
+      // 3% — JACKPOT: 3x to 5x base
+      gamblingMultiplier = 3 + Math.random() * 2;
       console.log('Game Corner JACKPOT on coins!');
-    } else if (fate < 0.15) {
-      // 10% — Bust: 10% to 30% of base
+    } else if (fate < 0.20) {
+      // 17% — Bust: 10% to 30% of base
       gamblingMultiplier = 0.1 + Math.random() * 0.2;
-    } else if (fate < 0.35) {
-      // 20% — Low roll: 30% to 80%
-      gamblingMultiplier = 0.3 + Math.random() * 0.5;
-    } else if (fate < 0.75) {
-      // 40% — Normal: 80% to 200%
-      gamblingMultiplier = 0.8 + Math.random() * 1.2;
+    } else if (fate < 0.50) {
+      // 30% — Low roll: 30% to 70%
+      gamblingMultiplier = 0.3 + Math.random() * 0.4;
+    } else if (fate < 0.88) {
+      // 38% — Normal: 70% to 150%
+      gamblingMultiplier = 0.7 + Math.random() * 0.8;
     } else {
-      // 25% — Hot streak: 200% to 400%
-      gamblingMultiplier = 2 + Math.random() * 2;
+      // 12% — Hot streak: 150% to 250%
+      gamblingMultiplier = 1.5 + Math.random();
     }
 
     const amount = Math.max(5, Math.floor(baseAmount * gamblingMultiplier));
@@ -631,8 +631,8 @@ export class GameCornerService {
   } {
     const roll = Math.random();
 
-    // 0.01% — Legendary Pokemon
-    if (roll < 0.0001) {
+    // 0.005% — Legendary Pokemon
+    if (roll < 0.00005) {
       console.log('LEGENDARY POKEMON rolled in Game Corner! (0.01% chance)');
       return {
         tier: 'legendary_pokemon',
@@ -647,8 +647,8 @@ export class GameCornerService {
       };
     }
 
-    // 0.1% — Mythical / Ultimate / S-Rank
-    if (roll < 0.001) {
+    // 0.05% — Mythical / Ultimate / S-Rank
+    if (roll < 0.0005) {
       const subRoll = Math.random();
 
       if (subRoll < 0.33) {
@@ -691,9 +691,9 @@ export class GameCornerService {
       };
     }
 
-    // 2% — Evolved
-    if (roll < 0.02) {
-      console.log('EVOLVED MONSTER rolled in Game Corner! (2% chance)');
+    // 1% — Evolved
+    if (roll < 0.01) {
+      console.log('EVOLVED MONSTER rolled in Game Corner! (1% chance)');
       return {
         tier: 'evolved',
         rollParams: {

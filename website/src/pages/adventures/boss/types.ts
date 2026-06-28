@@ -1,11 +1,28 @@
 // Boss Page Types
 
-/** Monster data attached to a boss reward */
+/** A single whole-monster option within a reward selection */
+export interface BossMonsterOption {
+  name?: string;
+  species?: string[];
+  types?: string[];
+  attribute?: string;
+}
+
+/**
+ * Monster data attached to a boss reward.
+ *
+ * A reward is either a single monster (name/species/types/attribute) or a
+ * selection of whole-monster `options`. When `options` is present and
+ * non-empty, the reward is a selection and `selectionMode` decides whether the
+ * server rolls one at random or the player picks one at claim time.
+ */
 export interface BossMonsterData {
   name: string;
   species?: string[];
   types?: string[];
   attribute?: string;
+  options?: BossMonsterOption[];
+  selectionMode?: 'random' | 'player';
 }
 
 /** Raw unclaimed reward from the API */

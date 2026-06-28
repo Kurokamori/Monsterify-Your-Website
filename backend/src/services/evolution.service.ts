@@ -392,18 +392,32 @@ export class EvolutionService {
   // Get Evolution Options (by species name)
   // ==========================================================================
 
-  async getEvolutionOptionsBySpecies(speciesName: string): Promise<EvolutionOption[]> {
-    return this.findEvolutionOptions(speciesName);
+  async getEvolutionOptionsBySpecies(
+    speciesName: string,
+    type?: MonsterTable,
+  ): Promise<EvolutionOption[]> {
+    return this.findEvolutionOptions(speciesName, type);
   }
 
   // ==========================================================================
   // Get Reverse Evolution Options
   // ==========================================================================
 
-  async getReverseEvolutionOptions(speciesName: string): Promise<EvolutionOption[]> {
+  async getReverseEvolutionOptions(
+    speciesName: string,
+    type?: MonsterTable,
+  ): Promise<EvolutionOption[]> {
     const results: EvolutionOption[] = [];
 
     for (const table of MONSTER_TABLES) {
+      // Evolution chains never cross franchises. When the caller knows the
+      // species' table, restrict the reverse lookup to it so name collisions
+      // across tables (e.g. nexomon "Grimmon" vs digimon "Grimmon") cannot
+      // pull a foreign franchise's pre-evolutions into the chain.
+      if (type && table !== type) {
+        continue;
+      }
+
       const schema = TABLE_SCHEMAS[table];
 
       // Skip tables without evolution fields
@@ -566,8 +580,11 @@ export class EvolutionService {
     }
   }
 
-  private async findEvolutionOptions(speciesName: string): Promise<EvolutionOption[]> {
-    const table = await this.findSpeciesTable(speciesName);
+  private async findEvolutionOptions(
+    speciesName: string,
+    knownTable?: MonsterTable,
+  ): Promise<EvolutionOption[]> {
+    const table = knownTable ?? await this.findSpeciesTable(speciesName);
     if (!table) {
       return [];
     }
@@ -605,17 +622,32 @@ export class EvolutionService {
     return evolutions.map(evo => ({ name: evo, type: table }));
   }
 
-  private async findSpeciesTable(speciesName: string): Promise<MonsterTable | null> {
+  // ==========================================================================
+  // Get Species Tables (all franchises a name appears in)
+  // ==========================================================================
+
+  /**
+   * Returns every monster table that contains a species with this exact name.
+   * Used by the Evolution Explorer to disambiguate cross-franchise name
+   * collisions (e.g. nexomon "Grimmon" vs digimon "Grimmon").
+   */
+  async getSpeciesTables(speciesName: string): Promise<MonsterTable[]> {
+    const tables: MonsterTable[] = [];
     for (const table of MONSTER_TABLES) {
       const tableName = TABLE_NAME_MAP[table];
       const schema = TABLE_SCHEMAS[table];
-      const query = `SELECT ${schema.nameField} FROM ${tableName} WHERE ${schema.nameField} = $1`;
-      const result = await db.query<Record<string, string>>(query, [speciesName]);
+      const query = `SELECT 1 FROM ${tableName} WHERE ${schema.nameField} = $1 LIMIT 1`;
+      const result = await db.query<Record<string, number>>(query, [speciesName]);
 
       if (result.rows.length > 0) {
-        return table;
+        tables.push(table);
       }
     }
-    return null;
+    return tables;
+  }
+
+  private async findSpeciesTable(speciesName: string): Promise<MonsterTable | null> {
+    const tables = await this.getSpeciesTables(speciesName);
+    return tables[0] ?? null;
   }
 }

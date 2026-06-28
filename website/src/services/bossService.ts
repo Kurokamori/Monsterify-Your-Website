@@ -39,6 +39,7 @@ export interface BossRewardClaimData {
   userId: number;
   monsterName?: string;
   trainerId: number;
+  selectedOptionIndex?: number;
 }
 
 // --- Admin Types ---

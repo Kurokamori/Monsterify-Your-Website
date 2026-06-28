@@ -622,6 +622,60 @@
   color: var(--accent-color);
 }
 
+/* Reward selection (random pool / player choice) */
+.boss-reward-modal__selection-hint {
+  margin: 0 0 var(--spacing-small) 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.boss-reward-modal__option-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.boss-reward-modal__option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+button.boss-reward-modal__option {
+  cursor: pointer;
+}
+
+button.boss-reward-modal__option:hover {
+  border-color: var(--accent-color);
+}
+
+.boss-reward-modal__option--selected {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 1px var(--accent-color);
+}
+
+.boss-reward-modal__option--static {
+  cursor: default;
+}
+
+.boss-reward-modal__option-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-small);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.boss-reward-modal__option-header i {
+  color: var(--accent-color);
+}
+
 /* Modal Actions */
 .boss-reward-modal__actions {
   display: flex;

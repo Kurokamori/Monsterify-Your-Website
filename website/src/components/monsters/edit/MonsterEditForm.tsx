@@ -4,6 +4,8 @@ import { FormTextArea } from '@components/common/FormTextArea';
 import { FormCheckbox } from '@components/common/FormCheckbox';
 import { FormSelect } from '@components/common/FormSelect';
 import { AutocompleteInput } from '@components/common/AutocompleteInput';
+import { TrainerAutocomplete } from '@components/common/TrainerAutocomplete';
+import { MonsterAutocomplete } from '@components/common/MonsterAutocomplete';
 import { FileUpload } from '@components/common/FileUpload';
 import { ErrorModal } from '@components/common/ErrorModal';
 import { SuccessMessage } from '@components/common/SuccessMessage';
@@ -778,32 +780,39 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
                     />
 
                     {relation.related_type === 'monster' && (
-                      <FormSelect
+                      <TrainerAutocomplete
                         name={`relation_trainer_${relation.id}`}
                         label="Trainer"
-                        value={relation.trainer_id}
-                        onChange={(e: ChangeEvent<HTMLSelectElement>) => updateRelation(relation.id, 'trainer_id', e.target.value)}
-                        options={allTrainers.map(t => ({ value: String(t.id), label: t.name }))}
-                        placeholder="Select Trainer"
+                        trainers={allTrainers}
+                        selectedTrainerId={relation.trainer_id ? Number(relation.trainer_id) : null}
+                        onSelect={(id) => updateRelation(relation.id, 'trainer_id', id != null ? String(id) : '')}
+                        placeholder="Type to search trainers..."
                         disabled={saving}
                       />
                     )}
 
-                    <FormSelect
-                      name={`relation_target_${relation.id}`}
-                      label={relation.related_type === 'monster' ? 'Monster' : 'Trainer'}
-                      value={relation.related_id}
-                      onChange={(e: ChangeEvent<HTMLSelectElement>) => updateRelation(relation.id, 'related_id', e.target.value)}
-                      options={
-                        relation.related_type === 'monster'
-                          ? (trainerMonsters[relation.trainer_id] || [])
-                              .filter(m => m.id !== monster.id)
-                              .map(m => ({ value: String(m.id), label: m.name }))
-                          : allTrainers.map(t => ({ value: String(t.id), label: t.name }))
-                      }
-                      placeholder={`Select ${relation.related_type === 'monster' ? 'Monster' : 'Trainer'}`}
-                      disabled={saving || (relation.related_type === 'monster' && !relation.trainer_id)}
-                    />
+                    {relation.related_type === 'monster' ? (
+                      <MonsterAutocomplete
+                        name={`relation_target_${relation.id}`}
+                        label="Monster"
+                        monsters={(trainerMonsters[relation.trainer_id] || []).filter(m => m.id !== monster.id)}
+                        selectedMonsterId={relation.related_id ? Number(relation.related_id) : null}
+                        onSelect={(id) => updateRelation(relation.id, 'related_id', id != null ? String(id) : '')}
+                        showTypes={false}
+                        placeholder="Type to search monsters..."
+                        disabled={saving || !relation.trainer_id}
+                      />
+                    ) : (
+                      <TrainerAutocomplete
+                        name={`relation_target_${relation.id}`}
+                        label="Trainer"
+                        trainers={allTrainers}
+                        selectedTrainerId={relation.related_id ? Number(relation.related_id) : null}
+                        onSelect={(id) => updateRelation(relation.id, 'related_id', id != null ? String(id) : '')}
+                        placeholder="Type to search trainers..."
+                        disabled={saving}
+                      />
+                    )}
 
                     <FormInput
                       name={`relation_name_${relation.id}`}

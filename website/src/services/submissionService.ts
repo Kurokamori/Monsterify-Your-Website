@@ -699,14 +699,6 @@ const submissionService = {
     return response.data;
   },
 
-  // Submit to a prompt by ID (FormData for file uploads)
-  submitToPrompt: async (promptId: string | number, formData: FormData) => {
-    const response = await api.post(`/prompts/${promptId}/submit`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return response.data;
-  },
-
   // Submit combined art/writing + prompt submission
   submitPromptCombined: async (input: PromptCombinedData | Record<string, unknown>) => {
     const data = input as PromptCombinedData;
@@ -1045,19 +1037,6 @@ const submissionService = {
     return response.data;
   },
 
-  // Reroll a specific monster reward
-  rerollMonster: async (
-    trainerId: string | number,
-    monsterId: string | number,
-    originalParams: unknown,
-  ) => {
-    const response = await api.post('/prompts/reroll-monster', {
-      trainer_id: trainerId,
-      monster_id: monsterId,
-      original_params: originalParams,
-    });
-    return response.data;
-  },
 
   // ── Social ────────────────────────────────────────────────────────
 

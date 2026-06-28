@@ -6,7 +6,7 @@ import { TypeBadge } from '../../../components/common/TypeBadge';
 import { AttributeBadge } from '../../../components/common/AttributeBadge';
 import { BadgeGroup } from '../../../components/common/BadgeGroup';
 import bossService from '../../../services/bossService';
-import type { RewardClaimData, TrainerOption } from './types';
+import type { BossMonsterOption, RewardClaimData, TrainerOption } from './types';
 
 interface BossRewardModalProps {
   isOpen: boolean;
@@ -16,6 +16,47 @@ interface BossRewardModalProps {
   onClose: () => void;
   onClaimed: () => void;
 }
+
+const MonsterAttributes = ({ monster }: { monster: BossMonsterOption }) => (
+  <div className="boss-reward-modal__monster-attributes">
+    {monster.species && monster.species.length > 0 && (
+      <div className="boss-reward-modal__attribute-group">
+        <span className="boss-reward-modal__attribute-label">
+          <i className="fas fa-dna"></i> Species
+        </span>
+        <BadgeGroup>
+          {monster.species.map((species) => (
+            <span key={species} className="badge">{species}</span>
+          ))}
+        </BadgeGroup>
+      </div>
+    )}
+
+    {monster.types && monster.types.length > 0 && (
+      <div className="boss-reward-modal__attribute-group">
+        <span className="boss-reward-modal__attribute-label">
+          <i className="fas fa-magic"></i> Types
+        </span>
+        <BadgeGroup>
+          {monster.types.map((type) => (
+            <TypeBadge key={type} type={type} />
+          ))}
+        </BadgeGroup>
+      </div>
+    )}
+
+    {monster.attribute && (
+      <div className="boss-reward-modal__attribute-group">
+        <span className="boss-reward-modal__attribute-label">
+          <i className="fas fa-star"></i> Attribute
+        </span>
+        <BadgeGroup>
+          <AttributeBadge attribute={monster.attribute} />
+        </BadgeGroup>
+      </div>
+    )}
+  </div>
+);
 
 export const BossRewardModal = ({
   isOpen,
@@ -27,12 +68,19 @@ export const BossRewardModal = ({
 }: BossRewardModalProps) => {
   const [monsterName, setMonsterName] = useState('');
   const [selectedTrainer, setSelectedTrainer] = useState('');
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
   const [claiming, setClaiming] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const monster = reward?.monsterData ?? null;
+  const options = monster?.options;
+  const isSelection = Array.isArray(options) && options.length > 0;
+  const isPlayerChoice = isSelection && monster?.selectionMode === 'player';
 
   const resetState = () => {
     setMonsterName('');
     setSelectedTrainer('');
+    setSelectedOptionIndex(0);
     setError(null);
     setClaiming(false);
   };
@@ -62,6 +110,7 @@ export const BossRewardModal = ({
         userId,
         monsterName: monsterName.trim(),
         trainerId: Number(selectedTrainer),
+        ...(isPlayerChoice ? { selectedOptionIndex } : {}),
       });
 
       if (response.success) {
@@ -109,6 +158,86 @@ export const BossRewardModal = ({
     </div>
   );
 
+  const renderPreview = () => {
+    if (!monster) {
+      return (
+        <div className="boss-reward-modal__monster-preview boss-reward-modal__monster-preview--unavailable">
+          <h4>
+            <i className="fas fa-exclamation-circle"></i>
+            Monster Preview Unavailable
+          </h4>
+          <p>Monster data not found for this reward.</p>
+        </div>
+      );
+    }
+
+    if (isSelection && options) {
+      if (isPlayerChoice) {
+        return (
+          <div className="boss-reward-modal__monster-preview">
+            <h4>
+              <i className="fas fa-hand-pointer"></i>
+              Choose Your Reward
+            </h4>
+            <p className="boss-reward-modal__selection-hint">
+              Pick one of the {options.length} monsters below — you'll receive the one you select.
+            </p>
+            <div className="boss-reward-modal__option-list">
+              {options.map((option, idx) => (
+                <button
+                  type="button"
+                  key={idx}
+                  className={`boss-reward-modal__option${idx === selectedOptionIndex ? ' boss-reward-modal__option--selected' : ''}`}
+                  onClick={() => setSelectedOptionIndex(idx)}
+                  aria-pressed={idx === selectedOptionIndex}
+                >
+                  <div className="boss-reward-modal__option-header">
+                    <i className={`fas ${idx === selectedOptionIndex ? 'fa-check-circle' : 'fa-circle'}`}></i>
+                    <span>{option.name || `Option ${idx + 1}`}</span>
+                  </div>
+                  <MonsterAttributes monster={option} />
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="boss-reward-modal__monster-preview">
+          <h4>
+            <i className="fas fa-dice"></i>
+            Random Reward
+          </h4>
+          <p className="boss-reward-modal__selection-hint">
+            You'll receive <strong>one</strong> of these {options.length} monsters at random when you claim.
+          </p>
+          <div className="boss-reward-modal__option-list">
+            {options.map((option, idx) => (
+              <div className="boss-reward-modal__option boss-reward-modal__option--static" key={idx}>
+                <div className="boss-reward-modal__option-header">
+                  <i className="fas fa-dragon"></i>
+                  <span>{option.name || `Option ${idx + 1}`}</span>
+                </div>
+                <MonsterAttributes monster={option} />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="boss-reward-modal__monster-preview">
+        <h4>
+          <i className="fas fa-dragon"></i>
+          Monster Preview: {monster.name}
+        </h4>
+        <MonsterAttributes monster={monster} />
+      </div>
+    );
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -154,60 +283,7 @@ export const BossRewardModal = ({
           </div>
 
           {/* Monster Preview */}
-          {reward.monsterData ? (
-            <div className="boss-reward-modal__monster-preview">
-              <h4>
-                <i className="fas fa-dragon"></i>
-                Monster Preview: {reward.monsterData.name}
-              </h4>
-              <div className="boss-reward-modal__monster-attributes">
-                {reward.monsterData.species && reward.monsterData.species.length > 0 && (
-                  <div className="boss-reward-modal__attribute-group">
-                    <span className="boss-reward-modal__attribute-label">
-                      <i className="fas fa-dna"></i> Species
-                    </span>
-                    <BadgeGroup>
-                      {reward.monsterData.species.map((species) => (
-                        <span key={species} className="badge">{species}</span>
-                      ))}
-                    </BadgeGroup>
-                  </div>
-                )}
-
-                {reward.monsterData.types && reward.monsterData.types.length > 0 && (
-                  <div className="boss-reward-modal__attribute-group">
-                    <span className="boss-reward-modal__attribute-label">
-                      <i className="fas fa-magic"></i> Types
-                    </span>
-                    <BadgeGroup>
-                      {reward.monsterData.types.map((type) => (
-                        <TypeBadge key={type} type={type} />
-                      ))}
-                    </BadgeGroup>
-                  </div>
-                )}
-
-                {reward.monsterData.attribute && (
-                  <div className="boss-reward-modal__attribute-group">
-                    <span className="boss-reward-modal__attribute-label">
-                      <i className="fas fa-star"></i> Attribute
-                    </span>
-                    <BadgeGroup>
-                      <AttributeBadge attribute={reward.monsterData.attribute} />
-                    </BadgeGroup>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="boss-reward-modal__monster-preview boss-reward-modal__monster-preview--unavailable">
-              <h4>
-                <i className="fas fa-exclamation-circle"></i>
-                Monster Preview Unavailable
-              </h4>
-              <p>Monster data not found for this reward.</p>
-            </div>
-          )}
+          {renderPreview()}
 
           {/* Claim Form */}
           <div className="boss-reward-modal__form">

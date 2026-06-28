@@ -5,5 +5,3 @@ export { PromptWritingSubmissionPage } from './PromptWritingSubmissionPage';
 export { PromptRewardsClaiming } from './PromptRewardsClaiming';
 export { PromptSubmissionForm } from './PromptSubmissionForm';
 export { PromptCard } from './PromptCard';
-export { PromptList } from './PromptList';
-export { PromptSubmissionModal } from './PromptSubmissionModal';

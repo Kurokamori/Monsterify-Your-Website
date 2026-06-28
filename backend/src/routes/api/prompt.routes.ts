@@ -10,15 +10,12 @@ import {
   getEventPrompts,
   checkPromptAvailability,
   getAvailablePrompts,
-  submitToPrompt,
-  reviewSubmission,
   getTrainerProgress,
   getPromptStatistics,
   getPromptCategories,
   getPromptDifficulties,
   getPromptTypes,
   searchPrompts,
-  rerollMonster,
 } from '@controllers/api/prompt.controller';
 
 const router = Router();
@@ -55,14 +52,8 @@ router.get('/:id/availability/:trainerId', checkPromptAvailability);
 // Protected Routes
 // =============================================================================
 
-// Submit to a prompt
-router.post('/:id/submit', authenticate, submitToPrompt);
-
 // Get trainer's prompt progress
 router.get('/progress/:trainerId', authenticate, getTrainerProgress);
-
-// Reroll a monster using Forget-Me-Not berry
-router.post('/reroll-monster', authenticate, rerollMonster);
 
 // =============================================================================
 // Admin Routes
@@ -76,9 +67,6 @@ router.put('/:id', authenticate, requireAdmin, updatePrompt);
 
 // Delete prompt
 router.delete('/:id', authenticate, requireAdmin, deletePrompt);
-
-// Review submission
-router.put('/submissions/:submissionId/review', authenticate, requireAdmin, reviewSubmission);
 
 // Get prompt statistics
 router.get('/:id/statistics', authenticate, requireAdmin, getPromptStatistics);

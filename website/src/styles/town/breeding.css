@@ -100,6 +100,14 @@
 
 .offspring-card {
   text-align: center;
+  position: relative;
+}
+
+/* Lift a card above its siblings while its ball selector dropdown is open,
+   otherwise the absolutely-positioned dropdown is painted behind the
+   later offspring cards in the grid and cannot be clicked. */
+.offspring-card:has(.ball-selector__dropdown) {
+  z-index: 5;
 }
 
 .offspring-species-images {

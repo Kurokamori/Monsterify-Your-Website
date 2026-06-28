@@ -342,11 +342,11 @@ export async function getSpeciesMetadata(req: Request, res: Response): Promise<v
       return;
     }
 
-    // Deduplicate and lowercase for matching
+    // Deduplicate for matching
     const unique = [...new Set(speciesNames.map(n => n.trim()))];
-    const lowerNames = unique.map(n => n.toLowerCase());
 
-    const metadata: Record<string, { franchise: string | null; stage: string | null; isLegendary: boolean; isMythical: boolean }> = {};
+    type SpeciesMeta = { franchise: string | null; stage: string | null; isLegendary: boolean; isMythical: boolean };
+    const metadata: Record<string, SpeciesMeta> = {};
 
     // Define franchise table configs
     const tableConfigs: {
@@ -367,35 +367,78 @@ export async function getSpeciesMetadata(req: Request, res: Response): Promise<v
       { table: 'dragonquest_monsters', franchise: 'dragonquest', stageField: null, legendaryField: null, mythicalField: null },
     ];
 
-    for (const config of tableConfigs) {
-      // Build SELECT fields
-      const selectFields = ['name'];
-      if (config.stageField) { selectFields.push(`${config.stageField} as stage`); }
-      if (config.legendaryField) { selectFields.push(`${config.legendaryField}::boolean as is_legendary`); }
-      if (config.mythicalField) { selectFields.push(`${config.mythicalField}::boolean as is_mythical`); }
+    // Look up a set of lowercased names across every franchise table.
+    // Returns a map of lowercased-name -> metadata, with the first (highest-priority) table winning.
+    const lookupByLowerNames = async (lowerNames: string[]): Promise<Record<string, SpeciesMeta>> => {
+      const found: Record<string, SpeciesMeta> = {};
+      if (lowerNames.length === 0) { return found; }
 
-      const result = await db.query<Record<string, unknown>>(
-        `SELECT ${selectFields.join(', ')} FROM ${config.table} WHERE LOWER(name) = ANY($1::text[])`,
-        [lowerNames],
-      );
+      for (const config of tableConfigs) {
+        const selectFields = ['name'];
+        if (config.stageField) { selectFields.push(`${config.stageField} as stage`); }
+        if (config.legendaryField) { selectFields.push(`${config.legendaryField}::boolean as is_legendary`); }
+        if (config.mythicalField) { selectFields.push(`${config.mythicalField}::boolean as is_mythical`); }
 
-      for (const row of result.rows) {
-        const name = row.name as string;
-        // Find original-cased name from input
-        const originalName = unique.find(n => n.toLowerCase() === name.toLowerCase()) ?? name;
-        // First match wins — skip if already found
-        if (metadata[originalName]) { continue; }
+        const result = await db.query<Record<string, unknown>>(
+          `SELECT ${selectFields.join(', ')} FROM ${config.table} WHERE LOWER(name) = ANY($1::text[])`,
+          [lowerNames],
+        );
 
-        metadata[originalName] = {
-          franchise: config.franchise,
-          stage: config.stageField ? (row.stage as string | null) : null,
-          isLegendary: config.legendaryField ? !!(row.is_legendary) : false,
-          isMythical: config.mythicalField ? !!(row.is_mythical) : false,
-        };
+        for (const row of result.rows) {
+          const lower = (row.name as string).toLowerCase();
+          if (found[lower]) { continue; }
+          found[lower] = {
+            franchise: config.franchise,
+            stage: config.stageField ? (row.stage as string | null) : null,
+            isLegendary: config.legendaryField ? !!(row.is_legendary) : false,
+            isMythical: config.mythicalField ? !!(row.is_mythical) : false,
+          };
+        }
+      }
+      return found;
+    };
+
+    // Reduce a form/variant name down to its base species name so that variants like
+    // "Meloetta-aria", "Necrozma-Dusk-Mane" or "Galarian Articuno" still resolve to the
+    // base species' legendary/mythical status.
+    const toBaseName = (name: string): string => {
+      const base = (name.split(/[-(/]/)[0] ?? name).trim();
+      return base.replace(
+        /^(alolan|galarian|hisuian|paldean|mega|primal|gigantamax|g-max|origin|crowned|dawn wings|dusk mane|ultra)\s+/i,
+        '',
+      ).trim();
+    };
+
+    // Pass 1: exact (case-insensitive) name match.
+    const exactHits = await lookupByLowerNames(unique.map(n => n.toLowerCase()));
+    for (const name of unique) {
+      const hit = exactHits[name.toLowerCase()];
+      if (hit) { metadata[name] = hit; }
+    }
+
+    // Pass 2: fall back to base-name resolution for any unresolved form/variant names.
+    const unresolved = unique.filter(n => !metadata[n]);
+    if (unresolved.length > 0) {
+      const baseByName = new Map<string, string>();
+      const baseLowerSet = new Set<string>();
+      for (const name of unresolved) {
+        const baseLower = toBaseName(name).toLowerCase();
+        if (baseLower && baseLower !== name.toLowerCase()) {
+          baseByName.set(name, baseLower);
+          baseLowerSet.add(baseLower);
+        }
+      }
+
+      const baseHits = await lookupByLowerNames([...baseLowerSet]);
+      for (const name of unresolved) {
+        const baseLower = baseByName.get(name);
+        if (baseLower && baseHits[baseLower]) {
+          metadata[name] = baseHits[baseLower];
+        }
       }
     }
 
-    // Fill in any names that weren't found
+    // Fill in any names that still weren't found.
     for (const name of unique) {
       metadata[name] ??= { franchise: null, stage: null, isLegendary: false, isMythical: false };
     }

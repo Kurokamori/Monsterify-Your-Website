@@ -1032,13 +1032,14 @@ export async function claimSubmissionMonster(req: Request, res: Response): Promi
     const trainerId = parseInt(req.body.trainerId);
     const monsterIndex = parseInt(req.body.monsterIndex);
     const monsterName = req.body.monsterName as string;
+    const ball = (req.body.ball as string | undefined) ?? 'Poke Ball';
 
     if (isNaN(submissionId) || isNaN(trainerId) || isNaN(monsterIndex)) {
       res.status(400).json({ success: false, message: 'Valid submission ID, trainer ID, and monster index are required' });
       return;
     }
 
-    const result = await submissionService.claimSubmissionMonster(submissionId, trainerId, monsterIndex, monsterName);
+    const result = await submissionService.claimSubmissionMonster(submissionId, trainerId, monsterIndex, monsterName, ball);
     res.json(result);
   } catch (error) {
     const err = error as Error;

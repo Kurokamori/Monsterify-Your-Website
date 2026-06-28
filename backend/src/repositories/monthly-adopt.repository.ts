@@ -391,4 +391,28 @@ export class MonthlyAdoptRepository extends BaseRepository<
     );
     return result.rows[0] ?? null;
   }
+
+  /**
+   * Runs the given handler while holding a Postgres session-level advisory lock,
+   * guaranteeing that monthly-adopt generation only ever executes one-at-a-time
+   * across every concurrent request and every server instance. Without this,
+   * multiple first-of-the-month page views all observe an empty month and race
+   * to generate it simultaneously, producing duplicate or partial rolls.
+   *
+   * The lock is acquired and released on a single dedicated connection; the
+   * handler itself runs its own queries on the shared pool, so the lock acts
+   * purely as a cross-process mutex.
+   */
+  async withGenerationLock<T>(handler: () => Promise<T>): Promise<T> {
+    return db.withClient(async (client) => {
+      await client.query('SELECT pg_advisory_lock($1)', [MonthlyAdoptRepository.GENERATION_LOCK_KEY]);
+      try {
+        return await handler();
+      } finally {
+        await client.query('SELECT pg_advisory_unlock($1)', [MonthlyAdoptRepository.GENERATION_LOCK_KEY]);
+      }
+    });
+  }
+
+  private static readonly GENERATION_LOCK_KEY = 48723101;
 }

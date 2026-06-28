@@ -8,6 +8,7 @@ import {
 } from './prompt-automation.service';
 import { ShopService } from './shop.service';
 import { HolidayCalculatorService } from './holiday-calculator.service';
+import { AdoptionService } from './adoption.service';
 
 export type CronJobStatus = {
   running: boolean;
@@ -26,12 +27,14 @@ export class CronService {
   private promptAutomationService: PromptAutomationService;
   private shopService: ShopService;
   private holidayCalculatorService: HolidayCalculatorService;
+  private adoptionService: AdoptionService;
 
   constructor(
     scheduledTasksService?: ScheduledTasksService,
     reminderService?: ReminderService,
     promptAutomationService?: PromptAutomationService,
     shopService?: ShopService,
+    adoptionService?: AdoptionService,
   ) {
     this.jobs = new Map();
     this.scheduledTasksService = scheduledTasksService ?? new ScheduledTasksService();
@@ -39,6 +42,7 @@ export class CronService {
     this.promptAutomationService = promptAutomationService ?? new PromptAutomationService();
     this.shopService = shopService ?? new ShopService();
     this.holidayCalculatorService = new HolidayCalculatorService();
+    this.adoptionService = adoptionService ?? new AdoptionService();
   }
 
   /**
@@ -70,6 +74,13 @@ export class CronService {
 
     // Yearly holiday date generation on Jan 1st at 00:10 UTC
     this.scheduleYearlyHolidayGeneration();
+
+    // Monthly adoption-center roll on the 1st of every month at 00:02 UTC
+    this.scheduleMonthlyAdoptionRoll();
+
+    // Catch-up immediately on startup in case the server was down when the
+    // monthly roll was scheduled to fire (e.g. a deploy after the month boundary).
+    void this.runAdoptionRollCatchup();
 
     console.log('Cron jobs initialized successfully');
   }
@@ -295,6 +306,59 @@ export class CronService {
 
     this.jobs.set('yearlyHolidayGeneration', job);
     console.log('Yearly holiday generation cron job scheduled for Jan 1st at 00:10 UTC');
+  }
+
+  /**
+   * Schedule the monthly adoption-center roll
+   * Runs on the 1st of every month at 00:02 UTC, generating that month's adopts
+   * proactively so the roll never depends on whoever views the page first.
+   */
+  scheduleMonthlyAdoptionRoll(): void {
+    const job = cron.schedule(
+      '2 0 1 * *',
+      async () => {
+        console.log('Running monthly adoption roll...');
+        try {
+          await this.adoptionService.ensureCurrentMonthAdopts();
+          console.log('Monthly adoption roll completed');
+        } catch (error) {
+          console.error('Error in monthly adoption roll:', error);
+        }
+      },
+      {
+        timezone: 'UTC',
+      }
+    );
+
+    this.jobs.set('monthlyAdoptionRoll', job);
+    console.log('Monthly adoption roll cron job scheduled for 1st of every month at 00:02 UTC');
+  }
+
+  /**
+   * Generate the current month's adopts immediately if they are missing.
+   * Used as a startup safety net so a missed scheduled roll (server downtime at
+   * the month boundary) is recovered without waiting for a page view.
+   */
+  async runAdoptionRollCatchup(): Promise<void> {
+    try {
+      await this.adoptionService.ensureCurrentMonthAdopts();
+    } catch (error) {
+      console.error('Error in adoption roll startup catch-up:', error);
+    }
+  }
+
+  /**
+   * Manually trigger the monthly adoption roll (for testing)
+   */
+  async triggerMonthlyAdoptionRoll(): Promise<void> {
+    console.log('Manually triggering monthly adoption roll...');
+    try {
+      await this.adoptionService.ensureCurrentMonthAdopts();
+      console.log('Manual monthly adoption roll completed');
+    } catch (error) {
+      console.error('Error in manual monthly adoption roll:', error);
+      throw error;
+    }
   }
 
   /**

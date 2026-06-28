@@ -817,20 +817,28 @@ export class NurseryService {
       ball: input.ball ?? session.ball ?? 'Poke Ball',
     };
 
-    const createdMonster = await this.monsterRepo.create(createInput);
-
-    // Consume the ball from trainer inventory
+    // Consume the ball before creating the monster so an unavailable ball
+    // fails cleanly instead of leaving an orphaned, unclaimed monster behind.
     await consumeBallFromInventory(session.trainerId, input.ball ?? session.ball ?? 'Poke Ball');
+
+    const createdMonster = await this.monsterRepo.create(createInput);
 
     // Mark this monster as claimed
     session.claimedMonsters.push(eggKey);
 
-    session.selectedMonsters[eggId] = {
-      monsterIndex,
-      monsterId: createdMonster.id,
-      monsterName: createInput.name,
-      selectedAt: new Date().toISOString(),
-    };
+    // Only a normal (non-Edenweiss) claim finalizes the egg's selection.
+    // Edenweiss claims are extras and must leave the egg open so the trainer
+    // can use as many Edenweiss berries as they like before making the final
+    // pick — otherwise marking the egg selected here can complete and delete
+    // the whole session out from under them.
+    if (!useEdenweiss) {
+      session.selectedMonsters[eggId] = {
+        monsterIndex,
+        monsterId: createdMonster.id,
+        monsterName: createInput.name,
+        selectedAt: new Date().toISOString(),
+      };
+    }
 
     // Consume DNA Splicers if provided
     if (dnaSplicers && dnaSplicers > 0) {
