@@ -6,6 +6,7 @@ import trainerService from '../../../services/trainerService';
 import speciesService from '../../../services/speciesService';
 import type { SpeciesImageMap } from '../../../services/speciesService';
 import { MonsterReferenceTable } from './MonsterReferenceTable';
+import { ReferenceDownloadModal } from './ReferenceDownloadModal';
 import type { TrainerWithMonsters, ImageSize } from './types';
 import {
   IMAGE_SIZES,
@@ -25,6 +26,7 @@ const ReferenceTodoPage = () => {
   const [speciesImages, setSpeciesImages] = useState<SpeciesImageMap>({});
   const [imageSize, setImageSize] = useState<ImageSize>('medium');
   const [showLineage, setShowLineage] = useState(true);
+  const [downloadModalOpen, setDownloadModalOpen] = useState(false);
 
   const fetchData = useCallback(async () => {
     if (!currentUser?.discord_id) return;
@@ -102,6 +104,14 @@ const ReferenceTodoPage = () => {
           <h1>Reference To-Do List</h1>
           <div className="ref-page__header-actions">
             <button
+              className="button primary no-flex"
+              onClick={() => setDownloadModalOpen(true)}
+              title="Download a printable reference list"
+            >
+              <i className="fas fa-download"></i>
+              Download
+            </button>
+            <button
               className={`button secondary no-flex ${showLineage ? 'active' : ''}`}
               onClick={() => setShowLineage((prev) => !prev)}
               title="Show pre-evolution images from lineage data"
@@ -158,6 +168,15 @@ const ReferenceTodoPage = () => {
           ))}
         </div>
       </AutoStateContainer>
+
+      {downloadModalOpen && (
+        <ReferenceDownloadModal
+          isOpen={downloadModalOpen}
+          onClose={() => setDownloadModalOpen(false)}
+          trainers={trainers}
+          speciesImages={speciesImages}
+        />
+      )}
     </div>
   );
 };
