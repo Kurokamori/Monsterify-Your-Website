@@ -84,6 +84,19 @@ export function initializeSocketIO(httpServer: HttpServer): Server {
       socket.leave(`room:${data.room_id}`);
     });
 
+    // ----- battle:join / battle:leave (realtime battle sync) -----
+    socket.on('battle:join', async (data: { battle_id: number }) => {
+      if (data?.battle_id) {
+        await socket.join(`battle:${data.battle_id}`);
+      }
+    });
+
+    socket.on('battle:leave', (data: { battle_id: number }) => {
+      if (data?.battle_id) {
+        socket.leave(`battle:${data.battle_id}`);
+      }
+    });
+
     // ----- message:send -----
     socket.on('message:send', async (data: SocketMessageSend) => {
       try {

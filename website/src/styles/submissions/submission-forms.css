@@ -217,6 +217,14 @@
   gap: var(--spacing-xsmall);
 }
 
+.reference-backsprite-toggle {
+  margin: var(--spacing-xsmall) 0 var(--spacing-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--border-radius-medium);
+  background: var(--secondary-color);
+}
+
 .reference-header {
   display: flex;
   justify-content: space-between;

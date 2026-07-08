@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { TypeBadge } from '@components/common/TypeBadge';
 import { MarkdownRenderer } from '@components/common/MarkdownRenderer';
 import { YouTubeSection } from '../shared/YouTubeSection';
+import { BadgeCase } from '../shared/BadgeCase';
 import { calculateDisplayAge } from '../useTrainerDetail';
 import type { Trainer, TrainerSecret, AdditionalReference } from '@components/trainers/types/Trainer';
 import type { FeaturedMonster } from '../useTrainerDetail';
@@ -441,6 +442,9 @@ export const ProfileTab = ({
           </div>
         </div>
       )}
+
+      {/* Gym Badges */}
+      {trainer.id && <BadgeCase trainerId={trainer.id} />}
 
       {/* Biography */}
       {trainer.biography && (

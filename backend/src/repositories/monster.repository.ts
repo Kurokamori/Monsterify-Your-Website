@@ -44,6 +44,8 @@ export type MonsterRow = {
   ability2: string | null;
   moveset: string | null;
   img_link: string | null;
+  back_sprite: string | null;
+  back_sprite_artist: string | null;
   date_met: Date | null;
   where_met: string | null;
   box_number: number | null;
@@ -139,6 +141,8 @@ export type MonsterCreateInput = {
   ability2?: string | null;
   moveset?: string[];
   imgLink?: string | null;
+  backSprite?: string | null;
+  backSpriteArtist?: string | null;
   dateMet?: Date | null;
   whereMet?: string | null;
   boxNumber?: number | null;
@@ -192,6 +196,8 @@ export type MonsterUpdateInput = {
   ability2?: string | null;
   moveset?: string[];
   imgLink?: string | null;
+  backSprite?: string | null;
+  backSpriteArtist?: string | null;
   dateMet?: Date | null;
   whereMet?: string | null;
   boxNumber?: number | null;
@@ -478,7 +484,7 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
           def_total, def_iv, def_ev, spa_total, spa_iv, spa_ev,
           spd_total, spd_iv, spd_ev, spe_total, spe_iv, spe_ev,
           nature, characteristic, gender, friendship, ability1, ability2,
-          moveset, img_link, date_met, where_met, box_number, trainer_index,
+          moveset, img_link, back_sprite, date_met, where_met, box_number, trainer_index,
           shiny, alpha, shadow, paradox, pokerus, albino, melanistic, dot, ball,
           can_talk, can_talk_descriptor, created_at
         )
@@ -487,7 +493,7 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
           $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25,
           $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37,
           $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49,
-          $50, $51, $52, $53, $54, NOW()
+          $50, $51, $52, $53, $54, $55, NOW()
         )
         RETURNING id
       `,
@@ -531,6 +537,7 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
         input.ability2 ?? null,
         input.moveset ? JSON.stringify(input.moveset) : '[]',
         input.imgLink ?? null,
+        input.backSprite ?? null,
         input.dateMet ?? new Date(),
         input.whereMet ?? null,
         input.boxNumber ?? null,
@@ -620,6 +627,8 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
       ability2: 'ability2',
       moveset: 'moveset',
       imgLink: 'img_link',
+      backSprite: 'back_sprite',
+      backSpriteArtist: 'back_sprite_artist',
       dateMet: 'date_met',
       whereMet: 'where_met',
       boxNumber: 'box_number',

@@ -768,3 +768,33 @@ export { StarterSessionRepository } from './starter-session.repository';
 export type {
   StarterSessionRow,
 } from './starter-session.repository';
+
+export { BattleTeamRepository } from './battle-team.repository';
+export type {
+  BattleTeam,
+  BattleTeamWithTrainer,
+  BattleTeamCreateInput,
+  BattleTeamUpdateInput,
+} from './battle-team.repository';
+
+export { GymRepository } from './gym.repository';
+export type {
+  Gym,
+  GymMonsterSpec,
+  GymGauntletTrainer,
+  GymCreateInput,
+  GymUpdateInput,
+  TrainerBadge,
+  GauntletRun,
+  GauntletRunStatus,
+  BattleDialogue,
+} from './gym.repository';
+
+export { BattleAssetRepository, BATTLE_ASSET_KINDS } from './battle-asset.repository';
+export type {
+  BattleAsset,
+  BattleAssetKind,
+  BattleAssetRow,
+  BattleAssetCreateInput,
+  BattleAssetUpdateInput,
+} from './battle-asset.repository';

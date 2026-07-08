@@ -70,6 +70,47 @@
   top: 20px;
 }
 
+/* ---------- Back sprite (corner thumbnail) ---------- */
+
+.monster-backsprite {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  border-radius: var(--border-radius-small, 8px);
+  background: var(--overlay-dark);
+  backdrop-filter: blur(2px);
+  max-width: 40%;
+}
+
+.monster-backsprite__label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-color-inverse, #fff);
+}
+
+.monster-backsprite__image {
+  max-width: 100%;
+  max-height: 110px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.monster-backsprite__artist {
+  font-size: 0.6rem;
+  color: var(--text-color-inverse, #fff);
+  opacity: 0.85;
+}
+
 
 /* ---------- Friendship ---------- */
 

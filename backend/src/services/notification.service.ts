@@ -253,6 +253,15 @@ export class NotificationService {
           await this.monsterRepo.update(monster.id, { imgLink: referenceUrl, mainRefArtist: artistName });
         }
       }
+    } else if (referenceType === 'monster backsprite') {
+      const monsterName = meta.monsterName as string | undefined;
+      if (monsterName) {
+        const monster = await this.monsterRepo.findByTrainerAndName(trainerId, monsterName);
+        if (monster) {
+          await this.monsterRepo.addImage(monster.id, referenceUrl, 'back_sprite');
+          await this.monsterRepo.update(monster.id, { backSprite: referenceUrl, backSpriteArtist: artistName });
+        }
+      }
     } else if (referenceType === 'mega image') {
       const monsterName = meta.monsterName as string | undefined;
       if (monsterName) {

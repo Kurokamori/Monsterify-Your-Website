@@ -11,6 +11,7 @@ import EventsPage from './EventsPage';
 import MissionsPage from './missions/MissionsPage';
 import BossViewPage from './boss/BossViewPage';
 import FactionQuestsPage from './FactionQuestsPage';
+import BattlePage from "@pages/battle/BattlePage.tsx";
 
 const AdventuresOverview = () => {
   const { currentUser, isAuthenticated } = useAuth();
@@ -57,7 +58,7 @@ const AdventuresOverview = () => {
   );
 };
 
-const VALID_TABS = ['adventures', 'events', 'missions', 'boss', 'faction-quests'];
+const VALID_TABS = ['adventures', 'events', 'missions', 'battle', 'boss', 'faction-quests'];
 
 const AdventuresPage = () => {
   useDocumentTitle('Adventures');
@@ -99,6 +100,12 @@ const AdventuresPage = () => {
       label: 'Missions',
       icon: 'fas fa-scroll',
       content: <MissionsPage />
+    },
+    {
+      key: 'battle',
+      label: 'Battle',
+      icon: 'fas fa-bolt',
+      content: <BattlePage />
     },
     {
       key: 'boss',

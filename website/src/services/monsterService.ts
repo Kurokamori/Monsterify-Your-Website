@@ -18,6 +18,8 @@ export interface Monster {
   img_link?: string;
   main_ref?: string;
   main_ref_artist?: string;
+  back_sprite?: string;
+  back_sprite_artist?: string;
   mega_ref_artist?: string;
   trainer_id?: number;
   box_number?: number;

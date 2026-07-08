@@ -115,6 +115,9 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [complexMode, setComplexMode] = useState(false);
+  // When on, images are saved as the monster's back sprite instead of its main
+  // reference image. Rewards are granted identically either way.
+  const [submitAsBackSprite, setSubmitAsBackSprite] = useState(false);
   const [userTrainers, setUserTrainers] = useState<Trainer[]>([]);
   const [userMonsters, setUserMonsters] = useState<Monster[]>([]);
   const [rewardEstimate, setRewardEstimate] = useState<RewardEstimate | null>(null);
@@ -309,7 +312,7 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
     try {
       setLoading(true);
       const response = await submissionService.calculateReferenceRewards({
-        referenceType: 'monster',
+        referenceType: submitAsBackSprite ? 'monster backsprite' : 'monster',
         references: validRefs.map(ref => ({
           trainerId: parseInt(ref.trainerId),
           monsterName: ref.monsterName,
@@ -323,7 +326,7 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
     } finally {
       setLoading(false);
     }
-  }, [references]);
+  }, [references, submitAsBackSprite]);
 
   // Build available targets for level cap reallocation
   const buildAvailableTargets = useCallback((): AllocationTarget[] => {
@@ -425,7 +428,7 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
     try {
       setLoading(true);
       const formData = new FormData();
-      formData.append('referenceType', 'monster');
+      formData.append('referenceType', submitAsBackSprite ? 'monster backsprite' : 'monster');
 
       validRefs.forEach((ref, index) => {
         formData.append(`trainerId_${index}`, ref.trainerId);
@@ -473,7 +476,7 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
     } finally {
       setLoading(false);
     }
-  }, [references, buildAvailableTargets, handleSubmissionComplete]);
+  }, [references, submitAsBackSprite, buildAvailableTargets, handleSubmissionComplete]);
 
   if (loading && userTrainers.length === 0) {
     return <LoadingSpinner />;
@@ -613,6 +616,17 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
           {!showBulkUpload && (
             <p className="form-tooltip--section">Submit reference images for your monsters. Each ref needs a trainer, monster name, and an image.</p>
           )}
+
+          <div className="reference-backsprite-toggle">
+            <FormCheckbox
+              name="submit-as-backsprite"
+              label="Submit as back sprite(s)"
+              checked={submitAsBackSprite}
+              onChange={(e) => setSubmitAsBackSprite(e.target.checked)}
+              helpText="Save these images as each monster's back sprite (used in battles) instead of its main reference. Rewards are exactly the same."
+            />
+          </div>
+
           {showBulkUpload && references.length > 1 && (
             <p className="form-help-text">Fill in the monster names for each uploaded image.</p>
           )}
@@ -724,6 +738,9 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
               {/* Advanced options - individual mode only, complex mode only */}
               {!showBulkUpload && complexMode && (
                 <>
+                  {/* Appearance type & instances don't apply to back sprites */}
+                  {!submitAsBackSprite && (
+                  <>
                   <div className="form-row">
                     <div className="form-group">
                       <label htmlFor={`appearance-type-${index}`}>Appearance Type</label>
@@ -781,6 +798,9 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
                         </div>
                       ))}
                     </div>
+                  )}
+
+                  </>
                   )}
 
                   <FormCheckbox

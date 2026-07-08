@@ -984,7 +984,7 @@ export class SubmissionService {
         isGift,
       };
 
-      if (referenceType === 'monster' || referenceType === 'mega image') {
+      if (referenceType === 'monster' || referenceType === 'monster backsprite' || referenceType === 'mega image') {
         reference.monsterName = body[`monsterName_${i}`];
         if (!reference.monsterName) {
           continue;
@@ -2504,6 +2504,13 @@ export class SubmissionService {
       if (monster) {
         await this.monsterRepo.addImage(monster.id, referenceUrl, 'main');
         await this.monsterRepo.update(monster.id, { imgLink: referenceUrl, mainRefArtist: artistName ?? null });
+      }
+    } else if (referenceType === 'monster backsprite') {
+      const monsterName = reference.monsterName as string;
+      const monster = await this.monsterRepo.findByTrainerAndName(trainerId, monsterName);
+      if (monster) {
+        await this.monsterRepo.addImage(monster.id, referenceUrl, 'back_sprite');
+        await this.monsterRepo.update(monster.id, { backSprite: referenceUrl, backSpriteArtist: artistName ?? null });
       }
     } else if (referenceType === 'mega image') {
       const monsterName = reference.monsterName as string;

@@ -31,6 +31,8 @@ export const MonsterDetailHeader = ({
   const species = [monster.species1, monster.species2, monster.species3].filter(
     Boolean,
   ) as string[];
+  const backSprite = (monster.back_sprite as string) || '';
+  const backSpriteArtist = (monster.back_sprite_artist as string) || '';
 
   return (
     <>
@@ -77,6 +79,22 @@ export const MonsterDetailHeader = ({
             className="monster-profile-image"
             onError={handleImgError}
           />
+          {backSprite && (
+            <div className="monster-backsprite">
+              <span className="monster-backsprite__label">Back Sprite</span>
+              <img
+                src={backSprite}
+                alt={`${monster.name ?? 'Monster'} back sprite`}
+                className="monster-backsprite__image"
+                onError={handleImgError}
+              />
+              {backSpriteArtist && (
+                <span className="monster-backsprite__artist">
+                  <i className="fas fa-paint-brush"></i> {backSpriteArtist}
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="trainer-profile-info">

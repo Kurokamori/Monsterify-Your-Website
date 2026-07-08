@@ -193,3 +193,18 @@ export type {
   BattleEndResult as BattleManagerEndResult,
   ForceEndResult,
 } from './battle-manager.service';
+
+// Web Battle Service (website-facing battles: teams, gauntlets, PvP)
+export { WebBattleService } from './web-battle.service';
+export type {
+  WebBattleMode,
+  WebBattleData,
+  WebBattleAction,
+  WebBattleMonsterView,
+  WebBattleParticipantView,
+  WebBattleSettlement,
+  WebBattleStateView,
+  WebBattleAppearance,
+  WebBattleDialogueView,
+  WebActionResult,
+} from './web-battle.service';

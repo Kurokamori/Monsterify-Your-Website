@@ -1,0 +1,367 @@
+/* ==========================================================================
+   Battle Assets Admin Tool
+   --------------------------------------------------------------------------
+   A reusable library of battle backgrounds, place-spots and text-box skins.
+   The screen pairs a live preview with the editor so you shape an asset and
+   watch it land in a real battle scene. Token-driven; see boss-manager.css.
+   ========================================================================== */
+
+.battle-assets__intro {
+  color: var(--text-color-muted);
+  max-width: 70ch;
+  margin-bottom: var(--spacing-medium);
+  line-height: 1.6;
+}
+
+/* ── Status banner ── */
+
+.battle-assets__status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-medium);
+  font-size: var(--font-size-small);
+  animation: battleAssetsStatusIn 0.2s ease;
+}
+
+.battle-assets__status--success {
+  background: var(--accent-color-subtle);
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+}
+
+.battle-assets__status--error {
+  background: var(--accent-color-subtle);
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+}
+
+.battle-assets__status button {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  padding: var(--spacing-xxsmall);
+}
+
+.battle-assets__status button:hover { opacity: 1; }
+
+@keyframes battleAssetsStatusIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Layout: preview + editor side by side ── */
+
+.battle-assets__layout {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+  align-items: start;
+}
+
+.battle-assets__preview,
+.battle-assets__editor {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-medium);
+}
+
+/* The editor is where you act — give it the accent frame. */
+.battle-assets__editor {
+  border-color: var(--accent-color);
+  box-shadow: var(--shadow-medium);
+}
+
+.battle-assets__preview h3,
+.battle-assets__editor h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  margin: 0 0 var(--spacing-small);
+  color: var(--text-color);
+  font-size: var(--font-size-large);
+  font-weight: 600;
+}
+
+.battle-assets__panel-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  border-radius: var(--border-radius-medium);
+  background: var(--accent-color-subtle);
+  color: var(--accent-color);
+  font-size: var(--font-size-medium);
+}
+
+/* The preview uses the real .battle-field classes; just constrain its height. */
+.battle-assets__field.battle-field {
+  min-height: 300px;
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+}
+
+.battle-assets__preview-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  margin-top: var(--spacing-small);
+}
+
+/* Group the preview control clusters so they read as one panel */
+.battle-assets__preview-controls + .battle-assets__preview-controls {
+  padding-top: var(--spacing-small);
+  border-top: 1px dashed var(--border-color);
+}
+
+.battle-assets__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  min-width: 150px;
+}
+
+.battle-assets__field--grow { flex: 1 1 220px; }
+
+.battle-assets__field > label {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.battle-assets__input {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  background: var(--input-background);
+  color: var(--text-color);
+  font: inherit;
+  font-size: var(--font-size-small);
+  transition: border-color var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+}
+
+.battle-assets__input:hover:not(:disabled) { border-color: var(--accent-color-muted); }
+
+.battle-assets__input:focus {
+  border-color: var(--accent-color);
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.battle-assets__input--url {
+  margin-top: var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+}
+
+.battle-assets__hint {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  line-height: 1.5;
+}
+
+.battle-assets__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  margin: var(--spacing-small) 0;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.battle-assets__toggle input { accent-color: var(--accent-color); }
+
+.battle-assets__editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-small);
+  margin-top: var(--spacing-medium);
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ── Monster search ── */
+
+.battle-assets__monsearch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  min-width: 190px;
+}
+
+.battle-assets__monsearch > label {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.battle-assets__monsearch-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  margin-top: 2px;
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-medium);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.battle-assets__monsearch-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  width: 100%;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  cursor: pointer;
+  text-align: left;
+}
+
+.battle-assets__monsearch-row:last-child { border-bottom: none; }
+.battle-assets__monsearch-row:hover { background: var(--primary-color-hover); }
+.battle-assets__monsearch-row img { width: 34px; height: 34px; object-fit: contain; }
+.battle-assets__monsearch-row span { font-size: var(--font-size-small); }
+.battle-assets__monsearch-back { margin-left: auto; color: var(--accent-color); }
+.battle-assets__monsearch-empty {
+  padding: var(--spacing-small);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+/* ── Library groups ── */
+
+.battle-assets__group { margin-bottom: var(--spacing-large); }
+
+.battle-assets__group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-small);
+  padding-bottom: var(--spacing-xsmall);
+  border-bottom: 2px solid var(--accent-color);
+}
+
+.battle-assets__group-head h3 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: var(--font-size-large);
+  font-weight: 600;
+}
+
+.battle-assets__count { color: var(--text-color-muted); font-weight: 400; font-size: var(--font-size-small); }
+.battle-assets__empty-group { color: var(--text-color-muted); font-style: italic; }
+
+.battle-assets__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.battle-assets__card {
+  background: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+}
+
+.battle-assets__card:hover { border-color: var(--accent-color-muted); }
+.battle-assets__card--active { border-color: var(--accent-color); box-shadow: 0 0 8px var(--accent-glow); }
+.battle-assets__card--inactive { opacity: 0.6; }
+
+.battle-assets__thumb {
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(45deg, var(--overlay-dark) 25%, transparent 25%) -8px 0/16px 16px,
+    linear-gradient(-45deg, var(--overlay-dark) 25%, transparent 25%) -8px 0/16px 16px,
+    var(--background-color);
+  overflow: hidden;
+}
+
+.battle-assets__thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.battle-assets__thumb--background img { width: 100%; height: 100%; object-fit: cover; }
+
+.battle-assets__card-body {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+  padding: var(--spacing-small) var(--spacing-small) var(--spacing-xxsmall);
+}
+
+.battle-assets__card-name { font-weight: 600; color: var(--text-color); font-size: var(--font-size-small); }
+
+.battle-assets__card-tag {
+  font-size: var(--font-size-xxsmall);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.05rem var(--spacing-xsmall);
+  border-radius: var(--border-radius-full);
+  background: var(--overlay-dark);
+  color: var(--text-color-muted);
+}
+
+.battle-assets__card-slice { font-size: var(--font-size-xsmall); color: var(--text-color-muted); }
+
+.battle-assets__card-actions {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small) var(--spacing-small);
+  margin-top: auto;
+}
+
+.battle-assets__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-small);
+  color: var(--text-color-muted);
+  padding: var(--spacing-large) 0;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 900px) {
+  .battle-assets__layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .battle-assets__editor-actions { flex-direction: column-reverse; }
+  .battle-assets__editor-actions .button { width: 100%; }
+}
+
+/* ── Accessibility ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .battle-assets__status { animation: none; }
+  .battle-assets__input,
+  .battle-assets__card { transition: none; }
+}
+
+@media (prefers-contrast: high) {
+  .battle-assets__editor { border-width: 2px; }
+  .battle-assets__group-head { border-bottom-width: 3px; }
+  .battle-assets__card--active { border-width: 2px; }
+}

@@ -22,6 +22,7 @@ import { MoveRepository, Move } from '../../repositories/move.repository';
 import { TrainerRepository } from '../../repositories/trainer.repository';
 import { TrainerInventoryRepository } from '../../repositories/trainer-inventory.repository';
 import { MonsterRepository } from '../../repositories/monster.repository';
+import { MonsterInitializerService } from '../monster-initializer.service';
 import {
   StatusMoveService,
   StatusMoveBattleMonster,
@@ -200,6 +201,7 @@ export class BattleActionService {
   private trainerRepository: TrainerRepository;
   private trainerInventoryRepository: TrainerInventoryRepository;
   private monsterRepository: MonsterRepository;
+  private monsterInitializer: MonsterInitializerService;
   private statusMoveService: StatusMoveService;
   private damageCalculator: DamageCalculatorService;
 
@@ -227,6 +229,7 @@ export class BattleActionService {
     this.trainerInventoryRepository =
       trainerInventoryRepository ?? new TrainerInventoryRepository();
     this.monsterRepository = monsterRepository ?? new MonsterRepository();
+    this.monsterInitializer = new MonsterInitializerService(this.monsterRepository);
 
     // Initialize StatusMoveService with adapters
     this.statusMoveService =
@@ -2023,8 +2026,9 @@ export class BattleActionService {
       const activeMonsters = await this.battleMonsterRepository.findActiveByParticipant(attacker.id);
       for (const activeMonster of activeMonsters) {
         if (activeMonster.monsterId && !activeMonster.isFainted) {
-          // Add levels to the actual monster in the database
-          await this.monsterRepository.addLevels(activeMonster.monsterId, expGain);
+          // Full level-up: recalculates stats, disperses EVs, updates friendship
+          // and rolls new move learning (not just a raw level bump).
+          await this.monsterInitializer.levelUpMonster(activeMonster.monsterId, expGain);
           const activeData = activeMonster.monsterData as MonsterData;
           console.log(
             `Awarded ${expGain} level(s) to ${activeData.name ?? 'monster'} for defeating ${monsterName}`

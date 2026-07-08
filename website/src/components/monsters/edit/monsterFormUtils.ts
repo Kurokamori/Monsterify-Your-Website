@@ -28,6 +28,7 @@ export interface MonsterFormData {
   tldr: string;
   bio: string;
   img_link: string;
+  back_sprite: string;
   main_ref_artist: string;
   likes: string;
   dislikes: string;
@@ -108,6 +109,7 @@ export function monsterToFormData(monster: Monster): MonsterFormData {
     tldr: str(monster[`tldr`]),
     bio: str(monster[`bio`]),
     img_link: str(monster.img_link),
+    back_sprite: str(monster[`back_sprite`]),
     main_ref_artist: str(monster.main_ref_artist),
     likes: str(monster[`likes`]),
     dislikes: str(monster[`dislikes`]),
@@ -183,6 +185,10 @@ export function buildMonsterSubmitData(
   // Mega images are saved separately via API, don't include in main update
   delete data.mega_stone_img;
   delete data.mega_image;
+
+  // Backend expects the back sprite as `backSprite`
+  data.backSprite = formData.back_sprite;
+  delete data.back_sprite;
 
   // Base species, types, attribute and level can only be edited directly by admins
   if (isAdmin) {

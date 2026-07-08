@@ -137,6 +137,34 @@ class ChatSocketService {
   }
 
   // ---------------------------------------------------------------------------
+  // Battles
+  // ---------------------------------------------------------------------------
+
+  joinBattle(battleId: number): void {
+    this.socket?.emit('battle:join', { battle_id: battleId });
+  }
+
+  leaveBattle(battleId: number): void {
+    this.socket?.emit('battle:leave', { battle_id: battleId });
+  }
+
+  onBattleUpdate(handler: (data: { battle_id: number; event?: string }) => void): void {
+    this.socket?.on('battle:update', handler);
+  }
+
+  offBattleUpdate(handler: (data: { battle_id: number; event?: string }) => void): void {
+    this.socket?.off('battle:update', handler);
+  }
+
+  onBattleChallenge(handler: () => void): void {
+    this.socket?.on('battle:challenge', handler);
+  }
+
+  offBattleChallenge(handler: () => void): void {
+    this.socket?.off('battle:challenge', handler);
+  }
+
+  // ---------------------------------------------------------------------------
   // Reconnection
   // ---------------------------------------------------------------------------
 

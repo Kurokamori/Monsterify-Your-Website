@@ -1,0 +1,864 @@
+/* ==============================
+   Battle Arena Page
+   ============================== */
+
+.battle-arena-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+}
+
+.battle-arena__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.battle-arena__header-center {
+  flex: 1;
+  text-align: center;
+}
+
+.battle-arena__header-center h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--text-color);
+}
+
+.battle-arena__stage {
+  color: var(--text-color-muted);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.battle-arena__stage--leader {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.battle-arena__banner {
+  text-align: center;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  background: var(--overlay-light);
+  border: 1px solid var(--border-color);
+  color: var(--text-color-muted);
+}
+
+.battle-arena__banner--your-turn {
+  border-color: var(--success-color);
+  color: var(--success-color);
+  font-weight: 600;
+}
+
+.battle-arena__banner--switch {
+  border-color: var(--warning-color);
+  color: var(--warning-color);
+  font-weight: 700;
+  animation: battle-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes battle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* ── Battlefield ── */
+
+.battle-field {
+  position: relative;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background:
+    radial-gradient(ellipse at 75% 20%, var(--accent-color-subtle), transparent 55%),
+    linear-gradient(165deg, var(--secondary-color) 0%, var(--background-color) 55%, var(--primary-color) 100%);
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+}
+
+.battle-field__side {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.battle-field__side--enemy {
+  align-self: flex-end;
+  flex-direction: row;
+}
+
+.battle-field__side--player {
+  align-self: flex-start;
+  flex-direction: row;
+}
+
+.battle-field__empty {
+  color: var(--text-color-muted);
+  font-style: italic;
+  padding: 2rem;
+}
+
+.battle-field__sprite-zone {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.battle-field__platform {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 170px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--overlay-dark);
+  filter: blur(1px);
+}
+
+/* ── Background scene ── */
+
+.battle-field__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+/* A subtle scrim keeps HP cards / dialogue readable over busy artwork. */
+.battle-field--has-bg .battle-field__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, transparent 30%, rgba(0, 0, 0, 0.22) 100%);
+}
+
+/* The battle sides sit above the bg layer (the dialogue box has its own z-index). */
+.battle-field > .battle-field__side {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Place-spot (the patch of ground under each monster) ── */
+
+.battle-field__spot {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 185px;
+  max-height: 78px;
+  object-fit: contain;
+  object-position: bottom;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.3));
+}
+
+.battle-field__sprite {
+  position: relative;
+  max-width: 165px;
+  max-height: 165px;
+  object-fit: contain;
+  image-rendering: auto;
+  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.35));
+}
+
+.battle-field__sprite--enemy {
+  animation: battle-enter-right 0.5s ease-out;
+}
+
+.battle-field__sprite--player {
+  animation: battle-enter-left 0.5s ease-out;
+}
+
+.battle-field__sprite--fainted {
+  filter: grayscale(1) brightness(0.6);
+  opacity: 0.55;
+  transform: translateY(12px) rotate(-10deg);
+  transition: all 0.5s ease;
+}
+
+/* Newly knocked-out monster: dramatic drop + fade before it is switched out.
+   The end state matches .battle-field__sprite--fainted so there is no pop when
+   the one-shot animation class is removed. */
+.battle-field__sprite--fainting {
+  animation: battle-faint 1s ease-in forwards;
+}
+
+@keyframes battle-faint {
+  0%   { transform: translateY(0) rotate(0deg);      opacity: 1;    filter: grayscale(0) brightness(1); }
+  15%  { transform: translateY(-10px) rotate(-3deg); opacity: 1; }
+  100% { transform: translateY(12px) rotate(-10deg); opacity: 0.55; filter: grayscale(1) brightness(0.6); }
+}
+
+@keyframes battle-enter-right {
+  from { transform: translateX(60px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes battle-enter-left {
+  from { transform: translateX(-60px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Taking a hit: colour flash (opacity/filter) + a positional shake. The two
+   keyframe sets animate disjoint properties so they compose cleanly. */
+.battle-field__sprite-zone--hit .battle-field__sprite {
+  animation: battle-damage-flash 0.7s ease, battle-shake 0.45s ease;
+}
+
+@keyframes battle-damage-flash {
+  0%, 40%, 80% { opacity: 1; filter: drop-shadow(0 0 8px var(--error-light)); }
+  20%, 60% { opacity: 0.25; }
+  100% { opacity: 1; }
+}
+
+@keyframes battle-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .battle-field__sprite--fainting,
+  .battle-field__sprite-zone--hit .battle-field__sprite,
+  .battle-field__sprite--enemy,
+  .battle-field__sprite--player {
+    animation: none;
+  }
+}
+
+/* ── Info cards / HP bars ── */
+
+.battle-info-card {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+  min-width: 220px;
+  box-shadow: var(--shadow-small);
+}
+
+.battle-info-card--fainted {
+  opacity: 0.7;
+}
+
+.battle-info-card__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.battle-info-card__name {
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.battle-info-card__level {
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+}
+
+.battle-info-card__types {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0.3rem 0;
+  flex-wrap: wrap;
+}
+
+.battle-hp__bar {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--overlay-dark);
+  overflow: hidden;
+}
+
+.battle-hp__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s ease, background-color 0.6s ease;
+}
+
+.battle-hp__fill--high { background: var(--success-light); }
+.battle-hp__fill--mid { background: var(--warning-color); }
+.battle-hp__fill--low { background: var(--error-light); }
+
+.battle-hp__text {
+  font-size: 0.78rem;
+  color: var(--text-color-muted);
+}
+
+.battle-hp--flash .battle-hp__bar {
+  animation: battle-pulse 0.35s ease 2;
+}
+
+.battle-info-card__statuses {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  margin-top: 0.3rem;
+}
+
+.battle-status-chip {
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--overlay-dark);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.battle-status-chip--burn, .battle-status-chip--burned { background: var(--fire-type); color: #fff; }
+.battle-status-chip--poison, .battle-status-chip--poisoned, .battle-status-chip--badly-poisoned { background: var(--poison-type); color: #fff; }
+.battle-status-chip--paralysis, .battle-status-chip--paralyzed { background: var(--electric-type); color: #fff; }
+.battle-status-chip--sleep, .battle-status-chip--asleep { background: var(--psychic-type); color: #fff; }
+.battle-status-chip--freeze, .battle-status-chip--frozen { background: var(--ice-type); color: #fff; }
+
+/* ── Controls ── */
+
+.battle-controls {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+  align-items: start;
+}
+
+.battle-moves h3,
+.battle-log h3 {
+  margin: 0 0 0.6rem;
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.battle-moves__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.battle-move-button {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.battle-move-button:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.battle-move-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.battle-move-button__name {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.battle-move-button__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.battle-move-category {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-color-muted);
+}
+
+.battle-move-category--physical { color: var(--fighting-type); }
+.battle-move-category--special { color: var(--psychic-type); }
+.battle-move-category--status { color: var(--steel-type); }
+
+.battle-move-button__stats {
+  display: flex;
+  gap: 0.8rem;
+  font-size: 0.72rem;
+  color: var(--text-color-muted);
+}
+
+/* ── Team bar ── */
+
+.battle-team-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.battle-team-bar--emphasized {
+  padding: 0.5rem;
+  border: 2px dashed var(--warning-color);
+  border-radius: 10px;
+  animation: battle-pulse 1.2s ease-in-out infinite;
+}
+
+.battle-team-bar__must-switch {
+  color: var(--warning-color) !important;
+}
+
+.battle-team-bar__empty {
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+}
+
+.battle-bench-monster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  width: 86px;
+  padding: 0.4rem 0.25rem;
+  border-radius: 8px;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.battle-bench-monster:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+.battle-bench-monster:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.battle-bench-monster.fainted img {
+  filter: grayscale(1) brightness(0.6);
+}
+
+.battle-bench-monster img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.battle-bench-monster__name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.battle-bench-monster__hp {
+  display: block;
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--overlay-dark);
+  overflow: hidden;
+}
+
+.battle-bench-monster__hp-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+/* ── Battle log ── */
+
+.battle-log {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+}
+
+.battle-log__entries {
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.battle-log__entry {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-color);
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+  background: var(--overlay-light);
+}
+
+.battle-log__empty {
+  color: var(--text-color-muted);
+  font-style: italic;
+}
+
+/* ── End-of-battle overlay ── */
+
+.battle-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.battle-overlay__card {
+  background: var(--background-color);
+  border-radius: 14px;
+  padding: 2rem;
+  text-align: center;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: var(--shadow-large);
+  animation: battle-overlay-in 0.35s ease;
+  border: 2px solid var(--border-color);
+}
+
+.battle-overlay__card--victory {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 30px var(--accent-glow), var(--shadow-large);
+}
+
+.battle-overlay__card--defeat {
+  border-color: var(--error-color);
+}
+
+@keyframes battle-overlay-in {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.battle-overlay__card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 2rem;
+  color: var(--text-color);
+}
+
+.battle-overlay__card--victory h2 { color: var(--accent-color); }
+.battle-overlay__card--defeat h2 { color: var(--error-color); }
+
+.battle-overlay__currency {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.battle-overlay__currency.gain { color: var(--success-color); }
+.battle-overlay__currency.loss { color: var(--error-color); }
+
+.battle-overlay__levels {
+  margin: 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.battle-overlay__level-reward {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--success-color);
+}
+
+.battle-overlay__badge {
+  margin: 1rem 0;
+  color: var(--text-color);
+}
+
+.battle-overlay__badge img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  animation: battle-badge-pop 0.6s ease;
+}
+
+@keyframes battle-badge-pop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.battle-overlay__gauntlet {
+  margin: 0.75rem 0;
+  color: var(--text-color);
+}
+
+.battle-overlay__gauntlet-complete {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.battle-overlay__gauntlet-failed {
+  color: var(--error-color);
+  font-weight: 700;
+}
+
+.battle-overlay__actions {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+/* ── Badge case (trainer profile) ── */
+
+.battle-badge-case {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.battle-badge-case h3 {
+  color: var(--text-color);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.battle-badge-case__count {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted, var(--text-color));
+  opacity: 0.75;
+}
+
+.battle-badge-case__grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3rem;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.battle-badge-case__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: center;
+  padding: 1rem;
+  width: 100px;
+}
+
+.battle-badge-case__item img,
+.battle-badge-case__item .battle-badge-placeholder {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  font-size: 1.3rem;
+}
+
+.battle-badge-case__item--empty .battle-badge-case__name {
+  opacity: 0.4;
+}
+
+.battle-badge-case__name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+@media (max-width: 480px) {
+  .battle-badge-case__grid {
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  .battle-badge-case__item {
+    width: 72px;
+    padding: 0.5rem;
+  }
+
+  .battle-badge-case__item img,
+  .battle-badge-case__item .battle-badge-placeholder {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* ── Dialogue box (Pokémon-style) ── */
+
+.battle-dialogue {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  animation: battle-dialogue-in 0.25s ease;
+}
+
+@keyframes battle-dialogue-in {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.battle-dialogue__portrait {
+  flex: 0 0 auto;
+}
+
+.battle-dialogue__portrait img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45));
+  animation: battle-dialogue-in 0.35s ease;
+}
+
+.battle-dialogue__box {
+  flex: 1 1 auto;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-color);
+  background: var(--background-color);
+  border: 4px solid var(--accent-color);
+  border-radius: 12px;
+  padding: 0.75rem 1.1rem;
+  box-shadow: var(--shadow-medium);
+  font: inherit;
+  min-height: 84px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: box-shadow 0.15s ease;
+}
+
+.battle-dialogue__box:hover {
+  box-shadow: 0 0 12px var(--accent-glow), var(--shadow-medium);
+}
+
+/* When a custom text-box skin is used, border-image (set inline) supplies the
+   frame + fill, so drop our default chrome. Text stays dark for legibility on
+   typically-light box art. */
+.battle-dialogue__box--custom {
+  background: transparent !important;
+  border-radius: 0;
+  box-shadow: none;
+  color: #20242c;
+}
+
+.battle-dialogue__box--custom .battle-dialogue__speaker {
+  color: #2b3a67;
+}
+
+.battle-dialogue__box--custom:hover {
+  box-shadow: none;
+}
+
+.battle-dialogue__speaker {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.battle-dialogue__text {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.4;
+}
+
+.battle-dialogue__advance {
+  align-self: flex-end;
+  font-size: 0.75rem;
+  opacity: 0.75;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  animation: battle-pulse 1.4s ease-in-out infinite;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 800px) {
+  .battle-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .battle-dialogue__portrait img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .battle-dialogue__text {
+    font-size: 0.92rem;
+  }
+
+  .battle-field {
+    min-height: 320px;
+    padding: 0.75rem;
+  }
+
+  .battle-field__side {
+    flex-direction: column !important;
+    gap: 0.4rem;
+  }
+
+  .battle-field__side--enemy {
+    align-items: flex-end;
+  }
+
+  .battle-field__side--player {
+    align-items: flex-start;
+  }
+
+  .battle-field__sprite-zone {
+    width: 140px;
+    height: 140px;
+  }
+
+  .battle-field__sprite {
+    max-width: 120px;
+    max-height: 120px;
+  }
+
+  .battle-info-card {
+    min-width: 180px;
+  }
+}

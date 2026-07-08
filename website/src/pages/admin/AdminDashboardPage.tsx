@@ -23,6 +23,8 @@ const ADMIN_CATEGORIES: AdminCategory[] = [
     icon: 'fas fa-compass',
     tools: [
       { name: 'Boss Manager', icon: 'fas fa-dragon', description: 'Manage boss encounters and rewards', path: '/admin/boss-manager' },
+      { name: 'Battle & Gym Manager', icon: 'fas fa-fist-raised', description: 'Create gyms, gym leaders, gauntlets, and AI battles', path: '/admin/gym-manager' },
+      { name: 'Battle Assets', icon: 'fas fa-panorama', description: 'Battle backgrounds, place-spots, and text-box skins with live preview', path: '/admin/battle-assets' },
       { name: 'Discord Adventure Manager', icon: 'fab fa-discord', description: 'Manage Discord-based adventures', path: '/admin/discord-adventure-manager' },
       { name: 'Mission Content Manager', icon: 'fas fa-scroll', description: 'Create and edit mission content', path: '/admin/mission-content-manager' },
       { name: 'Player Mission Manager', icon: 'fas fa-tasks', description: 'View and manage player mission progress', path: '/admin/player-mission-manager' },

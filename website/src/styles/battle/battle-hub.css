@@ -1,0 +1,584 @@
+/* ==============================
+   Battle Hub Page
+   ============================== */
+
+.battle-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.battle-page__header {
+  margin-bottom: 1.5rem;
+}
+
+.battle-page__header h1 {
+  color: var(--text-color);
+  margin-bottom: 0.25rem;
+}
+
+.battle-page__header h1 i {
+  color: var(--accent-color);
+}
+
+.battle-page__header p {
+  color: var(--text-color-muted);
+}
+
+.battle-page__error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--overlay-light);
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.battle-page__error button {
+  margin-left: auto;
+}
+
+.battle-hub__section {
+  padding-top: 1rem;
+}
+
+.battle-hub__section-header {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.battle-hub__section-header .form-group {
+  margin-bottom: 0;
+  min-width: 220px;
+}
+
+.battle-hub__subheading {
+  margin: 1.5rem 0 0.75rem;
+  color: var(--text-color);
+}
+
+.battle-hub__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1rem;
+}
+
+.battle-hub__grid--gyms {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+/* ── Team cards ── */
+
+.battle-team-card,
+.battle-opponent-card {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-small);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.battle-team-card:hover,
+.battle-opponent-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.battle-team-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.battle-team-card__header h3 {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.battle-team-card__public,
+.battle-team-card__private {
+  font-size: 0.8rem;
+  color: var(--text-color-muted);
+  white-space: nowrap;
+}
+
+.battle-team-card__public i {
+  color: var(--success-color);
+}
+
+.battle-team-card__description,
+.battle-opponent-card__description {
+  color: var(--text-color-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.battle-team-card__count {
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.battle-team-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+/* ── Opponent cards ── */
+
+.battle-opponent-card__trainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.battle-opponent-card__trainer img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+}
+
+.battle-opponent-card__trainer h3 {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.battle-opponent-card__trainer-name {
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+}
+
+/* ── Gym cards ── */
+
+.battle-gym-card {
+  display: flex;
+  gap: 1rem;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: var(--shadow-small);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.battle-gym-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.battle-gym-card.earned {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.battle-gym-card--ai {
+  border-style: dashed;
+}
+
+.battle-gym-card__badge {
+  position: relative;
+  flex-shrink: 0;
+  width: 72px;
+}
+
+.battle-gym-card__badge img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.battle-gym-card__earned-check {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  color: var(--success-color);
+  background: var(--primary-color);
+  border-radius: 50%;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.battle-badge-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--overlay-light);
+  border: 2px dashed var(--border-color);
+  color: var(--accent-color);
+  font-size: 1.6rem;
+}
+
+.battle-badge-placeholder--lg {
+  width: 96px;
+  height: 96px;
+  font-size: 2.2rem;
+}
+
+.battle-gym-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.battle-gym-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.battle-gym-card__title h3 {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.battle-gym-card__leader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--text-color-muted);
+  font-size: 0.9rem;
+}
+
+.battle-gym-card__leader img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.battle-gym-card__description {
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.battle-gym-card__gauntlet {
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.battle-gym-card__rewards {
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.battle-reward-win {
+  color: var(--success-color);
+}
+
+.battle-reward-loss {
+  color: var(--error-color);
+}
+
+.battle-gym-card__earned-label {
+  color: var(--accent-color);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ── PvP ── */
+
+.battle-pvp-challenge {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.battle-pvp-challenge h3 {
+  margin: 0 0 0.75rem;
+  color: var(--text-color);
+}
+
+.battle-pvp-challenge__row {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.battle-pvp-challenge__row .form-group {
+  flex: 1;
+  min-width: 240px;
+  margin-bottom: 0;
+}
+
+.battle-challenge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.battle-challenge-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--text-color);
+}
+
+.battle-challenge-item__date {
+  color: var(--text-color-muted);
+  font-size: 0.8rem;
+  margin-left: 0.75rem;
+}
+
+.battle-challenge-item__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ── Chips ── */
+
+.battle-mode-chip {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--overlay-light);
+  border: 1px solid var(--border-color);
+  color: var(--text-color-muted);
+}
+
+.battle-mode-chip--gauntlet {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.battle-mode-chip--pvp {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+.battle-turn-chip,
+.battle-pending-chip {
+  display: inline-block;
+  margin-left: 0.6rem;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.battle-turn-chip {
+  background: var(--success-color);
+  color: #fff;
+}
+
+.battle-pending-chip {
+  background: var(--warning-color);
+  color: #fff;
+}
+
+/* ── Team pick / editor modal ── */
+
+.team-pick-modal__counter {
+  margin: 0.5rem 0;
+  color: var(--text-color-muted);
+}
+
+.team-pick-modal__error {
+  color: var(--error-color);
+  margin-bottom: 0.5rem;
+}
+
+.team-pick-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 0.6rem;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 0.25rem;
+}
+
+/* ── Monster picker (search / filters / pagination) ── */
+
+.monster-picker {
+  display: flex;
+  flex-direction: column;
+}
+
+.monster-picker__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.monster-picker__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 200px;
+}
+
+.monster-picker__search > i {
+  position: absolute;
+  left: 0.6rem;
+  color: var(--text-color-muted);
+  pointer-events: none;
+}
+
+.monster-picker__search input {
+  width: 100%;
+  padding: 0.45rem 1.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--input-bg, var(--secondary-color));
+  color: var(--text-color);
+  font: inherit;
+}
+
+.monster-picker__clear {
+  position: absolute;
+  right: 0.4rem;
+  background: none;
+  border: none;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  padding: 0.2rem;
+}
+
+.monster-picker__filter {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--input-bg, var(--secondary-color));
+  color: var(--text-color);
+  font: inherit;
+  flex: 0 1 auto;
+}
+
+.monster-picker__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.6rem;
+}
+
+.monster-picker__page-info {
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.monster-picker__count {
+  opacity: 0.8;
+}
+
+.team-pick-modal__monster {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  background: var(--primary-color);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem 0.25rem;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.team-pick-modal__monster:hover {
+  transform: translateY(-2px);
+}
+
+.team-pick-modal__monster.selected {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.team-pick-modal__monster--ineligible {
+  cursor: not-allowed;
+  opacity: 0.55;
+  filter: grayscale(0.7);
+}
+
+.team-pick-modal__monster--ineligible:hover {
+  transform: none;
+}
+
+.team-pick-modal__no-ref {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--error-color, #c0392b);
+  color: #fff;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-pick-modal__monster img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.team-pick-modal__order {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-pick-modal__name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.team-pick-modal__level {
+  font-size: 0.72rem;
+  color: var(--text-color-muted);
+}

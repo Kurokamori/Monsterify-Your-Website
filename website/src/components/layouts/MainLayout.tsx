@@ -75,6 +75,7 @@ const ADVENTURES_LINKS: NavLink[] = [
   { to: '/adventures?tab=missions', label: 'Missions' },
   { to: '/adventures?tab=boss', label: 'Boss' },
   { to: '/adventures?tab=faction-quests', label: 'Faction Quests' },
+  { to: '/adventures/battle', label: 'Battle' },
 ];
 
 function AutoColumnDropdown({ children, className }: { children: React.ReactNode; className?: string }) {

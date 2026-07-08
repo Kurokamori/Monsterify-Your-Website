@@ -26,6 +26,8 @@ import AdventureRewardsPage from './pages/adventures/AdventureRewardsPage'
 import EventsPage from './pages/adventures/EventsPage'
 import FactionDetailPage from './pages/adventures/FactionDetailPage'
 import MissionStartPage from './pages/adventures/missions/MissionStartPage'
+import BattlePage from './pages/battle/BattlePage'
+import BattleArenaPage from './pages/battle/BattleArenaPage'
 import ReferenceTodoPage from './pages/profile/reference/ReferenceTodoPage'
 import ReferenceHelperPage from './pages/profile/reference/ReferenceHelperPage'
 import SchedulePage from './pages/profile/schedule/SchedulePage'
@@ -99,6 +101,8 @@ import { PromptManagerPage } from './pages/admin/prompt-management'
 import { TownActivitiesEditorPage } from './pages/admin/town-activities-editor'
 import { ShopManagerPage } from './pages/admin/shop-manager'
 import { BossManagerPage } from './pages/admin/boss-manager'
+import GymManagerPage from './pages/admin/gym-manager/GymManagerPage'
+import { BattleAssetsPage } from './pages/admin/battle-assets'
 import { DiscordAdventureManagerPage } from './pages/admin/adventure-management/discord-adventure-manager'
 import { TrainerManagerPage } from './pages/admin/trainer-manager'
 import { MonsterManagerPage } from './pages/admin/monster-manager'
@@ -166,6 +170,8 @@ function App() {
         <Route path="adventures/events/:eventId" element={<EventsPage />} />
         <Route path="adventures/missions/:missionId/start" element={<MissionStartPage />} />
         <Route path="adventures/faction-quests/:factionId" element={<FactionDetailPage />} />
+        <Route path="adventures/battle" element={<BattlePage />} />
+        <Route path="adventures/battle/:battleId" element={<BattleArenaPage />} />
         <Route path="adventures/:adventureId" element={<AdventurePage />} />
 
         {/* Boss Routes */}
@@ -241,6 +247,8 @@ function App() {
         <Route path="admin/town-activities-editor" element={<TownActivitiesEditorPage />} />
         <Route path="admin/shop-manager" element={<ShopManagerPage />} />
         <Route path="admin/boss-manager" element={<BossManagerPage />} />
+        <Route path="admin/gym-manager" element={<GymManagerPage />} />
+        <Route path="admin/battle-assets" element={<BattleAssetsPage />} />
         <Route path="admin/discord-adventure-manager" element={<DiscordAdventureManagerPage />} />
         <Route path="admin/trainer-manager" element={<TrainerManagerPage />} />
         <Route path="admin/trainer-monster-manager" element={<MonsterManagerPage />} />

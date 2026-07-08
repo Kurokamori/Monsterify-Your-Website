@@ -333,28 +333,23 @@ const monsterhunterConfig: SpeciesAdminConfig = {
     {
       fields: [
         { key: 'name', label: 'Name', type: 'text', required: true },
-        { key: 'monsterClass', label: 'Monster Class', type: 'select', required: true, options: toOptions(MH_CLASSES) },
-        { key: 'elementPrimary', label: 'Primary Element', type: 'select', options: [{ value: '', label: 'None' }, ...toOptions(MH_ELEMENTS)] },
-        { key: 'elementSecondary', label: 'Secondary Element', type: 'select', options: [{ value: '', label: 'None' }, ...toOptions(MH_ELEMENTS)] },
+        { key: 'rank', label: 'Rank', type: 'text', required: true },
+        { key: 'element', label: 'Primary Element', type: 'select', options: [{ value: '', label: 'None' }, ...toOptions(MH_ELEMENTS)] },
       ],
     },
     {
       fields: [
-        { key: 'weaknesses', label: 'Weaknesses', type: 'text', helpText: 'Comma-separated' },
-        { key: 'habitat', label: 'Habitat', type: 'text', helpText: 'Where this monster can be found' },
-        { key: 'description', label: 'Description', type: 'textarea', rows: 4 },
         { key: 'imageUrl', label: 'Image', type: 'file' },
       ],
     },
   ],
   defaultValues: {
-    name: '', monsterClass: '', elementPrimary: '', elementSecondary: '',
-    weaknesses: '', habitat: '', description: '', imageUrl: '',
+    name: '', rank: '', element: '',  imageUrl: '',
   },
   validate: (values) => {
     const errors: Record<string, string> = {};
     required(values, 'name', 'Name', errors);
-    required(values, 'monsterClass', 'Monster Class', errors);
+    required(values, 'rank', 'Rank', errors);
     return errors;
   },
 };

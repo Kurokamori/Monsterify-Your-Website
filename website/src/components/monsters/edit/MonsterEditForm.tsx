@@ -142,6 +142,10 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess, isAdmi
     setFormData(prev => ({ ...prev, img_link: url || '' }));
   }, []);
 
+  const handleBackSpriteUpload = useCallback((url: string | null) => {
+    setFormData(prev => ({ ...prev, back_sprite: url || '' }));
+  }, []);
+
   const handleMegaStoneImageUpload = useCallback(async (url: string | null) => {
     if (url && monster.id) {
       try {
@@ -611,6 +615,25 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess, isAdmi
             />
             <div className="form-help-text">Upload a clear image of your monster. Recommended size: 800x800 pixels.</div>
           </div>
+          <div className="form-group">
+            <label className="form-label">Back Sprite (Battles)</label>
+            <FileUpload
+              onUploadSuccess={handleBackSpriteUpload}
+              buttonText="Upload Back Sprite"
+              initialImageUrl={formData.back_sprite || null}
+              disabled={saving}
+              folder="monsters"
+            />
+            <div className="form-help-text">Optional back-view sprite shown for your monster in battles. Falls back to the main image if not set.</div>
+          </div>
+          <FormInput
+            name="back_sprite"
+            label="Back Sprite URL"
+            value={formData.back_sprite}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => handleFieldChange('back_sprite', e.target.value)}
+            disabled={saving}
+            placeholder="https://... (or use the upload button above)"
+          />
           <FormInput
             name="main_ref_artist"
             label="Main Image Artist"

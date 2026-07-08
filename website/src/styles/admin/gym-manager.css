@@ -1,0 +1,499 @@
+/* ==========================================================================
+   Battle & Gym Manager (admin)
+   --------------------------------------------------------------------------
+   Authors a *fight*: gauntlet trainers fought in order, then the leader.
+   The form mirrors that flow — opponents are numbered stages on an accent
+   rail (Stage 1 → Stage 2 → Final), so the editor reads like the battle plays.
+   Fully token-driven; see styles/admin/boss-manager.css for the house style.
+   ========================================================================== */
+
+.gym-manager__intro {
+  color: var(--text-color-muted);
+  max-width: 70ch;
+  margin-bottom: var(--spacing-medium);
+  line-height: 1.6;
+}
+
+/* ── Toolbar ── */
+
+.gym-manager__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+  flex-wrap: wrap;
+  padding: var(--spacing-small) var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.gym-manager__muted {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.gym-manager__optional {
+  color: var(--text-color-muted);
+  font-weight: 400;
+  font-size: 0.8em;
+}
+
+/* ── Status banner ── */
+
+.gym-manager__status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-medium);
+  font-size: var(--font-size-small);
+  animation: gymManagerStatusIn 0.2s ease;
+}
+
+.gym-manager__status--success {
+  background: var(--accent-color-subtle);
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+}
+
+.gym-manager__status--error {
+  background: var(--accent-color-subtle);
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+}
+
+.gym-manager__status-dismiss {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  padding: var(--spacing-xxsmall);
+}
+
+.gym-manager__status-dismiss:hover { opacity: 1; }
+
+@keyframes gymManagerStatusIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Form shell ── */
+
+.gym-manager__form {
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-large);
+  margin-bottom: var(--spacing-large);
+  background: var(--primary-color);
+  box-shadow: var(--shadow-medium);
+}
+
+.gym-manager__form > h3 {
+  margin: 0 0 var(--spacing-medium);
+  font-size: var(--font-size-xlarge);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.gym-manager__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.gym-manager__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  min-width: 120px;
+}
+
+.gym-manager__field--grow { flex: 1 1 200px; }
+.gym-manager__field--num { width: 120px; flex: 0 0 auto; }
+
+.gym-manager__field label {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.gym-manager__input {
+  width: 100%;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  background: var(--input-background);
+  color: var(--text-color);
+  font: inherit;
+  font-size: var(--font-size-small);
+  transition: border-color var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+}
+
+.gym-manager__input:hover:not(:disabled) {
+  border-color: var(--accent-color-muted);
+}
+
+.gym-manager__input:focus {
+  border-color: var(--accent-color);
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.gym-manager__input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+textarea.gym-manager__input {
+  resize: vertical;
+  min-height: 2.4rem;
+  line-height: 1.5;
+}
+
+/* ── Primary toggle (badge-gym switch) reads like a decision, not a checkbox ── */
+
+.gym-manager__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  margin: 0 0 var(--spacing-medium);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  background: var(--secondary-color);
+  cursor: pointer;
+  font-weight: 600;
+  transition: border-color var(--transition-fast) ease;
+}
+
+.gym-manager__toggle:hover { border-color: var(--accent-color-muted); }
+.gym-manager__toggle input { accent-color: var(--accent-color); }
+
+.gym-manager__toggle--inline {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  align-self: flex-end;
+  font-weight: 400;
+}
+
+/* ── Sections ── */
+
+.gym-manager__section {
+  border-top: 1px solid var(--border-color);
+  margin-top: var(--spacing-large);
+  padding-top: var(--spacing-medium);
+}
+
+.gym-manager__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+/* Icon chip + eyebrow header, matching the house "section title" idiom */
+.gym-manager__section h4 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  margin: 0;
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.gym-manager__section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  border-radius: var(--border-radius-medium);
+  background: var(--accent-color-subtle);
+  color: var(--accent-color);
+  font-size: var(--font-size-medium);
+}
+
+.gym-manager__section > .gym-manager__muted {
+  margin: var(--spacing-xxsmall) 0 var(--spacing-small);
+  font-style: italic;
+}
+
+/* ── Battle-order chip (Stage 1 / Stage 2 / Final) ── */
+
+.gym-manager__stage {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  border-radius: var(--border-radius-full);
+  background: var(--accent-color-subtle);
+  border: 1px solid var(--accent-color-muted);
+  color: var(--accent-color);
+  font-size: var(--font-size-xsmall);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.gym-manager__stage--final {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--background-color);
+}
+
+.gym-manager__team {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  margin-top: var(--spacing-small);
+}
+
+/* ── Spec editor (one opponent monster) ── */
+
+.gym-manager__spec {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  background: var(--secondary-color);
+}
+
+.gym-manager__spec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-small);
+}
+
+.gym-manager__spec-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  font-weight: 700;
+  font-size: var(--font-size-small);
+  color: var(--accent-color);
+}
+
+.gym-manager__spec-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-small);
+}
+
+.gym-manager__spec-row > * { flex: 1 1 120px; }
+.gym-manager__spec-row--types > * { flex: 1 1 90px; min-width: 90px; }
+
+.gym-manager__spec-preview {
+  max-height: 90px;
+  max-width: 90px;
+  object-fit: contain;
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  background: var(--input-background);
+  margin-top: var(--spacing-xsmall);
+}
+
+/* ── Gauntlet trainer (a numbered stage on the battle-order rail) ── */
+
+.gym-manager__trainer {
+  position: relative;
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--accent-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  margin-top: var(--spacing-small);
+  background: var(--primary-color);
+}
+
+.gym-manager__trainer-head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-small);
+}
+
+.gym-manager__trainer-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 600;
+  color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gym-manager__trainer-remove {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.gym-manager__form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-small);
+  margin-top: var(--spacing-large);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ── Dialogue & scenery overrides ── */
+
+.gym-manager__dialogue {
+  margin-top: var(--spacing-small);
+  padding: var(--spacing-medium);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--border-radius-medium);
+  background: var(--overlay-light);
+}
+
+.gym-manager__dialogue-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-small);
+}
+
+.gym-manager__dialogue-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-small);
+}
+
+.gym-manager__row--overrides {
+  align-items: flex-end;
+  margin-top: var(--spacing-small);
+  margin-bottom: 0;
+}
+
+.gym-manager__override-hint {
+  align-self: center;
+  font-size: var(--font-size-xsmall);
+}
+
+/* ── List table ── */
+
+.gym-manager__table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.gym-manager__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-small);
+}
+
+.gym-manager__table th,
+.gym-manager__table td {
+  padding: var(--spacing-small) var(--spacing-medium);
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.gym-manager__table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--primary-color);
+  font-size: var(--font-size-xsmall);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-color-muted);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.gym-manager__table tbody tr:hover td { background: var(--primary-color-hover); }
+
+.gym-manager__row--active td {
+  background: var(--secondary-color);
+  border-left: 3px solid var(--accent-color);
+}
+
+.gym-manager__kind {
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xsmall);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.gym-manager__kind--gym {
+  background: var(--accent-color-subtle);
+  color: var(--success-color);
+}
+
+.gym-manager__kind--ai {
+  background: var(--accent-color-subtle);
+  color: var(--discord-color);
+}
+
+.gym-manager__yes { color: var(--success-color); }
+.gym-manager__no  { color: var(--error-color); }
+
+.gym-manager__actions-cell {
+  display: flex;
+  gap: var(--spacing-xsmall);
+}
+
+/* ── Loading & empty ── */
+
+.gym-manager__loading,
+.gym-manager__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-small);
+  text-align: center;
+  padding: var(--spacing-xlarge);
+  color: var(--text-color-muted);
+}
+
+.gym-manager__empty i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  opacity: 0.4;
+}
+
+.gym-manager__empty p { margin: 0; }
+
+/* ── Responsive ── */
+
+@media (max-width: 768px) {
+  .gym-manager__toolbar { flex-direction: column; align-items: stretch; }
+  .gym-manager__row { flex-direction: column; }
+  .gym-manager__field,
+  .gym-manager__field--num { width: 100%; min-width: 0; }
+  .gym-manager__form-actions { flex-direction: column-reverse; }
+  .gym-manager__form-actions .button { width: 100%; }
+}
+
+/* ── Accessibility ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .gym-manager__status { animation: none; }
+  .gym-manager__input { transition: none; }
+}
+
+@media (prefers-contrast: high) {
+  .gym-manager__form { border-width: 2px; }
+  .gym-manager__trainer { border-left-width: 4px; }
+  .gym-manager__table th { border-bottom-width: 3px; }
+  .gym-manager__kind,
+  .gym-manager__stage { border: 1px solid currentColor; }
+}

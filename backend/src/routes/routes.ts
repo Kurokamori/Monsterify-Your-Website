@@ -22,6 +22,7 @@ import gameCornerRoutes from './town/game-corner.routes';
 // Adventure Routes Imports
 import adventureRoutes from './adventure/adventure.routes';
 import adventureDiscordRoutes from './adventure/adventure-discord.routes';
+import webBattleRoutes from './adventure/web-battle.routes';
 import areaRoutes from './adventure/area.routes';
 
 // Item Routes Imports
@@ -132,6 +133,7 @@ router.use('/adoption', adoptionRoutes);
 // Adventure Routes
 router.use('/adventures', adventureRoutes);
 router.use('/adventures/discord', adventureDiscordRoutes);
+router.use('/battle', webBattleRoutes);
 router.use('/areas', areaRoutes);
 
 // Shop Routes

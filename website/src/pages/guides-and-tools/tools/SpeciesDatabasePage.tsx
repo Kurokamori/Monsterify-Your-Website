@@ -11,10 +11,14 @@ import speciesService, {
 import { SpeciesCard } from '../../../components/guides/SpeciesCard';
 import { SpeciesDetailModal } from '../../../components/guides/SpeciesDetailModal';
 import { FranchiseFilters } from '../../../components/guides/FranchiseFilters';
+import { SpeciesRandomGenerator } from '../../../components/guides/SpeciesRandomGenerator';
 import { Pagination } from '../../../components/common/Pagination';
 
 const SpeciesDatabasePage = () => {
   useDocumentTitle('Species Database - Guides');
+
+  // View mode: browse the database or roll random species
+  const [mode, setMode] = useState<'browse' | 'random'>('browse');
 
   // Franchise state
   const [franchise, setFranchise] = useState<FranchiseKey>('pokemon');
@@ -196,11 +200,24 @@ const SpeciesDatabasePage = () => {
 
   return (
     <div className="ability-database">
-      <div className="guide-page__header">
-        <h1>Species Database</h1>
-        <p>Explore all available species across different monster franchises</p>
+      <div className="guide-page__header species-database__header">
+        <div>
+          <h1>Species Database</h1>
+          <p>Explore all available species across different monster franchises</p>
+        </div>
+        <button
+          className="button secondary"
+          onClick={() => setMode(prev => (prev === 'browse' ? 'random' : 'browse'))}
+        >
+          <i className={`fas ${mode === 'browse' ? 'fa-dice' : 'fa-list'}`} />
+          {mode === 'browse' ? ' Random Selector' : ' Browse Database'}
+        </button>
       </div>
 
+      {mode === 'random' ? (
+        <SpeciesRandomGenerator />
+      ) : (
+        <>
       {/* Franchise Selector and Search */}
       <div className="ability-database__filter-section">
         <div className="ability-database__filter-header">
@@ -347,6 +364,8 @@ const SpeciesDatabasePage = () => {
         currentIndex={adjacentSpecies.currentIndex}
         totalCount={adjacentSpecies.total}
       />
+        </>
+      )}
     </div>
   );
 };
