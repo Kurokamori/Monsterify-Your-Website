@@ -63,6 +63,10 @@ export type DamageCalculationOptions = {
   terrain?: TerrainType | null;
   customMultiplier?: number;
   battleId?: number | null;
+  /** Battle-monster row id of the attacker (needed to persist stat-move changes). */
+  attackerId?: number;
+  /** Battle-monster row id of the defender (needed to persist stat-move changes). */
+  defenderId?: number;
 };
 
 export type DamageResult = {
@@ -197,6 +201,8 @@ export class DamageCalculatorService {
       terrain = null,
       customMultiplier = 1.0,
       battleId = null,
+      attackerId,
+      defenderId,
     } = options;
 
     // Get move data if move name is provided
@@ -215,7 +221,14 @@ export class DamageCalculatorService {
 
     // Check if this is a status move first (if StatusMoveService is available)
     if (this.statusMoveService && isStatusMove(moveName)) {
-      const statusMoveResult = await this.processStatusMove(moveData, attacker, defender, battleId);
+      const statusMoveResult = await this.processStatusMove(
+        moveData,
+        attacker,
+        defender,
+        battleId,
+        attackerId,
+        defenderId
+      );
 
       if (statusMoveResult && !statusMoveResult.proceedWithDamage) {
         // This is a pure status move, return the status move result
@@ -304,7 +317,9 @@ export class DamageCalculatorService {
     moveData: MoveData,
     attacker: MonsterData,
     defender: MonsterData,
-    battleId: number | null
+    battleId: number | null,
+    attackerId?: number,
+    defenderId?: number
   ): Promise<DamageResult | null> {
     if (!this.statusMoveService) {
       return null;
@@ -314,7 +329,7 @@ export class DamageCalculatorService {
 
     // Convert MonsterData to StatusMoveBattleMonster format
     const attackerMonster: import('./status-move.service').StatusMoveBattleMonster = {
-      id: (attacker as Record<string, unknown>).id as number ?? 0,
+      id: attackerId ?? ((attacker as Record<string, unknown>).id as number ?? 0),
       name: attacker.name ?? 'Attacker',
       current_hp: attacker.current_hp ?? attacker.hp ?? 100,
       max_hp: attacker.max_hp ?? attacker.hp ?? 100,
@@ -327,7 +342,7 @@ export class DamageCalculatorService {
     };
 
     const defenderMonster: import('./status-move.service').StatusMoveBattleMonster = {
-      id: (defender as Record<string, unknown>).id as number ?? 0,
+      id: defenderId ?? ((defender as Record<string, unknown>).id as number ?? 0),
       name: defender.name ?? 'Defender',
       current_hp: defender.current_hp ?? defender.hp ?? 100,
       max_hp: defender.max_hp ?? defender.hp ?? 100,

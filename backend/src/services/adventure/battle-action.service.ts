@@ -294,8 +294,15 @@ export class BattleActionService {
         id: number,
         data: { monster_data?: Record<string, unknown>; current_hp?: number; is_fainted?: boolean }
       ) => {
+        // Callers (e.g. stat moves) pass only a partial monster_data slice. Merge it
+        // onto the full stored blob so we don't wipe name/moveset/stats/sprites.
+        let monsterData: Record<string, unknown> | undefined;
+        if (data.monster_data !== undefined) {
+          const existing = await this.battleMonsterRepository.findById(id);
+          monsterData = { ...(existing?.monsterData ?? {}), ...data.monster_data };
+        }
         await this.battleMonsterRepository.update(id, {
-          monsterData: data.monster_data,
+          monsterData,
           currentHp: data.current_hp,
           isFainted: data.is_fainted,
         });
@@ -460,7 +467,11 @@ export class BattleActionService {
     }
 
     // Calculate damage for non-status moves
-    const damageResult = await this.calculateDamage(attackerData, targetData, move);
+    const damageResult = await this.calculateDamage(attackerData, targetData, move, {
+      battleId,
+      attackerId: attacker.id,
+      defenderId: target.id,
+    });
 
     // Apply damage if hit
     let damageDealt = 0;
@@ -684,7 +695,11 @@ export class BattleActionService {
       resultMessage = `${attackerData.name ?? 'Attacker'} used **${moveName}**! But nothing happened...`;
     } else if (this.isSpecialDamageMoveResult(result)) {
       // Special damage move - proceed with damage calculation
-      const damageResult = await this.calculateDamage(attackerData, targetData, move);
+      const damageResult = await this.calculateDamage(attackerData, targetData, move, {
+        battleId,
+        attackerId: attacker.id,
+        defenderId: target.id,
+      });
       if (damageResult.hits) {
         const damageApplied = await this.battleMonsterRepository.dealDamage(
           target.id,
@@ -1272,7 +1287,11 @@ export class BattleActionService {
     const targetData = target.monsterData as MonsterData;
 
     // Calculate and apply damage
-    const damageResult = await this.calculateDamage(attackerData, targetData, move);
+    const damageResult = await this.calculateDamage(attackerData, targetData, move, {
+      battleId,
+      attackerId: attacker.id,
+      defenderId: target.id,
+    });
 
     let damageDealt = 0;
     if (damageResult.hits) {
@@ -1736,7 +1755,8 @@ export class BattleActionService {
   private async calculateDamage(
     attacker: MonsterData,
     defender: MonsterData,
-    move: Move
+    move: Move,
+    ids?: { battleId?: number; attackerId?: number; defenderId?: number }
   ): Promise<DamageResult> {
     // Convert Move to MoveData format for DamageCalculatorService
     const moveData: MoveData = {
@@ -1753,7 +1773,11 @@ export class BattleActionService {
     };
 
     // Use DamageCalculatorService for damage calculation
-    const result = await this.damageCalculator.calculateDamage(attacker, defender, moveData);
+    const result = await this.damageCalculator.calculateDamage(attacker, defender, moveData, {
+      battleId: ids?.battleId ?? null,
+      attackerId: ids?.attackerId,
+      defenderId: ids?.defenderId,
+    });
 
     // Convert DamageCalcResult to DamageResult (add moveData as Move type)
     return {
