@@ -132,6 +132,8 @@
 
 .battle-assets__field--grow { flex: 1 1 220px; }
 
+.battle-assets__field--toggle { justify-content: flex-end; }
+
 .battle-assets__field > label {
   font-size: var(--font-size-small);
   font-weight: 600;

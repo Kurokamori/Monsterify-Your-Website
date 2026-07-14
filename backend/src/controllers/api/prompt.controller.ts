@@ -5,6 +5,9 @@ import type { MonsterCondition } from '../../repositories/prompt.repository';
 
 const promptService = new PromptService();
 
+const DEFAULT_PAGE_SIZE: number = 20;
+const MAX_PAGE_SIZE: number = 100;
+
 // =============================================================================
 // Get All Prompts
 // =============================================================================
@@ -22,26 +25,35 @@ export async function getAllPrompts(req: Request, res: Response): Promise<void> 
       trainer_id,
     } = req.query as Record<string, string | undefined>;
 
+    const parsedPage: number = page ? parseInt(page, 10) : 1;
+    const parsedLimit: number = limit ? parseInt(limit, 10) : DEFAULT_PAGE_SIZE;
+
     const options: PromptQueryOptions = {
-      page: page ? parseInt(page, 10) : 1,
-      limit: limit ? parseInt(limit, 10) : 20,
+      page: Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1,
+      limit: Number.isFinite(parsedLimit) && parsedLimit > 0 ? Math.min(parsedLimit, MAX_PAGE_SIZE) : DEFAULT_PAGE_SIZE,
       type: type as PromptQueryOptions['type'],
       category,
       difficulty: difficulty as PromptQueryOptions['difficulty'],
-      activeOnly: active_only !== 'false',
+      activeOnly: active_only === 'all' ? undefined : active_only !== 'false',
       availableOnly: available_only === 'true',
       trainerId: trainer_id ? parseInt(trainer_id, 10) : undefined,
     };
 
-    const prompts = await promptService.getAllPrompts(options);
+    const [prompts, total] = await Promise.all([
+      promptService.getAllPrompts(options),
+      promptService.countPrompts(options),
+    ]);
+
+    const pageSize: number = options.limit ?? DEFAULT_PAGE_SIZE;
 
     res.json({
       success: true,
       prompts,
       pagination: {
         page: options.page ?? 1,
-        limit: options.limit ?? 20,
-        total: prompts.length,
+        limit: pageSize,
+        total,
+        totalPages: Math.max(1, Math.ceil(total / pageSize)),
       },
     });
   } catch (error) {

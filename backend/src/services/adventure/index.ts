@@ -195,16 +195,19 @@ export type {
 } from './battle-manager.service';
 
 // Web Battle Service (website-facing battles: teams, gauntlets, PvP)
-export { WebBattleService } from './web-battle.service';
+export { WebBattleService, BATTLE_STAT_STAGE_KEYS } from './web-battle.service';
 export type {
   WebBattleMode,
   WebBattleData,
   WebBattleAction,
   WebBattleMonsterView,
   WebBattleParticipantView,
+  WebBattleTurnView,
   WebBattleSettlement,
   WebBattleStateView,
   WebBattleAppearance,
   WebBattleDialogueView,
   WebActionResult,
+  BattleStatStageKey,
+  BattleStatStages,
 } from './web-battle.service';

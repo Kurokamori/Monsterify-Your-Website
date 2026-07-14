@@ -259,10 +259,11 @@
 }
 
 .battle-gym-card__leader img {
-  width: 28px;
-  height: 28px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: top;
 }
 
 .battle-gym-card__description {
@@ -296,6 +297,76 @@
   color: var(--accent-color);
   font-weight: 600;
   font-size: 0.9rem;
+}
+
+/* ── Gym / League / Champion subsections ── */
+
+.battle-hub__subsection {
+  margin-top: 1rem;
+}
+
+.battle-hub__subsection + .battle-hub__subsection {
+  margin-top: 2rem;
+}
+
+.battle-hub__subheading--league {
+  color: #b8860b;
+}
+
+.battle-hub__subheading--champion {
+  color: #d4af37;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+}
+
+.battle-hub__subhint {
+  margin: -0.35rem 0 0.85rem;
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+}
+
+/* Champion battle card — gilded and prominent. */
+.battle-gym-card--champion {
+  border-color: #d4af37;
+  background:
+    linear-gradient(180deg, rgba(212, 175, 55, 0.08), transparent 60%),
+    var(--primary-color);
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.3);
+}
+
+/* Locked league / champion battles. */
+.battle-gym-card--locked {
+  opacity: 0.7;
+  filter: grayscale(0.35);
+}
+
+.battle-gym-card--locked .battle-gym-card__badge img,
+.battle-gym-card--locked .battle-badge-placeholder {
+  filter: grayscale(0.7) brightness(0.85);
+}
+
+.battle-gym-card__lock {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+}
+
+.battle-gym-card__locked-note {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-color-muted);
+  font-size: 0.8rem;
+  font-style: italic;
 }
 
 /* ── PvP ── */

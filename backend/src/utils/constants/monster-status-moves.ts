@@ -892,6 +892,60 @@ export const STAT_BUFF_DEBUFF_MOVES: StatusMoveDictionary = {
     stats: { speed: 2 },
     message: (user) => `${user} used Rock Polish! ${user}'s Speed rose sharply!`,
   },
+  'Iron Defense': {
+    type: 'stat_buff',
+    target: StatusMoveTarget.SELF,
+    stats: { defense: 2 },
+    message: (user) => `${user} used Iron Defense! ${user}'s Defense rose sharply!`,
+  },
+  'Withdraw': {
+    type: 'stat_buff',
+    target: StatusMoveTarget.SELF,
+    stats: { defense: 1 },
+    message: (user) => `${user} withdrew into its shell! ${user}'s Defense rose!`,
+  },
+  'Shelter': {
+    type: 'stat_buff',
+    target: StatusMoveTarget.SELF,
+    stats: { defense: 2 },
+    message: (user) => `${user} used Shelter! ${user}'s Defense rose sharply!`,
+  },
+  'Autotomize': {
+    type: 'stat_buff',
+    target: StatusMoveTarget.SELF,
+    stats: { speed: 2 },
+    message: (user) => `${user} used Autotomize! ${user} became lighter and its Speed rose sharply!`,
+  },
+  'Shift Gear': {
+    type: 'stat_buff',
+    target: StatusMoveTarget.SELF,
+    stats: { attack: 1, speed: 2 },
+    message: (user) => `${user} used Shift Gear! ${user}'s Speed rose sharply and its Attack rose!`,
+  },
+  'Gear Up': {
+    type: 'stat_buff',
+    target: StatusMoveTarget.SELF,
+    stats: { attack: 1, special_attack: 1 },
+    message: (user) => `${user} used Gear Up! Its Attack and Special Attack rose!`,
+  },
+  'Metal Sound': {
+    type: 'stat_debuff',
+    target: StatusMoveTarget.OPPONENT,
+    stats: { special_defense: -2 },
+    message: (user, target) => `${user} used Metal Sound! ${target}'s Special Defense harshly fell!`,
+  },
+  'Shadow Down': {
+    type: 'stat_debuff',
+    target: StatusMoveTarget.OPPONENT,
+    stats: { defense: -2 },
+    message: (user, target) => `${user} used Shadow Down! ${target}'s Defense harshly fell!`,
+  },
+  'Shadow Mist': {
+    type: 'stat_debuff',
+    target: StatusMoveTarget.OPPONENT,
+    stats: { evasion: -2 },
+    message: (user, target) => `${user} used Shadow Mist! ${target}'s evasiveness harshly fell!`,
+  },
 };
 
 /**
@@ -1060,6 +1114,13 @@ export const STATUS_AFFLICTION_MOVES: StatusMoveDictionary = {
     transferOwnStatus: true,
     curesSelf: true,
     message: (user, target) => `${user} used Psycho Shift! ${user} transferred its status condition to ${target}!`,
+  },
+  'Shadow Panic': {
+    type: 'status_affliction',
+    target: StatusMoveTarget.OPPONENT,
+    statusEffect: VolatileStatus.CONFUSION,
+    duration: 3,
+    message: (user, target) => `${user} used Shadow Panic! ${target} became confused!`,
   },
 };
 
@@ -1244,6 +1305,12 @@ export const HEALING_MOVES: StatusMoveDictionary = {
     healAlly: true,
     cureStatus: true,
     message: (user) => `${user} used Lunar Blessing! ${user} and its ally were healed and cured of status conditions!`,
+  },
+  'Life Dew': {
+    type: 'healing',
+    target: StatusMoveTarget.SELF,
+    healAmount: (monster) => Math.floor(monster.max_hp * 0.25),
+    message: (user) => `${user} used Life Dew and restored its health!`,
   },
 };
 
@@ -2262,6 +2329,56 @@ export const OTHER_STATUS_MOVES: StatusMoveDictionary = {
     duration: -1,
     message: (user, target) => `${user} used Leech Seed! ${target} was seeded!`,
   },
+  'Aqua Ring': {
+    type: 'ongoing_heal',
+    target: StatusMoveTarget.SELF,
+    effect: 'aqua_ring',
+    duration: -1,
+    message: (user) => `${user} used Aqua Ring! A veil of water cloaked ${user}!`,
+  },
+  'Shadow Hold': {
+    type: 'trap',
+    target: StatusMoveTarget.OPPONENT,
+    effect: 'trapped',
+    duration: 5,
+    message: (user, target) => `${user} used Shadow Hold! ${target} can no longer escape!`,
+  },
+  "King's Shield": {
+    type: 'protection',
+    target: StatusMoveTarget.SELF,
+    effect: 'kings_shield',
+    duration: 1,
+    message: (user) => `${user} used King's Shield! It protected itself and will harshly lower the Attack of any attacker on contact!`,
+  },
+  'Soak': {
+    type: 'type_replace',
+    target: StatusMoveTarget.OPPONENT,
+    effect: 'soak',
+    changeType: 'Water',
+    message: (user, target) => `${user} used Soak! ${target} became Water-type!`,
+  },
+  'Water Sport': {
+    type: 'field_effect',
+    target: StatusMoveTarget.FIELD,
+    effect: 'water_sport',
+    duration: 5,
+    fireWeakness: true,
+    message: (user) => `${user} used Water Sport! Fire's power was weakened!`,
+  },
+  'Shadow Sky': {
+    type: 'weather',
+    target: StatusMoveTarget.FIELD,
+    effect: 'shadow_sky',
+    weather: 'shadow_sky' as WeatherValue,
+    duration: 5,
+    message: (user) => `${user} used Shadow Sky! The sky turned dark and shadowy!`,
+  },
+  'Shadow Shed': {
+    type: 'remove_barriers',
+    target: StatusMoveTarget.OPPONENT,
+    effect: 'shadow_shed',
+    message: (user, target) => `${user} used Shadow Shed! ${target}'s Light Screen, Reflect, and Safeguard were removed!`,
+  },
 };
 
 /**
@@ -2275,12 +2392,41 @@ export const ALL_STATUS_MOVES: StatusMoveDictionary = {
 };
 
 /**
+ * Normalize a move name for punctuation/whitespace-insensitive matching.
+ * The moves database strips apostrophes and hyphens (e.g. "Will-O-Wisp" is
+ * stored as "Will O Wisp"), so lookups must reconcile both spellings.
+ */
+export function normalizeMoveName(moveName: string): string {
+  return moveName.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+const NORMALIZED_STATUS_MOVE_INDEX: Record<string, string> = Object.keys(ALL_STATUS_MOVES).reduce(
+  (index, key) => {
+    index[normalizeMoveName(key)] = key;
+    return index;
+  },
+  {} as Record<string, string>
+);
+
+/**
+ * Resolve a (possibly differently punctuated) move name to its canonical
+ * dictionary key. Returns undefined when the move has no status handler.
+ */
+export function resolveStatusMoveName(moveName: string): string | undefined {
+  if (moveName in ALL_STATUS_MOVES) {
+    return moveName;
+  }
+  return NORMALIZED_STATUS_MOVE_INDEX[normalizeMoveName(moveName)];
+}
+
+/**
  * Get a status move definition by name
  * @param moveName - The name of the move
  * @returns The move definition or undefined
  */
 export function getStatusMoveDefinition(moveName: string): StatusMoveDefinition | undefined {
-  return ALL_STATUS_MOVES[moveName];
+  const canonical = resolveStatusMoveName(moveName);
+  return canonical ? ALL_STATUS_MOVES[canonical] : undefined;
 }
 
 /**
@@ -2289,7 +2435,7 @@ export function getStatusMoveDefinition(moveName: string): StatusMoveDefinition 
  * @returns True if the move is a status move
  */
 export function isStatusMove(moveName: string): boolean {
-  return moveName in ALL_STATUS_MOVES;
+  return resolveStatusMoveName(moveName) !== undefined;
 }
 
 /**

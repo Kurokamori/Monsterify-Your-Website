@@ -10,6 +10,7 @@ import battleService, {
   type BattleAssetInput,
 } from '@services/battleService';
 import monsterService from '@services/monsterService';
+import { DEFAULT_TEXTBOX_SLICE, pixelatedClass, textboxSkinStyle } from '@utils/battleAssetStyles';
 import '@styles/battle/battle-arena.css';
 import '@styles/admin/battle-assets.css';
 
@@ -43,6 +44,7 @@ type AssetForm = {
   name: string;
   imgLink: string;
   sliceInset: number | null;
+  pixelated: boolean;
   isActive: boolean;
 };
 
@@ -50,7 +52,8 @@ const emptyForm = (kind: BattleAssetKind = 'background'): AssetForm => ({
   kind,
   name: '',
   imgLink: '',
-  sliceInset: kind === 'textbox' ? 24 : null,
+  sliceInset: kind === 'textbox' ? DEFAULT_TEXTBOX_SLICE : null,
+  pixelated: false,
   isActive: true,
 });
 
@@ -156,6 +159,7 @@ function BattleAssetsContent() {
   const [previewSpotId, setPreviewSpotId] = useState<number | 'form' | null>(null);
   const [previewTextboxId, setPreviewTextboxId] = useState<number | 'form' | null>(null);
   const [previewText, setPreviewText] = useState('Prepare yourself… this battle is mine to win!');
+  const [showTextDisplay, setShowTextDisplay] = useState(true);
   const [mine, setMine] = useState<PreviewMon>(DEFAULT_MINE);
   const [theirs, setTheirs] = useState<PreviewMon>(DEFAULT_THEIRS);
 
@@ -199,7 +203,8 @@ function BattleAssetsContent() {
       kind: asset.kind,
       name: asset.name,
       imgLink: asset.imgLink,
-      sliceInset: asset.sliceInset ?? (asset.kind === 'textbox' ? 24 : null),
+      sliceInset: asset.sliceInset ?? (asset.kind === 'textbox' ? DEFAULT_TEXTBOX_SLICE : null),
+      pixelated: asset.pixelated ?? false,
       isActive: asset.isActive,
     });
     setStatusMsg(null);
@@ -226,7 +231,8 @@ function BattleAssetsContent() {
       kind: form.kind,
       name: form.name.trim(),
       imgLink: form.imgLink.trim(),
-      sliceInset: form.kind === 'textbox' ? (form.sliceInset ?? 24) : null,
+      sliceInset: form.kind === 'textbox' ? (form.sliceInset ?? DEFAULT_TEXTBOX_SLICE) : null,
+      pixelated: form.pixelated,
       isActive: form.isActive,
     };
     setSaving(true);
@@ -269,40 +275,34 @@ function BattleAssetsContent() {
   };
 
   // ── Resolve the preview scene from selections (with the form as a live slot) ──
-  const resolveUrl = (
+  type PreviewSlot = { url: string | null; slice: number | null; pixelated: boolean };
+  const EMPTY_SLOT: PreviewSlot = { url: null, slice: null, pixelated: false };
+
+  const resolveSlot = (
     selection: number | 'form' | null,
     list: BattleAsset[],
     formKind: BattleAssetKind,
-  ): { url: string | null; slice: number | null } => {
+  ): PreviewSlot => {
     if (selection === 'form') {
       return form.kind === formKind && form.imgLink
-        ? { url: form.imgLink, slice: form.sliceInset ?? null }
-        : { url: null, slice: null };
+        ? { url: form.imgLink, slice: form.sliceInset ?? null, pixelated: form.pixelated }
+        : EMPTY_SLOT;
     }
-    if (selection == null) return { url: null, slice: null };
+    if (selection == null) return EMPTY_SLOT;
     const found = list.find(a => a.id === selection);
-    return found ? { url: found.imgLink, slice: found.sliceInset ?? null } : { url: null, slice: null };
+    return found
+      ? { url: found.imgLink, slice: found.sliceInset ?? null, pixelated: found.pixelated ?? false }
+      : EMPTY_SLOT;
   };
 
-  const bg = resolveUrl(previewBgId, byKind.background, 'background');
-  const spot = resolveUrl(previewSpotId, byKind.spot, 'spot');
-  const textbox = resolveUrl(previewTextboxId, byKind.textbox, 'textbox');
-  const slice = textbox.slice && textbox.slice > 0 ? textbox.slice : 24;
+  const bg = resolveSlot(previewBgId, byKind.background, 'background');
+  const spot = resolveSlot(previewSpotId, byKind.spot, 'spot');
+  const textbox = resolveSlot(previewTextboxId, byKind.textbox, 'textbox');
 
   const mineSprite = mine.backSprite || mine.imgLink || PLACEHOLDER_MON;
   const theirsSprite = theirs.imgLink || PLACEHOLDER_MON;
 
-  const textboxStyle: React.CSSProperties = textbox.url
-    ? {
-        borderStyle: 'solid',
-        borderWidth: `${slice}px`,
-        borderColor: 'transparent',
-        borderImageSource: `url(${textbox.url})`,
-        borderImageSlice: `${slice} fill`,
-        borderImageWidth: `${slice}px`,
-        borderImageRepeat: 'stretch',
-      }
-    : {};
+  const textboxStyle: React.CSSProperties = textboxSkinStyle(textbox.url, textbox.slice);
 
   const renderSelect = (
     value: number | 'form' | null,
@@ -347,12 +347,13 @@ function BattleAssetsContent() {
           <h3><span className="battle-assets__panel-icon"><i className="fas fa-eye" /></span> Live Preview</h3>
           <div className={`battle-field battle-assets__field ${bg.url ? 'battle-field--has-bg' : ''}`}>
             {bg.url && (
-              <div className="battle-field__bg" style={{ backgroundImage: `url(${bg.url})` }} aria-hidden="true" />
+              <div className={`battle-field__bg ${pixelatedClass(bg.pixelated)}`}
+                style={{ backgroundImage: `url(${bg.url})` }} aria-hidden="true" />
             )}
             <div className="battle-field__side battle-field__side--enemy">
               <div className="battle-field__sprite-zone">
                 {spot.url
-                  ? <img className="battle-field__spot" src={spot.url} alt="" aria-hidden="true" />
+                  ? <img className={`battle-field__spot ${pixelatedClass(spot.pixelated)}`} src={spot.url} alt="" aria-hidden="true" />
                   : <div className="battle-field__platform" />}
                 <img className="battle-field__sprite battle-field__sprite--enemy" src={theirsSprite} alt={theirs.name}
                   onError={e => { (e.target as HTMLImageElement).src = PLACEHOLDER_MON; }} />
@@ -361,21 +362,21 @@ function BattleAssetsContent() {
             <div className="battle-field__side battle-field__side--player">
               <div className="battle-field__sprite-zone">
                 {spot.url
-                  ? <img className="battle-field__spot" src={spot.url} alt="" aria-hidden="true" />
+                  ? <img className={`battle-field__spot ${pixelatedClass(spot.pixelated)}`} src={spot.url} alt="" aria-hidden="true" />
                   : <div className="battle-field__platform" />}
                 <img className="battle-field__sprite battle-field__sprite--player" src={mineSprite} alt={mine.name}
                   onError={e => { (e.target as HTMLImageElement).src = PLACEHOLDER_MON; }} />
               </div>
             </div>
 
-            {previewText.trim() && (
+            {showTextDisplay && previewText.trim() && (
               <div className="battle-dialogue">
                 <div className="battle-dialogue__portrait">
                   <img src={theirsSprite} alt={theirs.name}
                     onError={e => { (e.target as HTMLImageElement).src = PLACEHOLDER_MON; }} />
                 </div>
                 <div
-                  className={`battle-dialogue__box ${textbox.url ? 'battle-dialogue__box--custom' : ''}`}
+                  className={`battle-dialogue__box ${textbox.url ? 'battle-dialogue__box--custom' : ''} ${textbox.url ? pixelatedClass(textbox.pixelated) : ''}`}
                   style={textboxStyle}
                 >
                   <span className="battle-dialogue__speaker">{theirs.name}</span>
@@ -397,6 +398,16 @@ function BattleAssetsContent() {
             <div className="battle-assets__field">
               <label>Text-Box</label>
               {renderSelect(previewTextboxId, setPreviewTextboxId, byKind.textbox)}
+            </div>
+            <div className="battle-assets__field battle-assets__field--toggle">
+              <label className="battle-assets__toggle">
+                <input
+                  type="checkbox"
+                  checked={showTextDisplay}
+                  onChange={e => setShowTextDisplay(e.target.checked)}
+                />
+                <span>Show text display</span>
+              </label>
             </div>
           </div>
           <div className="battle-assets__preview-controls">
@@ -464,7 +475,7 @@ function BattleAssetsContent() {
                 type="number"
                 min={1}
                 max={200}
-                value={form.sliceInset ?? 24}
+                value={form.sliceInset ?? DEFAULT_TEXTBOX_SLICE}
                 onChange={e => patch({ sliceInset: parseInt(e.target.value, 10) || 1 })}
               />
               <span className="battle-assets__hint">
@@ -472,6 +483,15 @@ function BattleAssetsContent() {
               </span>
             </div>
           )}
+
+          <label className="battle-assets__toggle">
+            <input type="checkbox" checked={form.pixelated} onChange={e => patch({ pixelated: e.target.checked })} />
+            <span>Pixel art (nearest-neighbour scaling)</span>
+          </label>
+          <span className="battle-assets__hint">
+            Scales the image with hard edges instead of smoothing it. Turn this on for pixel art so it stays
+            crisp; leave it off for painted or photographic artwork.
+          </span>
 
           <label className="battle-assets__toggle">
             <input type="checkbox" checked={form.isActive} onChange={e => patch({ isActive: e.target.checked })} />
@@ -508,12 +528,15 @@ function BattleAssetsContent() {
                 {byKind[kind].map(asset => (
                   <div key={asset.id} className={`battle-assets__card ${editingId === asset.id ? 'battle-assets__card--active' : ''} ${!asset.isActive ? 'battle-assets__card--inactive' : ''}`}>
                     <div className={`battle-assets__thumb battle-assets__thumb--${kind}`}>
-                      <img src={asset.imgLink} alt={asset.name}
+                      <img className={pixelatedClass(asset.pixelated)} src={asset.imgLink} alt={asset.name}
                         onError={e => { (e.target as HTMLImageElement).src = '/images/default_image.png'; }} />
                     </div>
                     <div className="battle-assets__card-body">
                       <span className="battle-assets__card-name">{asset.name}</span>
                       {!asset.isActive && <span className="battle-assets__card-tag">Inactive</span>}
+                      {asset.pixelated && (
+                        <span className="battle-assets__card-slice" title="Nearest-neighbour scaling">pixel art</span>
+                      )}
                       {kind === 'textbox' && asset.sliceInset != null && (
                         <span className="battle-assets__card-slice">slice {asset.sliceInset}px</span>
                       )}

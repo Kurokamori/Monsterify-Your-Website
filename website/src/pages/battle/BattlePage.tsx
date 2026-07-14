@@ -18,9 +18,11 @@ import battleService, {
   type BattleTeam,
   type BattleTeamWithTrainer,
   type Gym,
+  type GymKind,
   type IncomingChallenge,
   type MyBattleSummary,
 } from '@services/battleService';
+import { BadgeCase } from '@components/trainers/detail/shared/BadgeCase';
 import chatSocketService from '@services/chatSocketService';
 import { extractErrorMessage } from '@utils/errorUtils';
 import type { Trainer } from '@components/trainers/types/Trainer';
@@ -43,10 +45,12 @@ interface TeamEditorModalProps {
   onClose: () => void;
   trainers: Trainer[];
   editingTeam: BattleTeam | null;
+  /** Trainer chosen in the battle hub — pre-selected when creating a new team. */
+  initialTrainerId?: number | null;
   onSaved: () => void;
 }
 
-function TeamEditorModal({ isOpen, onClose, trainers, editingTeam, onSaved }: TeamEditorModalProps) {
+function TeamEditorModal({ isOpen, onClose, trainers, editingTeam, initialTrainerId = null, onSaved }: TeamEditorModalProps) {
   const [trainerId, setTrainerId] = useState<number | null>(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -67,13 +71,19 @@ function TeamEditorModal({ isOpen, onClose, trainers, editingTeam, onSaved }: Te
       setIsPublic(!!editingTeam.isPublic);
       setSelectedIds(editingTeam.monsterIds.slice(0, 6));
     } else {
-      setTrainerId(trainers.length > 0 ? trainers[0].id : null);
+      const preferred =
+        initialTrainerId != null && trainers.some(t => t.id === initialTrainerId)
+          ? initialTrainerId
+          : trainers.length > 0
+            ? trainers[0].id
+            : null;
+      setTrainerId(preferred);
       setName('');
       setDescription('');
       setIsPublic(false);
       setSelectedIds([]);
     }
-  }, [isOpen, editingTeam, trainers]);
+  }, [isOpen, editingTeam, trainers, initialTrainerId]);
 
   useEffect(() => {
     if (!isOpen || trainerId == null) return;
@@ -250,9 +260,17 @@ const BattlePage = () => {
 
   const myTrainerIds = useMemo(() => new Set(trainers.map(t => t.id)), [trainers]);
 
-  // Badge gyms vs. admin-authored AI battles (one-off or gauntlet).
-  const badgeGyms = useMemo(() => gyms.filter(g => g.isGym !== false), [gyms]);
-  const aiBattles = useMemo(() => gyms.filter(g => g.isGym === false), [gyms]);
+  // Effective battle class (falls back to the legacy is_gym flag).
+  const kindOf = useCallback(
+    (g: Gym): GymKind => g.gymKind ?? (g.isGym === false ? 'ai' : 'gym'),
+    [],
+  );
+
+  // Split authored battles by class: badge gyms, league, champion, plain AI.
+  const badgeGyms = useMemo(() => gyms.filter(g => kindOf(g) === 'gym'), [gyms, kindOf]);
+  const leagueBattles = useMemo(() => gyms.filter(g => kindOf(g) === 'league'), [gyms, kindOf]);
+  const championBattles = useMemo(() => gyms.filter(g => kindOf(g) === 'champion'), [gyms, kindOf]);
+  const aiBattles = useMemo(() => gyms.filter(g => kindOf(g) === 'ai'), [gyms, kindOf]);
 
   // ── Data loading ──────────────────────────────────────────────────
 
@@ -383,6 +401,82 @@ const BattlePage = () => {
     }
   };
 
+  const badgeBattleActionLabel = (gym: Gym): string => {
+    const kind = kindOf(gym);
+    if (kind === 'champion') return gym.earned ? 'Rechallenge Champion' : 'Challenge Champion';
+    if (kind === 'league') return gym.earned ? 'Rechallenge League' : 'Challenge League';
+    return gym.earned ? 'Rechallenge Gauntlet' : 'Challenge Gauntlet';
+  };
+
+  // Card for a badge-awarding battle (gym / league / champion), with locked +
+  // champion styling. League and champion battles never show a gauntlet line.
+  const renderBadgeBattleCard = (gym: Gym) => {
+    const kind = kindOf(gym);
+    const isChampion = kind === 'champion';
+    const isLeagueOrChampion = kind === 'league' || isChampion;
+    const locked = !!gym.locked;
+    return (
+      <div
+        key={gym.id}
+        className={[
+          'battle-gym-card',
+          gym.earned ? 'earned' : '',
+          locked ? 'battle-gym-card--locked' : '',
+          isChampion ? 'battle-gym-card--champion' : '',
+        ].filter(Boolean).join(' ')}
+      >
+        <div className="battle-gym-card__badge">
+          {gym.badgeImgLink ? (
+            <img src={gym.badgeImgLink} alt={gym.badgeName} />
+          ) : (
+            <span className="battle-badge-placeholder" title={gym.badgeName}>
+              <i className={isChampion ? 'fas fa-crown' : 'fas fa-medal'}></i>
+            </span>
+          )}
+          {gym.earned && <span className="battle-gym-card__earned-check"><i className="fas fa-check-circle"></i></span>}
+          {locked && <span className="battle-gym-card__lock"><i className="fas fa-lock"></i></span>}
+        </div>
+        <div className="battle-gym-card__body">
+          <div className="battle-gym-card__title">
+            <h3>{gym.name}</h3>
+            <TypeBadge type={gym.typeTheme} size="sm" />
+          </div>
+          <p className="battle-gym-card__leader">
+            {gym.leaderImgLink && (
+              <img src={gym.leaderImgLink} alt={gym.leaderName} onError={handleMonImgError} />
+            )}
+            {isChampion ? 'Champion' : 'Leader'}: <strong>{gym.leaderName}</strong>
+          </p>
+          {gym.description && <p className="battle-gym-card__description">{gym.description}</p>}
+          {!isLeagueOrChampion && (
+            <p className="battle-gym-card__gauntlet">
+              <i className="fas fa-route"></i> {gym.gauntletTrainers.length} trainer{gym.gauntletTrainers.length === 1 ? '' : 's'} + leader
+            </p>
+          )}
+          <p className="battle-gym-card__rewards">
+            <span className="battle-reward-win"><i className="fas fa-coins"></i> +{gym.winReward}</span>
+            <span className="battle-reward-loss"><i className="fas fa-coins"></i> -{gym.lossPenalty}</span>
+          </p>
+          {gym.earned ? (
+            <span className="battle-gym-card__earned-label">
+              <i className={isChampion ? 'fas fa-crown' : 'fas fa-medal'}></i> {gym.badgeName} earned!
+            </span>
+          ) : null}
+          {locked && gym.lockReason ? (
+            <div className="battle-gym-card__locked-note"><i className="fas fa-lock"></i> {gym.lockReason}</div>
+          ) : null}
+          <button
+            className="button primary"
+            disabled={locked}
+            onClick={() => setPickTarget({ kind: 'gym', gym })}
+          >
+            <i className={isChampion ? 'fas fa-crown' : isLeagueOrChampion ? 'fas fa-award' : 'fas fa-dungeon'}></i> {badgeBattleActionLabel(gym)}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   // ── Tab contents ──────────────────────────────────────────────────
 
   const teamsTab = (
@@ -439,6 +533,8 @@ const BattlePage = () => {
           ))}
         </div>
       )}
+
+      {selectedTrainerId != null && <BadgeCase trainerId={selectedTrainerId} />}
     </div>
   );
 
@@ -497,54 +593,44 @@ const BattlePage = () => {
       </div>
       {gymsLoading ? (
         <div className="state-container"><i className="fas fa-spinner fa-spin"></i><p>Loading gyms...</p></div>
-      ) : badgeGyms.length === 0 ? (
+      ) : badgeGyms.length === 0 && leagueBattles.length === 0 && championBattles.length === 0 ? (
         <div className="state-container"><i className="fas fa-dungeon"></i><p>No gyms available.</p></div>
       ) : (
-        <div className="battle-hub__grid battle-hub__grid--gyms">
-          {badgeGyms.map(gym => (
-            <div key={gym.id} className={`battle-gym-card ${gym.earned ? 'earned' : ''}`}>
-              <div className="battle-gym-card__badge">
-                {gym.badgeImgLink ? (
-                  <img src={gym.badgeImgLink} alt={gym.badgeName} />
-                ) : (
-                  <span className="battle-badge-placeholder" title={gym.badgeName}>
-                    <i className="fas fa-medal"></i>
-                  </span>
-                )}
-                {gym.earned && <span className="battle-gym-card__earned-check"><i className="fas fa-check-circle"></i></span>}
+        <>
+          <div className="battle-hub__subsection">
+            <h3 className="battle-hub__subheading"><i className="fas fa-dungeon"></i> Gym Battles</h3>
+            {badgeGyms.length === 0 ? (
+              <div className="state-container sm"><i className="fas fa-dungeon"></i><p>No gyms available.</p></div>
+            ) : (
+              <div className="battle-hub__grid battle-hub__grid--gyms">
+                {badgeGyms.map(renderBadgeBattleCard)}
               </div>
-              <div className="battle-gym-card__body">
-                <div className="battle-gym-card__title">
-                  <h3>{gym.name}</h3>
-                  <TypeBadge type={gym.typeTheme} size="sm" />
-                </div>
-                <p className="battle-gym-card__leader">
-                  {gym.leaderImgLink && (
-                    <img src={gym.leaderImgLink} alt={gym.leaderName} onError={handleMonImgError} />
-                  )}
-                  Leader: <strong>{gym.leaderName}</strong>
-                </p>
-                {gym.description && <p className="battle-gym-card__description">{gym.description}</p>}
-                <p className="battle-gym-card__gauntlet">
-                  <i className="fas fa-route"></i> {gym.gauntletTrainers.length} trainer{gym.gauntletTrainers.length === 1 ? '' : 's'} + leader
-                </p>
-                <p className="battle-gym-card__rewards">
-                  <span className="battle-reward-win"><i className="fas fa-coins"></i> +{gym.winReward}</span>
-                  <span className="battle-reward-loss"><i className="fas fa-coins"></i> -{gym.lossPenalty}</span>
-                </p>
-                {gym.earned ? (
-                  <span className="battle-gym-card__earned-label">
-                    <i className="fas fa-medal"></i> {gym.badgeName} earned!
-                  </span>
-                ) : null}
-                <button className="button primary" onClick={() => setPickTarget({ kind: 'gym', gym })}>
-                  <i className="fas fa-dungeon"></i> {gym.earned ? 'Rechallenge Gauntlet' : 'Challenge Gauntlet'}
-                </button>
+            )}
+          </div>
+
+          {leagueBattles.length > 0 && (
+            <div className="battle-hub__subsection">
+              <h3 className="battle-hub__subheading battle-hub__subheading--league"><i className="fas fa-award"></i> League Battles</h3>
+              <p className="battle-hub__subhint">Unlocked once you hold every gym badge. No gauntlets — a single elite battle each.</p>
+              <div className="battle-hub__grid battle-hub__grid--gyms">
+                {leagueBattles.map(renderBadgeBattleCard)}
               </div>
             </div>
-          ))}
-        </div>
+          )}
+
+          {championBattles.length > 0 && (
+            <div className="battle-hub__subsection">
+              <h3 className="battle-hub__subheading battle-hub__subheading--champion"><i className="fas fa-crown"></i> Champion</h3>
+              <p className="battle-hub__subhint">The final challenge. Unlocked once you hold every gym badge and all four league badges.</p>
+              <div className="battle-hub__grid battle-hub__grid--gyms">
+                {championBattles.map(renderBadgeBattleCard)}
+              </div>
+            </div>
+          )}
+        </>
       )}
+
+      {selectedTrainerId != null && <BadgeCase trainerId={selectedTrainerId} />}
     </div>
   );
 
@@ -729,6 +815,7 @@ const BattlePage = () => {
         onClose={() => setTeamEditorOpen(false)}
         trainers={trainers}
         editingTeam={editingTeam}
+        initialTrainerId={selectedTrainerId}
         onSaved={loadTeams}
       />
 
@@ -737,6 +824,7 @@ const BattlePage = () => {
         onClose={() => setPickTarget(null)}
         title={pickTitle}
         trainers={trainers}
+        initialTrainerId={selectedTrainerId}
         showDifficulty={pickTarget?.kind === 'opponent'}
         confirmLabel={pickTarget?.kind === 'pvp' ? 'Send Challenge' : pickTarget?.kind === 'accept' ? 'Accept & Battle' : 'Start Battle'}
         submitting={starting}

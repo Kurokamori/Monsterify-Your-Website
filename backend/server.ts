@@ -8,6 +8,7 @@ import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
 import passport from './src/config/passport.js';
 import { db } from './src/database/client.js';
+import { runMigrations } from './src/database/migrate.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { errorHandler, notFound } from './src/middleware/error.middleware.js';
@@ -179,6 +180,9 @@ initializeSocketIO(httpServer);
 async function startServer() {
     try {
         console.log('Database connection ready');
+
+        // Apply any pending SQL migrations before accepting traffic
+        await runMigrations();
 
         // Start server
         httpServer.listen(PORT, () => {

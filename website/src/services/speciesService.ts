@@ -254,6 +254,42 @@ export interface SpeciesImageMap {
   [speciesName: string]: { image_url: string; species: string };
 }
 
+export interface ImportedSpecies {
+  name: string;
+  imageUrl: string | null;
+  number: string | null;
+}
+
+export interface WikiImportSummary {
+  source: string;
+  dryRun: boolean;
+  scraped: number;
+  existing: number;
+  added: ImportedSpecies[];
+  missingImages: string[];
+  failed: Array<{ name: string; error: string }>;
+}
+
+export type SpeciesImageSource = 'self-hosted' | 'palpedia';
+
+export interface SpeciesImageChange {
+  id: number;
+  name: string;
+  from: string | null;
+  to: string;
+  source: SpeciesImageSource;
+}
+
+export interface ImageRefreshSummary {
+  source: string;
+  dryRun: boolean;
+  checked: number;
+  unchanged: number;
+  updated: SpeciesImageChange[];
+  unresolved: string[];
+  failed: Array<{ name: string; error: string }>;
+}
+
 // --- Response normalization ---
 
 interface ApiResponse {
@@ -454,6 +490,29 @@ const speciesService = {
     const config = resolveConfig(franchise);
     const base = config.adminEndpoint ?? config.endpoint;
     await api.delete(`${base}/${id}`);
+  },
+
+  // Import missing species from the source wiki for a franchise that supports it
+  importFromWiki: async (
+    franchise: FranchiseKey,
+    options: { dryRun?: boolean } = {},
+  ): Promise<WikiImportSummary> => {
+    const config = resolveConfig(franchise);
+    const base = config.adminEndpoint ?? config.endpoint;
+    const response = await api.post(`${base}/import-from-wiki`, { dryRun: options.dryRun ?? false });
+    return response.data.data as WikiImportSummary;
+  },
+
+  // Re-point stored species at the best image available: self-hosted artwork when
+  // it exists, and the scrape source's image as a fallback
+  refreshImages: async (
+    franchise: FranchiseKey,
+    options: { dryRun?: boolean } = {},
+  ): Promise<ImageRefreshSummary> => {
+    const config = resolveConfig(franchise);
+    const base = config.adminEndpoint ?? config.endpoint;
+    const response = await api.post(`${base}/refresh-images`, { dryRun: options.dryRun ?? false });
+    return response.data.data as ImageRefreshSummary;
   },
 
   // ── Species utility methods ────────────────────────────────────────

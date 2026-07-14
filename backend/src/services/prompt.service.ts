@@ -102,6 +102,10 @@ export class PromptService {
     return this.promptRepository.findAll(options);
   }
 
+  async countPrompts(options: PromptQueryOptions = {}): Promise<number> {
+    return this.promptRepository.countAll(options);
+  }
+
   async getPromptById(id: number): Promise<Prompt | null> {
     return this.promptRepository.findById(id);
   }

@@ -55,6 +55,7 @@ export { MonsterRepository } from './monster.repository';
 export type {
   MonsterRow,
   MonsterWithTrainer,
+  MonsterAuditRow,
   MonsterCreateInput,
   MonsterUpdateInput,
   MonsterImageRow,
@@ -410,6 +411,7 @@ export { BattleTurnRepository } from './battle-turn.repository';
 export type {
   BattleTurnRow,
   BattleTurn,
+  BattleTurnWithDetails,
   BattleTurnCreateInput,
 } from './battle-turn.repository';
 
@@ -777,9 +779,10 @@ export type {
   BattleTeamUpdateInput,
 } from './battle-team.repository';
 
-export { GymRepository } from './gym.repository';
+export { GymRepository, GYM_KINDS, BADGE_GYM_KINDS } from './gym.repository';
 export type {
   Gym,
+  GymKind,
   GymMonsterSpec,
   GymGauntletTrainer,
   GymCreateInput,

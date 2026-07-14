@@ -8,10 +8,11 @@
     "dev": "tsx watch server.ts",
     "start": "tsx server.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tsx --test \"tests/**/*.test.ts\"",
     "lint": "eslint . && tsc --noEmit",
     "lint:fix": "eslint . --fix && tsc --noEmit",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "scrape:pals": "tsx scripts/scrape-pals.ts"
   },
   "keywords": [
     "pokemon",

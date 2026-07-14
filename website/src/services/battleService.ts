@@ -22,6 +22,28 @@ export interface BattleTeamWithTrainer {
   trainerImage?: string | null;
 }
 
+/** A value for each of the six stats — used for both IV and EV spreads. */
+export interface StatSpread {
+  hp: number;
+  atk: number;
+  def: number;
+  spa: number;
+  spd: number;
+  spe: number;
+}
+
+/**
+ * The authored stat inputs for a generated battle monster. These feed the same
+ * stat curve player-owned monsters use, so they are inputs (nature/IVs/EVs), not
+ * final totals. Omitted entirely on a spec that has never been tuned, in which
+ * case the server applies its medium/balanced preset.
+ */
+export interface BattleStatSpec {
+  nature: string;
+  ivs: StatSpread;
+  evs: StatSpread;
+}
+
 export interface GymLeaderTeamMonster {
   name: string;
   species1: string;
@@ -33,9 +55,45 @@ export interface GymLeaderTeamMonster {
   type4?: string | null;
   type5?: string | null;
   attribute?: string | null;
+  /** One of MONSTER_GENDERS, or null/'' when the author left it unset. */
+  gender?: string | null;
   level: number;
   imgLink?: string | null;
   moves?: string[];
+  stats?: BattleStatSpec | null;
+}
+
+/** Stat totals produced by a spec at a level. Always computed server-side. */
+export interface SpecStatTotals {
+  hp_total: number;
+  atk_total: number;
+  def_total: number;
+  spa_total: number;
+  spd_total: number;
+  spe_total: number;
+}
+
+export interface SpecMonsterStatPreview {
+  level: number;
+  stats: BattleStatSpec;
+  totals: SpecStatTotals;
+  /** Starting/max HP the monster will actually have in battle. */
+  battleHp: number;
+}
+
+/** The presets and bounds the stat editor renders its controls from. */
+export interface SpecStatPresets {
+  difficulties: Array<{
+    value: string;
+    label: string;
+    evBudget: number;
+    ivFloor: number;
+    ivCeiling: number;
+  }>;
+  roles: Array<{ value: string; label: string; description: string }>;
+  natures: string[];
+  bounds: { maxIv: number; maxEvPerStat: number; maxEvTotal: number };
+  defaults: { difficulty: string; role: string };
 }
 
 /** Optional per-trainer / per-leader battle dialogue (authored in the gym manager). */
@@ -70,6 +128,8 @@ export interface BattleAsset {
   name: string;
   imgLink: string;
   sliceInset?: number | null;
+  /** Draw with nearest-neighbour scaling (image-rendering: pixelated) for pixel art. */
+  pixelated?: boolean;
   isActive: boolean;
 }
 
@@ -78,15 +138,24 @@ export type BattleAssetInput = {
   name: string;
   imgLink: string;
   sliceInset?: number | null;
+  pixelated?: boolean;
   isActive?: boolean;
 };
 
-/** Resolved battle scenery sent with the live battle state. */
+/**
+ * Resolved battle scenery sent with the live battle state.
+ *
+ * The pixelated flags are optional because scenery is frozen into battle_data when
+ * a battle is created: fights started before the flag existed simply omit them.
+ */
 export interface BattleAppearance {
   backgroundUrl: string | null;
+  backgroundPixelated?: boolean;
   spotUrl: string | null;
+  spotPixelated?: boolean;
   textboxUrl: string | null;
   textboxSlice: number | null;
+  textboxPixelated?: boolean;
 }
 
 /** Resolved opponent dialogue sent with the live battle state. */
@@ -97,6 +166,15 @@ export interface BattleDialogueView {
   generic: string[];
   sprite: string | null;
 }
+
+/**
+ * The class of an authored battle:
+ * - `ai`: standalone AI battle / gauntlet, no badge.
+ * - `gym`: badge gym.
+ * - `league`: awards a league badge; locked until every gym badge is earned.
+ * - `champion`: awards the champion badge; locked until every gym + league badge is earned.
+ */
+export type GymKind = 'ai' | 'gym' | 'league' | 'champion';
 
 export interface Gym {
   id: number;
@@ -109,12 +187,16 @@ export interface Gym {
   leaderImgLink?: string | null;
   leaderTeam: GymLeaderTeamMonster[];
   gauntletTrainers: GauntletTrainer[];
-  /** true = badge gym; false = admin-authored AI battle (one-off or gauntlet). */
+  /** true = badge gym/league/champion; false = admin-authored AI battle. */
   isGym?: boolean;
+  gymKind: GymKind;
   winReward: number;
   lossPenalty: number;
   displayOrder: number;
   earned: boolean;
+  /** league/champion battles the trainer has not yet unlocked. */
+  locked?: boolean;
+  lockReason?: string | null;
 }
 
 // ── Admin gym / AI-battle authoring ─────────────────────────────────
@@ -131,6 +213,7 @@ export interface AdminGym {
   leaderTeam: GymLeaderTeamMonster[];
   gauntletTrainers: GauntletTrainer[];
   isGym: boolean;
+  gymKind: GymKind;
   leaderTrainerId?: number | null;
   leaderMonsterIds?: number[];
   leaderDialogue?: BattleDialogue | null;
@@ -156,6 +239,7 @@ export interface TrainerBadge {
   typeTheme: string;
   leaderName: string;
   earnedAt: string;
+  badgeKind: GymKind;
 }
 
 export type BattleDifficulty = 'easy' | 'medium' | 'hard';
@@ -170,13 +254,38 @@ export interface BattleParticipant {
   isYou: boolean;
 }
 
+/**
+ * The seven stat stages a monster can carry in battle. Mirrors BATTLE_STAT_STAGE_KEYS
+ * on the backend, which is the whitelist the state view is built from.
+ */
+export const BATTLE_STAT_STAGE_KEYS = [
+  'attack',
+  'defense',
+  'special_attack',
+  'special_defense',
+  'speed',
+  'accuracy',
+  'evasion',
+] as const;
+
+export type BattleStatStageKey = typeof BATTLE_STAT_STAGE_KEYS[number];
+
+/** Stage values, -6..+6. Only stats that are actually modified are present. */
+export type BattleStatStages = Partial<Record<BattleStatStageKey, number>>;
+
 export interface BattleMonster {
   id: number; // battleMonsterId
   monsterId: number;
   participantId: number;
   name: string;
+  /** The species, joined with "/". */
   species: string;
+  /** The same species, unjoined (up to 3). Absent on battles started before it existed. */
+  speciesList?: string[];
   types: string[];
+  attribute?: string | null;
+  /** Frozen at battle creation — null for battles that predate it, and for unauthored specs. */
+  gender?: string | null;
   level: number;
   currentHp: number;
   maxHp: number;
@@ -186,6 +295,7 @@ export interface BattleMonster {
   imgLink?: string | null;
   backSprite?: string | null;
   statusEffects: string[];
+  statStages?: BattleStatStages;
   moves?: string[]; // only present for YOUR monsters
 }
 
@@ -204,6 +314,24 @@ export interface BattleLogEntry {
   id: number;
   message: string;
   createdAt: string;
+}
+
+/**
+ * A recorded action, trimmed to what the arena needs to animate it. Mirrors
+ * WebBattleTurnView on the backend.
+ *
+ * The actor matters: it cannot be inferred from an HP diff, because end-of-turn chip
+ * damage (burn, poison) drops HP with nobody attacking.
+ */
+export interface BattleTurnView {
+  id: number;
+  turnNumber: number;
+  actionType: string;
+  actorMonsterId: number | null;
+  actorSide: 'players' | 'opponents' | null;
+  targetMonsterId: number | null;
+  moveName: string | null;
+  damageDealt: number;
 }
 
 export interface BattleLevelReward {
@@ -257,6 +385,8 @@ export interface WebBattleStateView {
   monsters: BattleMonster[];
   activeMoves: BattleMove[];
   logs: BattleLogEntry[]; // newest first
+  /** The last few actions, oldest-first. Absent on battles served by an older backend. */
+  recentTurns?: BattleTurnView[];
   settlement: BattleSettlement | null;
 }
 
@@ -358,6 +488,33 @@ const battleService = {
 
   adminDeleteGym: async (gymId: number): Promise<void> => {
     await api.delete(`/battle/admin/gyms/${gymId}`);
+  },
+
+  // ── Admin: generated-monster stat authoring ────────────────────────
+  //
+  // The stat curve lives on the server; these endpoints are the only source of
+  // computed totals, so what a designer previews is what the battle uses.
+
+  adminGetSpecStatPresets: async (): Promise<SpecStatPresets> => {
+    const response = await api.get('/battle/admin/spec-stats/presets');
+    return response.data;
+  },
+
+  adminRollSpecStats: async (
+    level: number,
+    difficulty: string,
+    role: string
+  ): Promise<SpecMonsterStatPreview> => {
+    const response = await api.post('/battle/admin/spec-stats/roll', { level, difficulty, role });
+    return response.data.preview;
+  },
+
+  adminPreviewSpecStats: async (
+    level: number,
+    stats: BattleStatSpec | null
+  ): Promise<SpecMonsterStatPreview> => {
+    const response = await api.post('/battle/admin/spec-stats/preview', { level, stats });
+    return response.data.preview;
   },
 
   // ── Admin: battle visual assets ────────────────────────────────────

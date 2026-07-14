@@ -181,6 +181,29 @@ export class BattleTurnRepository extends BaseRepository<
     return result.rows.map(normalizeBattleTurnWithDetails);
   }
 
+  /**
+   * The last `limit` turns, oldest-first.
+   *
+   * `findByBattleId`'s limit truncates the *front* of the battle (it orders ascending),
+   * which is the wrong end for anything that wants "what just happened" — so this
+   * selects descending and flips the page back into play order.
+   */
+  async findRecentByBattleId(battleId: number, limit: number): Promise<BattleTurnWithDetails[]> {
+    const result = await db.query<BattleTurnWithDetailsRow>(
+      `
+        SELECT bt.*, bp.trainer_name, bp.team_side, bm.monster_data
+        FROM battle_turns bt
+        LEFT JOIN battle_participants bp ON bt.participant_id = bp.id
+        LEFT JOIN battle_monsters bm ON bt.monster_id = bm.id
+        WHERE bt.battle_id = $1
+        ORDER BY bt.turn_number DESC, bt.created_at DESC, bt.id DESC
+        LIMIT $2
+      `,
+      [battleId, limit]
+    );
+    return result.rows.map(normalizeBattleTurnWithDetails).reverse();
+  }
+
   async findLatestByBattleId(battleId: number): Promise<BattleTurnWithDetails | null> {
     const result = await db.query<BattleTurnWithDetailsRow>(
       `

@@ -23,6 +23,7 @@ import {
   BattleMonsterWithDetails,
 } from '@/repositories';
 import { BattleLogRepository } from '@/repositories';
+import { BattleTurnRepository, BattleTurnWithDetails } from '@/repositories';
 import { MonsterRepository, MonsterWithTrainer } from '@/repositories';
 import { TrainerRepository } from '@/repositories';
 import { MoveRepository, Move } from '@/repositories';
@@ -33,6 +34,7 @@ import {
 import {
   GymRepository,
   Gym,
+  GymKind,
   GymMonsterSpec,
   GauntletRun,
   TrainerBadge,
@@ -47,19 +49,56 @@ import { UserRow } from '@/repositories';
 import { BattleActionService } from '@/services';
 import { BattleAIService, AIDifficulty } from '@/services';
 import { MonsterInitializerService } from '@/services';
+import type { CalculatedStats } from '@/services';
+import { computeBattleLevelReward } from '@/utils/constants/battle-constants';
+import {
+  BattleStatSpec,
+  BattleDifficultyValue,
+  BattleRoleValue,
+  PartialBattleStatSpec,
+  resolveBattleStatSpec,
+  rollBattleStatSpec,
+} from '@/utils/constants';
 
 // ============================================================================
 // Types
 // ============================================================================
 
+/**
+ * How many recent turns ride along with the battle state.
+ *
+ * The arena animates the turns it has not seen before, so this only has to cover the
+ * most that can be recorded between two states the client actually observes: your
+ * action plus the opponent's reply, and a switch on either side. A handful of spare
+ * slots keeps a slow client from missing an attack it should have drawn.
+ */
+const RECENT_TURN_WINDOW = 8;
+
 export type WebBattleMode = 'friendly' | 'gauntlet' | 'pvp';
+
+/**
+ * The resolved stat spec for a generated battle monster plus the totals it
+ * produces at a given level. Returned to the admin tool so a designer authoring a
+ * gym monster sees the actual numbers rather than guessing at the curve.
+ */
+export type SpecMonsterStatPreview = {
+  level: number;
+  stats: BattleStatSpec;
+  totals: CalculatedStats;
+  /** Starting/max HP the monster will actually have in battle (totals.hp_total + level * 2). */
+  battleHp: number;
+};
 
 /** Resolved battle scenery, chosen once when the battle is created. */
 export type WebBattleAppearance = {
   backgroundUrl: string | null;
+  /** Draw the background with nearest-neighbour scaling (pixel art). */
+  backgroundPixelated: boolean;
   spotUrl: string | null;
+  spotPixelated: boolean;
   textboxUrl: string | null;
   textboxSlice: number | null;
+  textboxPixelated: boolean;
 };
 
 /** Resolved opponent dialogue for a battle (empty lists = nothing to say). */
@@ -82,6 +121,13 @@ export type WebBattleData = {
   opponentKey?: string | null;
   opponentTrainerId?: number | null;
   opponentLabel: string;
+  /**
+   * Battle portrait for an NPC opponent that has no trainer row to join against
+   * (a spec-authored gauntlet trainer or a gym leader defined only by name + art).
+   * Frozen at creation, same as the scenery, and used as the participant's
+   * trainerImage so the arena can show the opponent trainer on the field.
+   */
+  opponentImage?: string | null;
   turnOf: string | null;
   pending?: boolean;
   settled?: boolean;
@@ -103,13 +149,39 @@ export type WebBattleAction =
   | { type: 'switch'; battleMonsterId: number }
   | { type: 'forfeit' };
 
+/**
+ * The seven stat stages a monster can carry in battle, in the order they are shown.
+ * These are the keys `stat_modifications` is written under by the status-move and
+ * status-effect services; anything else in that blob is ignored by the view.
+ */
+export const BATTLE_STAT_STAGE_KEYS = [
+  'attack',
+  'defense',
+  'special_attack',
+  'special_defense',
+  'speed',
+  'accuracy',
+  'evasion',
+] as const;
+
+export type BattleStatStageKey = (typeof BATTLE_STAT_STAGE_KEYS)[number];
+
+/** Stage values, -6..+6. Only stats that are actually modified are present. */
+export type BattleStatStages = Partial<Record<BattleStatStageKey, number>>;
+
 export type WebBattleMonsterView = {
   id: number;
   monsterId: number;
   participantId: number;
   name: string;
+  /** The species, joined with "/" — kept for callers that just want a label. */
   species: string;
+  /** The same species, unjoined (up to 3). */
+  speciesList: string[];
   types: string[];
+  attribute: string | null;
+  /** Frozen into battle_data at creation, so battles started before it existed are null. */
+  gender: string | null;
   level: number;
   currentHp: number;
   maxHp: number;
@@ -119,7 +191,29 @@ export type WebBattleMonsterView = {
   imgLink: string | null;
   backSprite: string | null;
   statusEffects: string[];
+  statStages: BattleStatStages;
   moves: string[];
+};
+
+/**
+ * A recorded action, trimmed to what the arena needs to animate it.
+ *
+ * The arena replays these to drive the attack choreography: it needs the *actor*, which
+ * cannot be inferred from an HP diff (end-of-turn chip damage from burn or poison drops
+ * HP with nobody attacking, and would otherwise make a monster lunge at thin air).
+ * Only turns are recorded here, so passive damage correctly produces no lunge.
+ */
+export type WebBattleTurnView = {
+  id: number;
+  turnNumber: number;
+  actionType: string;
+  /** The battle-monster that acted. Null on turns recorded without an actor. */
+  actorMonsterId: number | null;
+  actorSide: string | null;
+  /** The battle-monster that was targeted, when the action had one. */
+  targetMonsterId: number | null;
+  moveName: string | null;
+  damageDealt: number;
 };
 
 export type WebBattleParticipantView = {
@@ -172,6 +266,8 @@ export type WebBattleStateView = {
   monsters: WebBattleMonsterView[];
   activeMoves: Move[];
   logs: Array<{ id: number; message: string; createdAt: Date | string }>;
+  /** The last few actions, oldest-first. Drives the arena's attack animations. */
+  recentTurns: WebBattleTurnView[];
   settlement: WebBattleSettlement | null;
 };
 
@@ -186,12 +282,9 @@ const FRIENDLY_WIN_REWARD = 250;
 const FRIENDLY_LOSS_PENALTY = 100;
 const MAX_TEAM_SIZE = 6;
 
-// Level rewards for winning a web battle. Each surviving/participating winner
-// monster earns a small base amount, scaled up when the opposing team out-levels
-// it (tougher win = more growth). Weaker opponents still grant the base amount.
-const BASE_WIN_LEVELS = 1;
-const LEVEL_DIFF_FACTOR = 0.2; // extra levels per level the opponents average above you
-const MAX_WIN_LEVELS = 5;
+// Level rewards for winning a web battle are computed by computeBattleLevelReward,
+// which scales the award on the difference between a winner's level and the
+// average level of the losing team (beating a stronger team grants more growth).
 const MAX_MONSTER_LEVEL = 100;
 
 // ============================================================================
@@ -209,6 +302,7 @@ export class WebBattleService {
   private teamRepo: BattleTeamRepository;
   private gymRepo: GymRepository;
   private assetRepo: BattleAssetRepository;
+  private turnRepo: BattleTurnRepository;
   private actionService: BattleActionService;
   private aiService: BattleAIService;
   private monsterInitializer: MonsterInitializerService;
@@ -224,6 +318,7 @@ export class WebBattleService {
     this.teamRepo = new BattleTeamRepository();
     this.gymRepo = new GymRepository();
     this.assetRepo = new BattleAssetRepository();
+    this.turnRepo = new BattleTurnRepository();
     this.actionService = new BattleActionService();
     this.aiService = new BattleAIService();
     this.monsterInitializer = new MonsterInitializerService(this.monsterRepo);
@@ -337,9 +432,12 @@ export class WebBattleService {
     ]);
     return {
       backgroundUrl: bg?.imgLink ?? null,
+      backgroundPixelated: bg?.pixelated ?? false,
       spotUrl: spot?.imgLink ?? null,
+      spotPixelated: spot?.pixelated ?? false,
       textboxUrl: textbox?.imgLink ?? null,
       textboxSlice: textbox?.sliceInset ?? null,
+      textboxPixelated: textbox?.pixelated ?? false,
     };
   }
 
@@ -390,6 +488,7 @@ export class WebBattleService {
       type4: monster.type4,
       type5: monster.type5,
       attribute: monster.attribute,
+      gender: monster.gender,
       level: monster.level,
       hp_total: monster.hp_total,
       atk_total: monster.atk_total,
@@ -412,10 +511,34 @@ export class WebBattleService {
     return Math.max(1, Math.floor(baseHp + level * 2));
   }
 
-  /** Build monsterData for a gym spec monster (no real monster row behind it). */
+  /**
+   * Build monsterData for a gym spec monster (no real monster row behind it).
+   *
+   * Stats run through the same MonsterInitializerService.calculateStats curve that
+   * player-owned monsters use, fed by the spec's authored nature/IV/EV (or the
+   * medium/balanced preset when the spec predates that field). Generated opponents
+   * and trainer monsters of the same level are therefore on the same scale.
+   */
   private async buildSpecMonsterData(spec: GymMonsterSpec): Promise<Record<string, unknown>> {
     const level = spec.level || 10;
-    const stat = 40 + level;
+    const statSpec = resolveBattleStatSpec(spec.stats);
+    const stats = this.monsterInitializer.calculateStats(level, {
+      level,
+      nature: statSpec.nature,
+      hp_iv: statSpec.ivs.hp,
+      atk_iv: statSpec.ivs.atk,
+      def_iv: statSpec.ivs.def,
+      spa_iv: statSpec.ivs.spa,
+      spd_iv: statSpec.ivs.spd,
+      spe_iv: statSpec.ivs.spe,
+      hp_ev: statSpec.evs.hp,
+      atk_ev: statSpec.evs.atk,
+      def_ev: statSpec.evs.def,
+      spa_ev: statSpec.evs.spa,
+      spd_ev: statSpec.evs.spd,
+      spe_ev: statSpec.evs.spe,
+    });
+
     const moves = spec.moves && spec.moves.length > 0 ? spec.moves : await this.pickMovesForTypes(
       [spec.type1, spec.type2, spec.type3].filter((t): t is string => Boolean(t)),
       level
@@ -432,17 +555,73 @@ export class WebBattleService {
       type4: spec.type4 ?? null,
       type5: spec.type5 ?? null,
       attribute: spec.attribute ?? null,
+      gender: spec.gender ?? null,
       level,
-      hp_total: stat + 10,
-      atk_total: stat,
-      def_total: stat,
-      spa_total: stat,
-      spd_total: stat,
-      spe_total: stat,
+      nature: statSpec.nature,
+      hp_total: stats.hp_total,
+      atk_total: stats.atk_total,
+      def_total: stats.def_total,
+      spa_total: stats.spa_total,
+      spd_total: stats.spd_total,
+      spe_total: stats.spe_total,
       moveset: moves,
       img_link: spec.imgLink ?? null,
       isWild: false,
     };
+  }
+
+  // ==========================================================================
+  // Spec monster stat authoring (admin tool)
+  // ==========================================================================
+
+  /**
+   * Resolve a (possibly partial) authored stat spec and compute the totals it
+   * produces at a given level. The admin tool calls this so a designer sees the
+   * real numbers their nature/IV/EV choices yield — computed by the same curve
+   * the battle uses, never re-derived on the client.
+   */
+  previewSpecMonsterStats(
+    level: number,
+    stats: PartialBattleStatSpec | null | undefined
+  ): SpecMonsterStatPreview {
+    const clampedLevel = Math.max(1, Math.min(MAX_MONSTER_LEVEL, Math.floor(level) || 1));
+    const statSpec = resolveBattleStatSpec(stats);
+    const totals = this.monsterInitializer.calculateStats(clampedLevel, {
+      level: clampedLevel,
+      nature: statSpec.nature,
+      hp_iv: statSpec.ivs.hp,
+      atk_iv: statSpec.ivs.atk,
+      def_iv: statSpec.ivs.def,
+      spa_iv: statSpec.ivs.spa,
+      spd_iv: statSpec.ivs.spd,
+      spe_iv: statSpec.ivs.spe,
+      hp_ev: statSpec.evs.hp,
+      atk_ev: statSpec.evs.atk,
+      def_ev: statSpec.evs.def,
+      spa_ev: statSpec.evs.spa,
+      spd_ev: statSpec.evs.spd,
+      spe_ev: statSpec.evs.spe,
+    });
+
+    return {
+      level: clampedLevel,
+      stats: statSpec,
+      totals,
+      battleHp: this.battleMonsterHp({ hp_total: totals.hp_total, level: clampedLevel }),
+    };
+  }
+
+  /**
+   * Roll a stat spec from a difficulty + role preset and return it along with the
+   * totals it yields at the given level.
+   */
+  rollSpecMonsterStats(
+    level: number,
+    difficulty: BattleDifficultyValue,
+    role: BattleRoleValue
+  ): SpecMonsterStatPreview {
+    const rolled: BattleStatSpec = rollBattleStatSpec(difficulty, role);
+    return this.previewSpecMonsterStats(level, rolled);
   }
 
   /** Pick a usable moveset from the moves table for the given types. */
@@ -619,6 +798,19 @@ export class WebBattleService {
     if (!gym?.isActive) {
       throw new Error('Gym not found');
     }
+
+    // League / champion battles are gated behind badge progression.
+    if (gym.gymKind === 'league' || gym.gymKind === 'champion') {
+      const activeGyms = await this.gymRepo.findAllActive();
+      const badges = await this.gymRepo.findBadgesByTrainerId(trainerId);
+      const earnedGymIds = new Set(badges.map((b) => b.gymId));
+      const unlock = this.computeUnlock(activeGyms, earnedGymIds);
+      const lock = this.lockStateFor(gym, unlock);
+      if (lock.locked) {
+        throw new Error(lock.lockReason ?? 'This battle is locked.');
+      }
+    }
+
     const gauntletTrainers = gym.gauntletTrainers.slice(0, 5);
     const hasLeader = this.gymHasLeaderStage(gym);
     if (!hasLeader && gauntletTrainers.length === 0) {
@@ -696,9 +888,13 @@ export class WebBattleService {
 
     // Dialogue: the leader speaks the gym's leader dialogue; a gauntlet trainer
     // speaks its own. Falls back to the battle image for the portrait.
+    const opponentImage = isLeaderStage
+      ? gym.leaderImgLink ?? null
+      : stageTrainer?.imgLink ?? null;
+
     const dialogue = isLeaderStage
-      ? this.buildDialogue(gym.leaderDialogue, gym.leaderImgLink)
-      : this.buildDialogue(stageTrainer?.dialogue, stageTrainer?.imgLink ?? null);
+      ? this.buildDialogue(gym.leaderDialogue, opponentImage)
+      : this.buildDialogue(stageTrainer?.dialogue, opponentImage);
 
     const battleData: WebBattleData = {
       web: true,
@@ -710,6 +906,7 @@ export class WebBattleService {
       opponentLabel: isLeaderStage
         ? `Gym Leader ${opponentName}`
         : `${opponentName} (${run.currentStage + 1}/${run.totalStages})`,
+      opponentImage,
       turnOf: playerKey,
       gauntletRunId: run.id,
       gymId: gym.id,
@@ -996,6 +1193,7 @@ export class WebBattleService {
     const participants = await this.participantRepo.findByBattleId(battleId);
     const monsters = await this.monsterBattleRepo.findByBattleId(battleId);
     const logs = await this.logRepo.findRecentByBattleId(battleId, 40);
+    const turns = await this.turnRepo.findRecentByBattleId(battleId, RECENT_TURN_WINDOW);
 
     const myParticipant = participants.find((p) => p.discordUserId === key) ?? null;
     const yourSide = (myParticipant?.teamSide ?? null) as 'players' | 'opponents' | null;
@@ -1068,7 +1266,10 @@ export class WebBattleService {
         id: p.id,
         trainerId: p.trainerId,
         trainerName: p.trainerName,
-        trainerImage: p.trainerImage,
+        // A spec-authored gauntlet trainer / gym leader has no trainer row to join
+        // against, so its portrait comes from the art frozen into battle_data.
+        trainerImage:
+          p.trainerImage ?? (p.teamSide === 'opponents' ? data.opponentImage ?? null : null),
         teamSide: p.teamSide,
         participantType: p.participantType,
         isYou: p.discordUserId === key,
@@ -1080,7 +1281,36 @@ export class WebBattleService {
         message: l.message,
         createdAt: l.createdAt,
       })),
+      recentTurns: turns.map((t) => this.toTurnView(t, participants, monsters)),
       settlement: data.settlement ?? null,
+    };
+  }
+
+  /**
+   * Trim a recorded turn down to the actor/target/move the arena animates from.
+   *
+   * The actor's side is resolved through its participant rather than read off the turn
+   * row, so it stays correct for turns whose participant row was written without one.
+   */
+  private toTurnView(
+    turn: BattleTurnWithDetails,
+    participants: BattleParticipantWithDetails[],
+    monsters: BattleMonsterWithDetails[]
+  ): WebBattleTurnView {
+    const actor = monsters.find((m) => m.id === turn.monsterId) ?? null;
+    const actorParticipant = participants.find((p) => p.id === (actor?.participantId ?? turn.participantId));
+    const action = turn.actionData ?? {};
+    const targetId = typeof action.target_id === 'number' ? action.target_id : null;
+    const moveName = typeof action.move_name === 'string' ? action.move_name : null;
+    return {
+      id: turn.id,
+      turnNumber: turn.turnNumber,
+      actionType: turn.actionType,
+      actorMonsterId: turn.monsterId,
+      actorSide: actorParticipant?.teamSide ?? turn.teamSide ?? null,
+      targetMonsterId: targetId,
+      moveName,
+      damageDealt: turn.damageDealt,
     };
   }
 
@@ -1088,6 +1318,31 @@ export class WebBattleService {
     if (!runId) {return 1;}
     const run = await this.gymRepo.findGauntletRunById(runId);
     return run?.totalStages ?? 1;
+  }
+
+  /**
+   * Pull the battle-visible stat stages out of a monsterData blob.
+   *
+   * The blob is written by the status-move/status-effect services and can hold keys the
+   * arena knows nothing about, so this whitelists the seven real stages, drops the
+   * zeroes (an unmodified stat is not a "stat change") and re-clamps to -6..+6 rather
+   * than trusting whatever was persisted.
+   */
+  private toStatStages(data: Record<string, unknown>): BattleStatStages {
+    const raw = data.stat_modifications;
+    if (!raw || typeof raw !== 'object') {
+      return {};
+    }
+    const source = raw as Record<string, unknown>;
+    const stages: BattleStatStages = {};
+    for (const key of BATTLE_STAT_STAGE_KEYS) {
+      const value = source[key];
+      if (typeof value !== 'number' || !Number.isFinite(value) || value === 0) {
+        continue;
+      }
+      stages[key] = Math.max(-6, Math.min(6, Math.trunc(value)));
+    }
+    return stages;
   }
 
   private toMonsterView(
@@ -1100,13 +1355,18 @@ export class WebBattleService {
     const isYours = Boolean(yourSide && participant?.teamSide === yourSide);
     const types = [data.type1, data.type2, data.type3, data.type4, data.type5]
       .filter((t): t is string => Boolean(t));
+    const speciesList = [data.species1, data.species2, data.species3]
+      .filter((s): s is string => Boolean(s));
     return {
       id: m.id,
       monsterId: m.monsterId,
       participantId: m.participantId,
       name: (data.name as string) ?? 'Unknown',
-      species: [data.species1, data.species2, data.species3].filter(Boolean).join('/'),
+      species: speciesList.join('/'),
+      speciesList,
       types,
+      attribute: (data.attribute as string) ?? null,
+      gender: (data.gender as string) ?? null,
       level: (data.level as number) ?? 1,
       currentHp: m.currentHp,
       maxHp: m.maxHp,
@@ -1116,6 +1376,7 @@ export class WebBattleService {
       imgLink: (data.img_link as string) ?? null,
       backSprite: (data.back_sprite as string) ?? null,
       statusEffects: m.statusEffects.map((s) => s.type),
+      statStages: this.toStatStages(data),
       // Only reveal full movesets for your own monsters
       moves: isYours
         ? this.parseMoveset((data as { moveset?: string | string[] }).moveset ?? null)
@@ -1457,11 +1718,7 @@ export class WebBattleService {
       if (myLevel >= MAX_MONSTER_LEVEL) {
         continue;
       }
-      const diffBonus = Math.max(0, avgOpponentLevel - myLevel) * LEVEL_DIFF_FACTOR;
-      let levels = Math.round(BASE_WIN_LEVELS + diffBonus);
-      levels = Math.max(BASE_WIN_LEVELS, Math.min(MAX_WIN_LEVELS, levels));
-      // Never push past the level cap.
-      levels = Math.min(levels, MAX_MONSTER_LEVEL - myLevel);
+      const levels = computeBattleLevelReward(myLevel, avgOpponentLevel, MAX_MONSTER_LEVEL);
       if (levels <= 0) {
         continue;
       }
@@ -1541,8 +1798,9 @@ export class WebBattleService {
               completedAt: new Date(),
               currentBattleId: null,
             });
-            // Only true gyms award a badge; admin-made gauntlets just pay out
-            if (gym.isGym) {
+            // Gyms, leagues and champion battles award a badge; plain AI
+            // gauntlets just pay out.
+            if (gym.gymKind !== 'ai') {
               await this.gymRepo.awardBadge(run.trainerId, gym.id);
               playerSettlement.badge = {
                 gymId: gym.id,
@@ -1550,10 +1808,13 @@ export class WebBattleService {
                 badgeName: gym.badgeName,
                 badgeImgLink: gym.badgeImgLink,
               };
-              await this.logRepo.logSystem(
-                battle.id,
-                `🏅 **${gym.badgeName}** earned! ${gym.leaderName} salutes your victory at ${gym.name}!`
-              );
+              const badgeMessage =
+                gym.gymKind === 'champion'
+                  ? `👑 **${gym.badgeName}** claimed! You are the new Champion — ${gym.name} conquered!`
+                  : gym.gymKind === 'league'
+                    ? `🏅 **${gym.badgeName}** earned! You bested ${gym.leaderName} at the ${gym.name}!`
+                    : `🏅 **${gym.badgeName}** earned! ${gym.leaderName} salutes your victory at ${gym.name}!`;
+              await this.logRepo.logSystem(battle.id, badgeMessage);
             } else {
               await this.logRepo.logSystem(
                 battle.id,
@@ -1630,19 +1891,59 @@ export class WebBattleService {
   // Gyms & badges (read APIs)
   // ==========================================================================
 
-  async listGyms(trainerId?: number): Promise<Array<Gym & { earned: boolean }>> {
+  async listGyms(
+    trainerId?: number
+  ): Promise<Array<Gym & { earned: boolean; locked: boolean; lockReason: string | null }>> {
     const gyms = await this.gymRepo.findAllActive();
     const earned = trainerId ? await this.gymRepo.findBadgesByTrainerId(trainerId) : [];
     const earnedGymIds = new Set(earned.map((b) => b.gymId));
-    return gyms.map((gym) => ({
-      ...gym,
-      // Never leak full team specs to the client list; keep sizes only
-      leaderTeam: gym.leaderTeam.map((m) => ({ ...m, moves: undefined })),
-      // Don't spoil authored dialogue before the battle actually starts
-      leaderDialogue: {},
-      gauntletTrainers: gym.gauntletTrainers.map((t) => ({ ...t, dialogue: null })),
-      earned: earnedGymIds.has(gym.id),
-    }));
+    const unlock = this.computeUnlock(gyms, earnedGymIds);
+    return gyms.map((gym) => {
+      const { locked, lockReason } = this.lockStateFor(gym, unlock);
+      return {
+        ...gym,
+        // Never leak full team specs to the client list; keep sizes only
+        leaderTeam: gym.leaderTeam.map((m) => ({ ...m, moves: undefined })),
+        // Don't spoil authored dialogue before the battle actually starts
+        leaderDialogue: {},
+        gauntletTrainers: gym.gauntletTrainers.map((t) => ({ ...t, dialogue: null })),
+        earned: earnedGymIds.has(gym.id),
+        locked,
+        lockReason,
+      };
+    });
+  }
+
+  /**
+   * Compute a trainer's progression gates across all active gyms: whether every
+   * gym badge is held, and whether every league badge is held. An empty pool of
+   * a kind counts as fully-earned (so leagues open if no gyms are configured).
+   */
+  private computeUnlock(
+    gyms: Gym[],
+    earnedGymIds: Set<number>
+  ): { allGymBadges: boolean; allLeagueBadges: boolean } {
+    const byKind = (kind: GymKind): Gym[] => gyms.filter((g) => g.gymKind === kind);
+    const allGymBadges = byKind('gym').every((g) => earnedGymIds.has(g.id));
+    const allLeagueBadges = byKind('league').every((g) => earnedGymIds.has(g.id));
+    return { allGymBadges, allLeagueBadges };
+  }
+
+  /** Whether a given league/champion battle is locked for a trainer, and why. */
+  private lockStateFor(
+    gym: Gym,
+    unlock: { allGymBadges: boolean; allLeagueBadges: boolean }
+  ): { locked: boolean; lockReason: string | null } {
+    if (gym.gymKind === 'league' && !unlock.allGymBadges) {
+      return { locked: true, lockReason: 'Earn every gym badge to challenge the league.' };
+    }
+    if (gym.gymKind === 'champion' && (!unlock.allGymBadges || !unlock.allLeagueBadges)) {
+      return {
+        locked: true,
+        lockReason: 'Earn every gym badge and all league badges to challenge the champion.',
+      };
+    }
+    return { locked: false, lockReason: null };
   }
 
   async getTrainerBadges(trainerId: number): Promise<TrainerBadge[]> {

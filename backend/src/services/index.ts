@@ -481,3 +481,27 @@ export type {
 
 // Admin Connect Service
 export { AdminConnectService } from './admin-connect.service';
+
+// Pals Wiki Import Services
+export {
+  fetchPalsFromWiki,
+  buildPalImageUrl,
+  verifyPalImage,
+  verifyPalImages,
+  PALS_WIKI_SOURCE,
+} from './pals-wiki.service';
+export type { WikiPalEntry, ProgressLogger } from './pals-wiki.service';
+export { importPalsFromWiki } from './pals-import.service';
+export type {
+  PalsImportSummary,
+  ImportedPal,
+  ImportPalsOptions,
+} from './pals-import.service';
+export { listSelfHostedPalImages, slugifyPalName } from './pals-image.service';
+export { refreshPalImages } from './pals-image-refresh.service';
+export type {
+  PalsImageRefreshSummary,
+  PalImageChange,
+  PalImageSource,
+  RefreshPalImagesOptions,
+} from './pals-image-refresh.service';

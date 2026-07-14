@@ -96,6 +96,21 @@ export type InitializedMonster = MonsterData & IVs & EVs & CalculatedStats;
 
 export type MoveType = 'normal' | 'type' | 'attribute' | 'random';
 
+export type RerollMoveMode = 'replace' | 'topup';
+
+export type RerollMonsterOptions = {
+  rerollStats: boolean;
+  rerollMoves: boolean;
+  rerollIVs: boolean;
+  moveMode: RerollMoveMode;
+};
+
+export type RerollMonsterResult = {
+  statsChanged: boolean;
+  movesChanged: boolean;
+  monster: InitializedMonster;
+};
+
 // ============================================================================
 // Constants
 // ============================================================================
@@ -800,6 +815,143 @@ export class MonsterInitializerService {
     await this.monsterRepository.update(monsterId, updateInput);
 
     return updatedMonster;
+  }
+
+  // ==========================================================================
+  // Stat & Move Reroll System
+  // ==========================================================================
+
+  /**
+   * Expected number of moves a monster should know at a given level.
+   * Mirrors the initial moveset rule: 1 move per 5 levels, plus 1.
+   */
+  expectedMoveCount(level: number): number {
+    return Math.max(1, Math.floor(level / 5) + 1);
+  }
+
+  /**
+   * Parse a stored moveset (JSON string or array) into a clean string array.
+   */
+  parseMovesetArray(moveset: string | string[] | null | undefined): string[] {
+    if (!moveset) {
+      return [];
+    }
+    if (Array.isArray(moveset)) {
+      return moveset.filter((m): m is string => typeof m === 'string');
+    }
+    if (moveset === 'null') {
+      return [];
+    }
+    try {
+      const parsed = JSON.parse(moveset);
+      return Array.isArray(parsed) ? parsed.filter((m): m is string => typeof m === 'string') : [];
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Determine whether a monster's moveset is "wrong": it has zero moves, or
+   * fewer than (expected - 1) moves for its level.
+   */
+  isMovesetWrong(level: number, moveset: string | string[] | null | undefined): boolean {
+    const moves = this.parseMovesetArray(moveset);
+    const expected = this.expectedMoveCount(level);
+    return moves.length === 0 || moves.length < expected - 1;
+  }
+
+  /**
+   * Determine whether a monster's stat totals are "wrong": any stored total
+   * does not match the value the stat formula produces for the monster's
+   * current level, IVs, EVs, and nature. Catches uninitialized (zero/null)
+   * stats and totals left stale after a level change.
+   */
+  areStatsWrong(monster: MonsterData): boolean {
+    const level = monster.level ?? 1;
+    const correct = this.calculateStats(level, monster);
+    return (
+      (monster.hp_total ?? 0) !== correct.hp_total ||
+      (monster.atk_total ?? 0) !== correct.atk_total ||
+      (monster.def_total ?? 0) !== correct.def_total ||
+      (monster.spa_total ?? 0) !== correct.spa_total ||
+      (monster.spd_total ?? 0) !== correct.spd_total ||
+      (monster.spe_total ?? 0) !== correct.spe_total
+    );
+  }
+
+  /**
+   * Pick a weighted move source for topping up a moveset.
+   * 65% type, 15% attribute, 10% normal, 10% random (mirrors level-up learning).
+   */
+  private pickWeightedMoveType(): MoveType {
+    const roll = Math.random() * 100;
+    if (roll < 65) { return 'type'; }
+    if (roll < 80) { return 'attribute'; }
+    if (roll < 90) { return 'normal'; }
+    return 'random';
+  }
+
+  /**
+   * Reroll a monster's stats and/or moves based on its current level and
+   * persist the result. Stats can either re-randomize IVs/nature (a true
+   * reroll of potential) or recompute totals from existing IVs/EVs/nature.
+   * Moves can be fully regenerated or topped up to the expected count.
+   * @param monsterId - Monster ID
+   * @param options - What to reroll and how
+   * @returns Which parts changed and the updated monster data
+   */
+  async rerollMonster(monsterId: number, options: RerollMonsterOptions): Promise<RerollMonsterResult> {
+    const monster = await this.monsterRepository.findById(monsterId);
+    if (!monster) {
+      throw new Error(`Monster with ID ${monsterId} not found`);
+    }
+
+    const updatedMonster: InitializedMonster = { ...monster } as InitializedMonster;
+    const level = updatedMonster.level ?? 1;
+    let statsChanged = false;
+    let movesChanged = false;
+
+    if (options.rerollStats) {
+      if (options.rerollIVs) {
+        Object.assign(updatedMonster, this.generateIVs());
+        updatedMonster.nature = this.generateNature();
+      }
+      const stats = this.calculateStats(level, updatedMonster);
+      Object.assign(updatedMonster, stats);
+      statsChanged = true;
+    }
+
+    if (options.rerollMoves) {
+      const expected = this.expectedMoveCount(level);
+
+      if (options.moveMode === 'replace') {
+        const moves = await this.getMovesForMonster(updatedMonster, expected);
+        updatedMonster.moveset = JSON.stringify(moves);
+      } else {
+        const moves = this.parseMovesetArray(updatedMonster.moveset);
+        // Bound the loop in case getNewMove keeps returning duplicates/null
+        const maxIterations = expected * 5 + 10;
+        let iterations = 0;
+        while (moves.length < expected && iterations < maxIterations) {
+          iterations++;
+          const moveType = this.pickWeightedMoveType();
+          const newMove = await this.getNewMove(updatedMonster, moveType, moves);
+          if (!newMove) {
+            break;
+          }
+          moves.push(newMove);
+        }
+        updatedMonster.moveset = JSON.stringify(moves);
+      }
+      movesChanged = true;
+    }
+
+    if (statsChanged || movesChanged) {
+      const updateInput = this.convertToUpdateInput(updatedMonster);
+      await this.monsterRepository.update(monsterId, updateInput);
+    }
+
+    return { statsChanged, movesChanged, monster: updatedMonster };
   }
 
   // ==========================================================================

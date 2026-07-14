@@ -36,6 +36,7 @@ import {
 } from './damage-calculator.service';
 import { MonsterRollerService, RollParams, type UserSettings } from '../monster-roller.service';
 import { MonsterInitializerService } from '../monster-initializer.service';
+import { computeBattleLevelReward } from '../../utils/constants/battle-constants';
 
 // ============================================================================
 // Types
@@ -1430,9 +1431,6 @@ export class BattleManagerService {
     const monsterData = knockedOutMonster.monsterData as MonsterDataRecord;
     const monsterLevel = (monsterData.level as number) || 1;
 
-    // Calculate levels to award: 1 + 1 per 10 levels
-    const levelsToAward = 1 + Math.floor(monsterLevel / 10);
-
     // Find opposing player participants
     const opposingPlayers = participants.filter(
       (p) =>
@@ -1441,8 +1439,11 @@ export class BattleManagerService {
     );
 
     const levelAwards: LevelAward[] = [];
+    let maxLevelsAwarded = 0;
 
-    // Award levels to all alive opposing player monsters
+    // Award levels to all alive opposing player monsters, scaled per monster on
+    // how its level compares to the defeated monster (beating a higher-level
+    // opponent grants more; over-levelled winners get the minimum).
     for (const opponent of opposingPlayers) {
       const opponentMonsters = await this.monsterRepo.findByBattleId(battleId, {
         participantId: opponent.id,
@@ -1451,8 +1452,13 @@ export class BattleManagerService {
       for (const bm of opponentMonsters) {
         if (bm.currentHp > 0 && bm.monsterId > 0) {
           const previousLevel = (bm.monsterData as MonsterDataRecord).level ?? 1;
+          const levelsToAward = computeBattleLevelReward(previousLevel, monsterLevel);
+          if (levelsToAward <= 0) {
+            continue;
+          }
           await this.monsterInitializer.levelUpMonster(bm.monsterId, levelsToAward);
           const updatedMonster = await this.monsterDataRepo.findById(bm.monsterId);
+          maxLevelsAwarded = Math.max(maxLevelsAwarded, levelsToAward);
 
           levelAwards.push({
             monsterId: bm.monsterId,
@@ -1502,7 +1508,7 @@ export class BattleManagerService {
     return {
       knockedOutMonster,
       levelAwards,
-      levelsAwarded: levelsToAward,
+      levelsAwarded: maxLevelsAwarded,
     };
   }
 

@@ -18,6 +18,8 @@ export type BattleAssetRow = {
   img_link: string;
   /** For text-box skins: the nine-slice inset in px (border-image-slice / width). */
   slice_inset: number | null;
+  /** Draw with nearest-neighbour scaling (CSS image-rendering: pixelated) for pixel art. */
+  pixelated: boolean;
   is_active: boolean;
   created_at: Date;
   updated_at: Date;
@@ -29,6 +31,7 @@ export type BattleAsset = {
   name: string;
   imgLink: string;
   sliceInset: number | null;
+  pixelated: boolean;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -39,6 +42,7 @@ export type BattleAssetCreateInput = {
   name: string;
   imgLink: string;
   sliceInset?: number | null;
+  pixelated?: boolean;
   isActive?: boolean;
 };
 
@@ -50,6 +54,7 @@ const normalize = (row: BattleAssetRow): BattleAsset => ({
   name: row.name,
   imgLink: row.img_link,
   sliceInset: row.slice_inset,
+  pixelated: row.pixelated,
   isActive: row.is_active,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
@@ -98,11 +103,18 @@ export class BattleAssetRepository extends BaseRepository<
   override async create(input: BattleAssetCreateInput): Promise<BattleAsset> {
     const result = await db.query<BattleAssetRow>(
       `
-        INSERT INTO battle_assets (kind, name, img_link, slice_inset, is_active)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO battle_assets (kind, name, img_link, slice_inset, pixelated, is_active)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING *
       `,
-      [input.kind, input.name, input.imgLink, input.sliceInset ?? null, input.isActive ?? true]
+      [
+        input.kind,
+        input.name,
+        input.imgLink,
+        input.sliceInset ?? null,
+        input.pixelated ?? false,
+        input.isActive ?? true,
+      ]
     );
     const row = result.rows[0];
     if (!row) {
@@ -123,6 +135,7 @@ export class BattleAssetRepository extends BaseRepository<
     if (input.name !== undefined) {push('name', input.name);}
     if (input.imgLink !== undefined) {push('img_link', input.imgLink);}
     if (input.sliceInset !== undefined) {push('slice_inset', input.sliceInset);}
+    if (input.pixelated !== undefined) {push('pixelated', input.pixelated);}
     if (input.isActive !== undefined) {push('is_active', input.isActive);}
 
     if (updates.length === 0) {

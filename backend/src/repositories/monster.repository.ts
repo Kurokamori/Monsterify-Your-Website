@@ -101,6 +101,32 @@ export type MonsterWithTrainer = MonsterRow & {
   trainer_name: string;
 };
 
+export type MonsterAuditRow = {
+  id: number;
+  name: string | null;
+  level: number;
+  moveset: string | null;
+  hp_total: number | null;
+  atk_total: number | null;
+  def_total: number | null;
+  spa_total: number | null;
+  spd_total: number | null;
+  spe_total: number | null;
+  hp_iv: number | null;
+  atk_iv: number | null;
+  def_iv: number | null;
+  spa_iv: number | null;
+  spd_iv: number | null;
+  spe_iv: number | null;
+  hp_ev: number | null;
+  atk_ev: number | null;
+  def_ev: number | null;
+  spa_ev: number | null;
+  spd_ev: number | null;
+  spe_ev: number | null;
+  nature: string | null;
+};
+
 export type MonsterCreateInput = {
   trainerId: number;
   playerUserId?: string;
@@ -324,6 +350,24 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
       [limit, offset]
     );
     return result.rows.map(normalizeMonsterTypes);
+  }
+
+  /**
+   * Lightweight fetch of every monster's level, stat totals/IVs/EVs/nature, and
+   * moveset for auditing which monsters have "wrong" stats or moves. Avoids the
+   * trainer join and per-row side effects of findById.
+   */
+  async findAllForAudit(): Promise<MonsterAuditRow[]> {
+    const result = await db.query<MonsterAuditRow>(
+      `SELECT id, name, level, moveset,
+        hp_total, atk_total, def_total, spa_total, spd_total, spe_total,
+        hp_iv, atk_iv, def_iv, spa_iv, spd_iv, spe_iv,
+        hp_ev, atk_ev, def_ev, spa_ev, spd_ev, spe_ev,
+        nature
+      FROM monsters
+      ORDER BY id ASC`
+    );
+    return result.rows;
   }
 
   async findPaginated(params: {

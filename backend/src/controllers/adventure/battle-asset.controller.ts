@@ -38,11 +38,12 @@ export async function listBattleAssets(_req: Request, res: Response): Promise<vo
 
 export async function createBattleAsset(req: Request, res: Response): Promise<void> {
   try {
-    const { kind, name, imgLink, sliceInset, isActive } = req.body as {
+    const { kind, name, imgLink, sliceInset, pixelated, isActive } = req.body as {
       kind?: string;
       name?: string;
       imgLink?: string;
       sliceInset?: number | string | null;
+      pixelated?: boolean;
       isActive?: boolean;
     };
     if (!isKind(kind)) {
@@ -58,6 +59,7 @@ export async function createBattleAsset(req: Request, res: Response): Promise<vo
       name: name.trim(),
       imgLink: imgLink.trim(),
       sliceInset: kind === 'textbox' ? parseSlice(sliceInset) : null,
+      pixelated: pixelated ?? false,
       isActive: isActive ?? true,
     });
     res.status(201).json({ success: true, asset });
@@ -73,11 +75,12 @@ export async function updateBattleAsset(req: Request, res: Response): Promise<vo
       res.status(400).json({ success: false, message: 'Invalid asset id' });
       return;
     }
-    const { kind, name, imgLink, sliceInset, isActive } = req.body as {
+    const { kind, name, imgLink, sliceInset, pixelated, isActive } = req.body as {
       kind?: string;
       name?: string;
       imgLink?: string;
       sliceInset?: number | string | null;
+      pixelated?: boolean;
       isActive?: boolean;
     };
     if (kind !== undefined && !isKind(kind)) {
@@ -89,6 +92,7 @@ export async function updateBattleAsset(req: Request, res: Response): Promise<vo
       ...(name !== undefined ? { name: name.trim() } : {}),
       ...(imgLink !== undefined ? { imgLink: imgLink.trim() } : {}),
       ...(sliceInset !== undefined ? { sliceInset: parseSlice(sliceInset) } : {}),
+      ...(pixelated !== undefined ? { pixelated: Boolean(pixelated) } : {}),
       ...(isActive !== undefined ? { isActive } : {}),
     });
     res.json({ success: true, asset });

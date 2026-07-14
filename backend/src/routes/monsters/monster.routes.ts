@@ -33,6 +33,7 @@ import {
   adminAddLevelsToMonster,
   adminAddLevelsToBulkMonsters,
   adminBulkAddMonsters,
+  adminRerollMonsters,
   adminGetFilterOptions,
   adminGetMonstersPaginated,
   adminChangeMonsterOwner,
@@ -93,6 +94,7 @@ router.get('/moves/search', authenticate, requireAdmin, searchMoves);
 router.post('/admin/levels/:monsterId', authenticate, requireAdmin, adminAddLevelsToMonster);
 router.post('/admin/levels', authenticate, requireAdmin, adminAddLevelsToBulkMonsters);
 router.post('/admin/bulk-add', authenticate, requireAdmin, adminBulkAddMonsters);
+router.post('/admin/reroll', authenticate, requireAdmin, adminRerollMonsters);
 router.get('/admin/filter-options', authenticate, requireAdmin, adminGetFilterOptions);
 router.get('/admin/paginated', authenticate, requireAdmin, adminGetMonstersPaginated);
 router.put('/admin/:id/owner', authenticate, requireAdmin, adminChangeMonsterOwner);

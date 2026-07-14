@@ -43,6 +43,7 @@ export const VolatileStatus = {
   SPIKY_SHIELD: 'spiky_shield',
   BANEFUL_BUNKER: 'baneful_bunker',
   MAX_GUARD: 'max_guard',
+  KINGS_SHIELD: 'kings_shield',
   CRAFTY_SHIELD: 'crafty_shield',
   QUICK_GUARD: 'quick_guard',
   WIDE_GUARD: 'wide_guard',
@@ -57,6 +58,7 @@ export const VolatileStatus = {
   MEAN_LOOK: 'mean_look',
   FAIRY_LOCK: 'fairy_lock',
   INGRAIN: 'ingrain',
+  AQUA_RING: 'aqua_ring',
   // Stat/ability modifiers
   DRAGON_CHEER: 'dragon_cheer',
   CHARGE: 'charge',

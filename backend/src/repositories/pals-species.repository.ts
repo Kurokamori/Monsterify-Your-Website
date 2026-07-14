@@ -118,6 +118,31 @@ export class PalsSpeciesRepository extends BaseRepository<
     return row ? normalizeSpecies(row) : null;
   }
 
+  /**
+   * Returns every stored Pal name. Used by the wiki importer to diff the
+   * remote list against what already exists without paging through findAll.
+   */
+  async getAllNames(): Promise<string[]> {
+    const result = await db.query<{ name: string }>('SELECT name FROM pals_monsters');
+    return result.rows.map((row) => row.name);
+  }
+
+  /**
+   * Returns every stored Pal with its current image, without paging through
+   * findAll. Used by the image refresh to diff stored art against the best
+   * available source.
+   */
+  async getAllWithImages(): Promise<Array<Pick<PalsSpecies, 'id' | 'name' | 'imageUrl'>>> {
+    const result = await db.query<Pick<PalsSpeciesRow, 'id' | 'name' | 'image_url'>>(
+      'SELECT id, name, image_url FROM pals_monsters ORDER BY id'
+    );
+    return result.rows.map((row) => ({
+      id: row.id,
+      name: row.name,
+      imageUrl: row.image_url,
+    }));
+  }
+
   override async create(input: PalsSpeciesCreateInput): Promise<PalsSpecies> {
     const result = await db.query<{ id: number }>(
       `

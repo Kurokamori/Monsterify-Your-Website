@@ -58,6 +58,50 @@ export const BattleConstants = {
 } as const;
 
 /**
+ * Level rewards granted to a victorious monster for defeating an opponent.
+ * The award scales on the level difference between the winner and the loser:
+ * beating a higher-level opponent grants more levels, beating a lower-level
+ * opponent grants fewer (never below MIN). This keeps under-levelled monsters
+ * catching up quickly while preventing over-levelled monsters from farming
+ * huge gains off weak opponents.
+ */
+export const LevelRewardConstants = {
+  // Levels granted when winner and loser are the same level.
+  BASE: 2,
+  // Extra (or fewer) levels per level the loser is above (or below) the winner.
+  PER_LEVEL_DIFF: 0.4,
+  MIN: 1,
+  MAX: 8,
+} as const;
+
+/**
+ * Compute how many levels a victorious monster earns for defeating an opponent.
+ *
+ * @param winnerLevel - Level of the monster that won.
+ * @param loserLevel - Level of the defeated monster.
+ * @param levelCap - Maximum monster level; the award is trimmed so the winner
+ *   never exceeds it. Defaults to {@link BattleConstants.MAX_LEVEL}.
+ * @returns Whole number of levels to award (0 only when already at the cap).
+ */
+export function computeBattleLevelReward(
+  winnerLevel: number,
+  loserLevel: number,
+  levelCap: number = BattleConstants.MAX_LEVEL
+): number {
+  const safeWinner = Number.isFinite(winnerLevel) && winnerLevel > 0 ? winnerLevel : 1;
+  const safeLoser = Number.isFinite(loserLevel) && loserLevel > 0 ? loserLevel : 1;
+
+  const raw =
+    LevelRewardConstants.BASE +
+    (safeLoser - safeWinner) * LevelRewardConstants.PER_LEVEL_DIFF;
+  let levels = Math.round(raw);
+  levels = Math.max(LevelRewardConstants.MIN, Math.min(LevelRewardConstants.MAX, levels));
+
+  const headroom = Math.max(0, levelCap - safeWinner);
+  return Math.min(levels, headroom);
+}
+
+/**
  * Move categories for damage calculation
  */
 export const MoveCategory = {

@@ -18,6 +18,9 @@ import {
   adminCreateGym,
   adminUpdateGym,
   adminDeleteGym,
+  adminGetStatPresets,
+  adminRollSpecStats,
+  adminPreviewSpecStats,
   startFriendlyBattle,
   startGauntlet,
   createPvpChallenge,
@@ -51,6 +54,11 @@ router.get('/admin/gyms', authenticate, requireAdmin, adminListGyms);
 router.post('/admin/gyms', authenticate, requireAdmin, adminCreateGym);
 router.put('/admin/gyms/:gymId', authenticate, requireAdmin, adminUpdateGym);
 router.delete('/admin/gyms/:gymId', authenticate, requireAdmin, adminDeleteGym);
+
+// Generated-monster stat authoring (difficulty/role roller + live totals preview)
+router.get('/admin/spec-stats/presets', authenticate, requireAdmin, adminGetStatPresets);
+router.post('/admin/spec-stats/roll', authenticate, requireAdmin, adminRollSpecStats);
+router.post('/admin/spec-stats/preview', authenticate, requireAdmin, adminPreviewSpecStats);
 
 // Battle visual assets (backgrounds / place-spots / text-box skins)
 router.get('/admin/assets', authenticate, requireAdmin, listBattleAssets);

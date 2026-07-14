@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useEffect, useLayoutEffect, useCallback, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { TypeBadge } from '@components/common/TypeBadge';
@@ -11,22 +11,35 @@ import battleService, {
 } from '@services/battleService';
 import chatSocketService from '@services/chatSocketService';
 import { extractErrorMessage } from '@utils/errorUtils';
+import { pixelatedClass } from '@utils/battleAssetStyles';
+import { handleMonImgError } from './battleMonsterUtils';
+import { useBattleFx, type BattleSide } from './useBattleFx';
+import { MonsterInfoCard } from './components/MonsterInfoCard';
+import { BenchMonsterButton } from './components/BenchMonsterButton';
+import { TrainerPortrait } from './components/TrainerPortrait';
+import { DialogueBox } from './components/DialogueBox';
+import { BattleFxLayer } from './components/BattleFxLayer';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-const handleMonImgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-  const img = e.target as HTMLImageElement;
-  img.onerror = null;
-  img.src = '/images/default_mon.png';
-};
+/**
+ * Send-in choreography, per side. The trainer slides in (0.45s in CSS) to an empty
+ * field, then throws: the monster appears while the trainer is still there, and the
+ * trainer leaves under it. The reveal deliberately lands before the exit starts, so
+ * the two overlap instead of cutting.
+ */
+const MONSTER_REVEAL_MS = 650;
+const TRAINER_EXIT_MS = 950;
+/**
+ * When dialogue held the trainer on screen, they don't vanish the instant it is
+ * dismissed — they stay for this long while the monster comes out under them.
+ */
+const TRAINER_LINGER_MS = 450;
 
-function hpBarClass(pct: number): string {
-  if (pct > 50) return 'high';
-  if (pct > 20) return 'mid';
-  return 'low';
-}
+type TrainerSlot = 'you' | 'foe';
+type SlotFlags = Record<TrainerSlot, boolean>;
 
 /**
  * Clean a battle log message for web display: strip markdown-ish ** emphasis
@@ -53,110 +66,6 @@ function cleanLogMessage(message: string): string {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Sub-components
-// ─────────────────────────────────────────────────────────────────────────────
-
-function HpBar({ monster, flashing }: { monster: BattleMonster; flashing: boolean }) {
-  const pct = monster.maxHp > 0 ? Math.max(0, Math.min(100, (monster.currentHp / monster.maxHp) * 100)) : 0;
-  return (
-    <div className={`battle-hp ${flashing ? 'battle-hp--flash' : ''}`}>
-      <div className="battle-hp__bar">
-        <div
-          className={`battle-hp__fill battle-hp__fill--${hpBarClass(pct)}`}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-      <span className="battle-hp__text">{monster.currentHp} / {monster.maxHp}</span>
-    </div>
-  );
-}
-
-function MonsterInfoCard({ monster, flashing }: { monster: BattleMonster; flashing: boolean }) {
-  return (
-    <div className={`battle-info-card ${monster.isFainted ? 'battle-info-card--fainted' : ''}`}>
-      <div className="battle-info-card__top">
-        <span className="battle-info-card__name">{monster.name}</span>
-        <span className="battle-info-card__level">Lv. {monster.level}</span>
-      </div>
-      <div className="battle-info-card__types">
-        {monster.types.map(t => <TypeBadge key={t} type={t} size="xs" />)}
-      </div>
-      <HpBar monster={monster} flashing={flashing} />
-      {monster.statusEffects.length > 0 && (
-        <div className="battle-info-card__statuses">
-          {monster.statusEffects.map(s => (
-            <span key={s} className={`battle-status-chip battle-status-chip--${s.toLowerCase().replace(/\s+/g, '-')}`}>{s}</span>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/**
- * Pokémon-style battle dialogue box. Shows one line at a time, advanced by the
- * parent (click anywhere on the box or press Space/Enter). Renders the speaker's
- * sprite (or a bespoke talking sprite) and, when a text-box skin asset is set,
- * frames the box with it as a nine-slice via CSS border-image.
- */
-function DialogueBox({
-  lines,
-  index,
-  sprite,
-  speaker,
-  textboxUrl,
-  textboxSlice,
-  onAdvance,
-}: {
-  lines: string[];
-  index: number;
-  sprite: string | null;
-  speaker: string;
-  textboxUrl: string | null;
-  textboxSlice: number | null;
-  onAdvance: () => void;
-}) {
-  const slice = textboxSlice && textboxSlice > 0 ? textboxSlice : 24;
-  const boxStyle: React.CSSProperties = textboxUrl
-    ? {
-        borderStyle: 'solid',
-        borderWidth: `${slice}px`,
-        borderColor: 'transparent',
-        borderImageSource: `url(${textboxUrl})`,
-        borderImageSlice: `${slice} fill`,
-        borderImageWidth: `${slice}px`,
-        borderImageRepeat: 'stretch',
-      }
-    : {};
-  const isLast = index >= lines.length - 1;
-  return (
-    <div className="battle-dialogue">
-      {sprite && (
-        <div className="battle-dialogue__portrait">
-          <img src={sprite} alt={speaker} onError={handleMonImgError} />
-        </div>
-      )}
-      <button
-        type="button"
-        className={`battle-dialogue__box ${textboxUrl ? 'battle-dialogue__box--custom' : ''}`}
-        style={boxStyle}
-        onClick={onAdvance}
-      >
-        <span className="battle-dialogue__speaker">{speaker}</span>
-        <p className="battle-dialogue__text">{lines[index]}</p>
-        <span className="battle-dialogue__advance">
-          {isLast ? (
-            <>Click or press Space to continue <i className="fas fa-play" /></>
-          ) : (
-            <>Next <i className="fas fa-angle-double-down" /></>
-          )}
-        </span>
-      </button>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // Arena page
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -170,67 +79,100 @@ const BattleArenaPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [actionPending, setActionPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [flashSide, setFlashSide] = useState<'players' | 'opponents' | null>(null);
-  const [faintingIds, setFaintingIds] = useState<Set<number>>(new Set());
   // Dialogue: intro plays before the fight, the outcome line after it ends.
   const [introDismissed, setIntroDismissed] = useState(false);
   const [outcomeDismissed, setOutcomeDismissed] = useState(false);
   const [lineIndex, setLineIndex] = useState(0);
+  // Trainer choreography. `trainerOut` = the trainer is standing on the field;
+  // `throwing` = their monster has not been sent out yet, so the field is bare.
+  const [trainerOut, setTrainerOut] = useState<SlotFlags>({ you: false, foe: false });
+  const [throwing, setThrowing] = useState<SlotFlags>({ you: false, foe: false });
   const confirmModal = useConfirmModal();
   const logRef = useRef<HTMLDivElement>(null);
-  const prevHpRef = useRef<Map<number, number>>(new Map());
-  const prevFaintedRef = useRef<Set<number>>(new Set());
+  const exitTimersRef = useRef<Record<TrainerSlot, ReturnType<typeof setTimeout> | null>>({ you: null, foe: null });
+  const revealTimersRef = useRef<Record<TrainerSlot, ReturnType<typeof setTimeout> | null>>({ you: null, foe: null });
+  const prevShownRef = useRef<Record<TrainerSlot, number | null>>({ you: null, foe: null });
+  const startPlayedRef = useRef(false);
+
+  // Every transient visual — the attacker's lunge, the hit flash, drained HP, floating
+  // damage and stat arrows, the knockout drop — is derived from the state stream here.
+  // `observe`/`reset` are pulled out because the `fx` object itself is rebuilt on every
+  // animation tick: a callback that closed over the whole of it would change identity
+  // constantly, and the effects keyed on it would refetch the battle in a loop.
+  const fx = useBattleFx();
+  const { observe: observeFx, reset: resetFx } = fx;
+
+  const clearSlotTimers = useCallback((slot: TrainerSlot) => {
+    const exit = exitTimersRef.current[slot];
+    const reveal = revealTimersRef.current[slot];
+    if (exit) clearTimeout(exit);
+    if (reveal) clearTimeout(reveal);
+    exitTimersRef.current[slot] = null;
+    revealTimersRef.current[slot] = null;
+  }, []);
+
+  /** Trainer in → (beat) → monster out → trainer off. */
+  const playSendIn = useCallback((slot: TrainerSlot) => {
+    clearSlotTimers(slot);
+    setTrainerOut((cur) => ({ ...cur, [slot]: true }));
+    setThrowing((cur) => ({ ...cur, [slot]: true }));
+    revealTimersRef.current[slot] = setTimeout(() => {
+      revealTimersRef.current[slot] = null;
+      setThrowing((cur) => ({ ...cur, [slot]: false }));
+    }, MONSTER_REVEAL_MS);
+    exitTimersRef.current[slot] = setTimeout(() => {
+      exitTimersRef.current[slot] = null;
+      setTrainerOut((cur) => ({ ...cur, [slot]: false }));
+    }, TRAINER_EXIT_MS);
+  }, [clearSlotTimers]);
+
+  /** Keep a trainer on screen a moment longer, then walk them off. */
+  const playExit = useCallback((slot: TrainerSlot) => {
+    clearSlotTimers(slot);
+    setTrainerOut((cur) => ({ ...cur, [slot]: true }));
+    exitTimersRef.current[slot] = setTimeout(() => {
+      exitTimersRef.current[slot] = null;
+      setTrainerOut((cur) => ({ ...cur, [slot]: false }));
+    }, TRAINER_LINGER_MS);
+  }, [clearSlotTimers]);
+
+  useEffect(() => () => {
+    clearSlotTimers('you');
+    clearSlotTimers('foe');
+  }, [clearSlotTimers]);
+
+  /**
+   * Guards against out-of-order battle states.
+   *
+   * The arena reads a state by diffing it against the last one, so a stale response is
+   * worse than a late one: an older snapshot rewinds the HP and faint baselines, and the
+   * next state then replays damage that has already been animated — as *chip* damage,
+   * since its turns are behind the cursor. Every fetch takes a ticket; only the newest
+   * one is allowed to land. Bumping it also strands the in-flight request for a battle
+   * you have just navigated away from.
+   */
+  const stateSeqRef = useRef(0);
 
   const applyState = useCallback((next: WebBattleStateView) => {
-    // Detect HP drops for damage flash + newly-fainted monsters for the KO drop
-    const prev = prevHpRef.current;
-    const prevFainted = prevFaintedRef.current;
-    let playersHit = false;
-    let opponentsHit = false;
-    const newlyFainted: number[] = [];
-    for (const m of next.monsters) {
-      const old = prev.get(m.id);
-      if (old !== undefined && m.currentHp < old) {
-        if (m.teamSide === 'players') playersHit = true;
-        else opponentsHit = true;
-      }
-      prev.set(m.id, m.currentHp);
-
-      if (m.isFainted && !prevFainted.has(m.id)) {
-        newlyFainted.push(m.id);
-        prevFainted.add(m.id);
-      } else if (!m.isFainted && prevFainted.has(m.id)) {
-        // Revived / new battle instance — reset so it can faint-animate again
-        prevFainted.delete(m.id);
-      }
-    }
-    if (playersHit || opponentsHit) {
-      setFlashSide(playersHit ? 'players' : 'opponents');
-      setTimeout(() => setFlashSide(null), 700);
-    }
-    if (newlyFainted.length > 0) {
-      setFaintingIds((cur) => {
-        const nextSet = new Set(cur);
-        newlyFainted.forEach((id) => nextSet.add(id));
-        return nextSet;
-      });
-      setTimeout(() => {
-        setFaintingIds((cur) => {
-          const nextSet = new Set(cur);
-          newlyFainted.forEach((id) => nextSet.delete(id));
-          return nextSet;
-        });
-      }, 1100);
-    }
+    observeFx(next);
     setState(next);
-  }, []);
+  }, [observeFx]);
 
   const refetch = useCallback(() => {
     if (!battleId) return;
+    const seq = ++stateSeqRef.current;
     battleService.getBattleState(battleId)
-      .then(applyState)
-      .catch(err => setError(extractErrorMessage(err, 'Failed to load battle.')))
-      .finally(() => setLoading(false));
+      .then((next) => {
+        if (seq !== stateSeqRef.current) return;
+        applyState(next);
+      })
+      .catch(err => {
+        if (seq !== stateSeqRef.current) return;
+        setError(extractErrorMessage(err, 'Failed to load battle.'));
+      })
+      .finally(() => {
+        if (seq === stateSeqRef.current) setLoading(false);
+      });
   }, [battleId, applyState]);
 
   // Initial load
@@ -244,7 +186,11 @@ const BattleArenaPage = () => {
     setIntroDismissed(false);
     setOutcomeDismissed(false);
     setLineIndex(0);
-  }, [battleId]);
+    // The next battle has its own trainers and its own send-in, so replay both.
+    prevShownRef.current = { you: null, foe: null };
+    startPlayedRef.current = false;
+    resetFx();
+  }, [battleId, resetFx]);
 
   // Socket join / updates + pvp polling fallback
   useEffect(() => {
@@ -277,23 +223,30 @@ const BattleArenaPage = () => {
 
   // ── Derived data ──────────────────────────────────────────────────
 
-  const yourSide = state?.yourSide ?? 'players';
-  const enemySide = yourSide === 'players' ? 'opponents' : 'players';
+  const yourSide: BattleSide = state?.yourSide ?? 'players';
+  const enemySide: BattleSide = yourSide === 'players' ? 'opponents' : 'players';
 
   const yourMonsters = useMemo(
     () => (state?.monsters ?? []).filter(m => m.teamSide === yourSide),
     [state, yourSide],
   );
-  const yourActive = yourMonsters.find(m => m.isActive) ?? null;
+  // A knocked-out monster is deactivated server-side the moment it faints, so by the
+  // time this state arrives it is no longer anybody's active monster — and on the
+  // opponent's side the AI has already switched its replacement in. Keep showing the
+  // dead one for as long as the FX layer holds it: it takes the killing blow, drains to
+  // zero and plays its faint-drop, just like the games, and only then does the field
+  // move on. Without this the fatal hit lands on an empty slot and is never seen.
+  const retainedOn = (side: BattleSide) =>
+    (state?.monsters ?? []).find(m => m.teamSide === side && fx.retainedIds.has(m.id)) ?? null;
+
+  const yourActive = retainedOn(yourSide) ?? yourMonsters.find(m => m.isActive) ?? null;
   const enemyActive = (state?.monsters ?? []).find(m => m.teamSide === enemySide && m.isActive) ?? null;
-  // The AI auto-switches its next monster into the active slot in the same turn
-  // it faints one, so the freshly-KO'd opponent is already inactive by the time
-  // this state arrives. While its KO animation is in flight, keep showing the
-  // fainted monster (hp already 0) so its bar drains to 0 and it plays the
-  // faint-drop — just like the games — before the replacement enters.
-  const enemyKoing = (state?.monsters ?? []).find(m => m.teamSide === enemySide && faintingIds.has(m.id)) ?? null;
-  const enemyShown = enemyKoing ?? enemyActive;
-  const bench = yourMonsters.filter(m => !m.isActive);
+  const enemyShown = retainedOn(enemySide) ?? enemyActive;
+  // A monster still finishing its faint-drop on the field is not also on the bench.
+  const bench = yourMonsters.filter(m => !m.isActive && !fx.retainedIds.has(m.id));
+
+  const yourTrainer = (state?.participants ?? []).find(p => p.teamSide === yourSide) ?? null;
+  const enemyTrainer = (state?.participants ?? []).find(p => p.teamSide === enemySide) ?? null;
 
   const battleOver = state?.status !== 'active';
   const canMove = !!state && !battleOver && state.isYourTurn && !state.mustSwitch && !actionPending && !state.pending;
@@ -308,6 +261,20 @@ const BattleArenaPage = () => {
         .filter((log) => log.text.length > 0),
     [state?.logs],
   );
+
+  /** The floating numbers/arrows currently attached to one monster. */
+  const popupsFor = useCallback((monsterId: number) => ({
+    statPopups: fx.statPopups.filter((p) => p.monsterId === monsterId),
+    damagePopups: fx.damagePopups.filter((p) => p.monsterId === monsterId),
+  }), [fx.statPopups, fx.damagePopups]);
+
+  /**
+   * The HP to draw for a monster on the field: the value the FX layer is holding it at,
+   * which lags the server's until the blow responsible actually connects, so the bar
+   * drains on the hit rather than before the attacker has moved.
+   */
+  const shownHp = (monster: BattleMonster): number =>
+    fx.displayHp.get(monster.id) ?? monster.currentHp;
 
   // ── Dialogue & scenery ────────────────────────────────────────────
 
@@ -366,6 +333,52 @@ const BattleArenaPage = () => {
     return () => window.removeEventListener('keydown', onKey);
   }, [activeDialogue, advanceDialogue]);
 
+  // ── Trainer choreography ──────────────────────────────────────────
+
+  // Battle start: both trainers walk onto an empty field. With intro dialogue they
+  // hold there and speak first; the send-in only completes once it is dismissed.
+  useEffect(() => {
+    if (!state || state.pending || startPlayedRef.current) return;
+    startPlayedRef.current = true;
+    playSendIn('you');
+    playSendIn('foe');
+  }, [state, playSendIn]);
+
+  // Send-in: the monster shown on a side changed (you switched, or the AI sent its
+  // next one out after the previous finished its KO animation), so that side's
+  // trainer steps back in to throw. Laid out before paint so the incoming monster
+  // never flashes on screen ahead of its trainer.
+  useLayoutEffect(() => {
+    const prev = prevShownRef.current;
+    const youId = yourActive?.id ?? null;
+    const foeId = enemyShown?.id ?? null;
+    if (youId !== null && prev.you !== null && youId !== prev.you) playSendIn('you');
+    if (foeId !== null && prev.foe !== null && foeId !== prev.foe) playSendIn('foe');
+    prev.you = youId;
+    prev.foe = foeId;
+  }, [yourActive?.id, enemyShown?.id, playSendIn]);
+
+  // Intro dialogue over: the trainers finally throw, then step off under their
+  // monsters. (An empty dependency-free ref guard so this fires once, on the edge.)
+  const introWasActiveRef = useRef(false);
+  useEffect(() => {
+    if (introActive) {
+      introWasActiveRef.current = true;
+      return;
+    }
+    if (!introWasActiveRef.current) return;
+    introWasActiveRef.current = false;
+    playExit('you');
+    playExit('foe');
+  }, [introActive, playExit]);
+
+  // The trainer stands on the field while speaking, while throwing, and once the
+  // battle is decided — so you see who you beat, or lost to.
+  const trainerVisible = (slot: TrainerSlot): boolean =>
+    trainerOut[slot] || introActive || battleOver;
+  // Nothing on the field but the trainer until they have thrown.
+  const monsterHidden = (slot: TrainerSlot): boolean => throwing[slot] || introActive;
+
   // ── Actions ───────────────────────────────────────────────────────
 
   const sendAction = useCallback(async (action: Parameters<typeof battleService.sendAction>[1]) => {
@@ -374,7 +387,12 @@ const BattleArenaPage = () => {
       setActionPending(true);
       setActionError(null);
       const result = await battleService.sendAction(battleId, action);
-      if (result.state) applyState(result.state);
+      if (result.state) {
+        // The action's own response is the newest state there is — retire any GET still
+        // in flight so a slower, older snapshot can't land on top of it.
+        stateSeqRef.current++;
+        applyState(result.state);
+      }
     } catch (err) {
       setActionError(extractErrorMessage(err, 'Action failed.'));
     } finally {
@@ -416,6 +434,68 @@ const BattleArenaPage = () => {
 
   const settlement = state.settlement;
   const won = settlement?.won ?? (state.winnerType === yourSide);
+
+  /**
+   * One combatant's patch of ground: the place-spot, the sprite (carrying its own
+   * lunge / hit / faint animation classes) and the numbers floating off it.
+   */
+  const renderSpriteZone = (monster: BattleMonster, slot: TrainerSlot) => {
+    const side: BattleSide = slot === 'you' ? yourSide : enemySide;
+    const facing = slot === 'you' ? 'player' : 'enemy';
+    const fainting = fx.faintingIds.has(monster.id);
+    // Knocked out, but its drop hasn't finished playing. Between the state arriving and
+    // the killing blow connecting it must still look alive, so the settled `--fainted`
+    // look is held back until the FX layer lets go of it.
+    const retained = fx.retainedIds.has(monster.id);
+    const settledFaint = monster.isFainted && !retained;
+    // A monster that is dropping doesn't also flinch — the KO animation owns it.
+    const struck = fx.hitSides.has(side) && !fainting;
+    const lunging = fx.lurchingSides.has(side) && !fainting;
+    const { statPopups, damagePopups } = popupsFor(monster.id);
+
+    return (
+      <div className={`battle-field__sprite-zone ${struck ? 'battle-field__sprite-zone--hit' : ''}`}>
+        {appearance?.spotUrl ? (
+          <img
+            className={`battle-field__spot ${pixelatedClass(appearance.spotPixelated)}`}
+            src={appearance.spotUrl}
+            alt=""
+            aria-hidden="true"
+          />
+        ) : (
+          <div className="battle-field__platform" />
+        )}
+        {!monsterHidden(slot) && (
+          <>
+            {struck && <span className="battle-field__impact" aria-hidden="true" />}
+            {/* Keyed by monster, so the send-in slide plays once per monster sent out —
+                and the sprite inside it is free to shake, lunge and fall without the
+                slide being re-triggered under it. */}
+            <span
+              key={monster.id}
+              className={`battle-field__sprite-enter battle-field__sprite-enter--${facing}`}
+            >
+              <img
+                className={[
+                  'battle-field__sprite',
+                  `battle-field__sprite--${facing}`,
+                  settledFaint ? 'battle-field__sprite--fainted' : '',
+                  fainting ? 'battle-field__sprite--fainting' : '',
+                  lunging ? 'battle-field__sprite--lurch' : '',
+                ].filter(Boolean).join(' ')}
+                src={slot === 'you'
+                  ? (monster.backSprite || monster.imgLink || '/images/default_mon.png')
+                  : (monster.imgLink || '/images/default_mon.png')}
+                alt={monster.name}
+                onError={handleMonImgError}
+              />
+            </span>
+            <BattleFxLayer statPopups={statPopups} damagePopups={damagePopups} />
+          </>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="battle-arena-page">
@@ -472,7 +552,7 @@ const BattleArenaPage = () => {
       <div className={`battle-field ${appearance?.backgroundUrl ? 'battle-field--has-bg' : ''}`}>
         {appearance?.backgroundUrl && (
           <div
-            className="battle-field__bg"
+            className={`battle-field__bg ${pixelatedClass(appearance.backgroundPixelated)}`}
             style={{ backgroundImage: `url(${appearance.backgroundUrl})` }}
             aria-hidden="true"
           />
@@ -481,21 +561,14 @@ const BattleArenaPage = () => {
         <div className="battle-field__side battle-field__side--enemy">
           {enemyShown ? (
             <>
-              <MonsterInfoCard key={enemyShown.id} monster={enemyShown} flashing={flashSide === enemySide} />
-              <div className={`battle-field__sprite-zone ${flashSide === enemySide && !faintingIds.has(enemyShown.id) ? 'battle-field__sprite-zone--hit' : ''}`}>
-                {appearance?.spotUrl ? (
-                  <img className="battle-field__spot" src={appearance.spotUrl} alt="" aria-hidden="true" />
-                ) : (
-                  <div className="battle-field__platform" />
-                )}
-                <img
-                  key={enemyShown.id}
-                  className={`battle-field__sprite battle-field__sprite--enemy ${enemyShown.isFainted ? 'battle-field__sprite--fainted' : ''} ${faintingIds.has(enemyShown.id) ? 'battle-field__sprite--fainting' : ''}`}
-                  src={enemyShown.imgLink || '/images/default_mon.png'}
-                  alt={enemyShown.name}
-                  onError={handleMonImgError}
-                />
-              </div>
+              <MonsterInfoCard
+                key={enemyShown.id}
+                monster={enemyShown}
+                flashing={fx.hpFlashIds.has(enemyShown.id)}
+                concealed={monsterHidden('foe')}
+                hp={shownHp(enemyShown)}
+              />
+              {renderSpriteZone(enemyShown, 'foe')}
             </>
           ) : (
             <div className="battle-field__empty">No opposing monster</div>
@@ -506,26 +579,37 @@ const BattleArenaPage = () => {
         <div className="battle-field__side battle-field__side--player">
           {yourActive ? (
             <>
-              <div className={`battle-field__sprite-zone ${flashSide === yourSide && !faintingIds.has(yourActive.id) ? 'battle-field__sprite-zone--hit' : ''}`}>
-                {appearance?.spotUrl ? (
-                  <img className="battle-field__spot" src={appearance.spotUrl} alt="" aria-hidden="true" />
-                ) : (
-                  <div className="battle-field__platform" />
-                )}
-                <img
-                  key={yourActive.id}
-                  className={`battle-field__sprite battle-field__sprite--player ${yourActive.isFainted ? 'battle-field__sprite--fainted' : ''} ${faintingIds.has(yourActive.id) ? 'battle-field__sprite--fainting' : ''}`}
-                  src={yourActive.backSprite || yourActive.imgLink || '/images/default_mon.png'}
-                  alt={yourActive.name}
-                  onError={handleMonImgError}
-                />
-              </div>
-              <MonsterInfoCard key={yourActive.id} monster={yourActive} flashing={flashSide === yourSide} />
+              {renderSpriteZone(yourActive, 'you')}
+              <MonsterInfoCard
+                key={yourActive.id}
+                monster={yourActive}
+                flashing={fx.hpFlashIds.has(yourActive.id)}
+                concealed={monsterHidden('you')}
+                hp={shownHp(yourActive)}
+              />
             </>
           ) : (
             <div className="battle-field__empty">Choose a monster</div>
           )}
         </div>
+
+        {/* Trainers: slide on at the start, on each send-in, and when the battle ends */}
+        {enemyTrainer?.trainerImage && (
+          <TrainerPortrait
+            image={enemyTrainer.trainerImage}
+            name={enemyTrainer.trainerName}
+            side="enemy"
+            visible={trainerVisible('foe')}
+          />
+        )}
+        {yourTrainer?.trainerImage && (
+          <TrainerPortrait
+            image={yourTrainer.trainerImage}
+            name={yourTrainer.trainerName}
+            side="player"
+            visible={trainerVisible('you')}
+          />
+        )}
 
         {/* Dialogue (intro before the fight, outcome after) */}
         {activeDialogue && (
@@ -536,6 +620,7 @@ const BattleArenaPage = () => {
             speaker={speaker}
             textboxUrl={appearance?.textboxUrl ?? null}
             textboxSlice={appearance?.textboxSlice ?? null}
+            textboxPixelated={appearance?.textboxPixelated ?? false}
             onAdvance={advanceDialogue}
           />
         )}
@@ -553,7 +638,7 @@ const BattleArenaPage = () => {
               {state.activeMoves.map((move: BattleMove) => (
                 <button
                   key={move.moveName}
-                  className="battle-move-button"
+                  className={`battle-move-button battle-move-button--${move.moveCategory.toLowerCase()}`}
                   disabled={!canMove}
                   title={move.description || undefined}
                   onClick={() => sendAction({ type: 'move', moveName: move.moveName })}
@@ -581,24 +666,14 @@ const BattleArenaPage = () => {
           </h3>
           <div className={`battle-team-bar ${state.mustSwitch ? 'battle-team-bar--emphasized' : ''}`}>
             {bench.length === 0 && <span className="battle-team-bar__empty">No bench monsters.</span>}
-            {bench.map(m => {
-              const pct = m.maxHp > 0 ? Math.max(0, (m.currentHp / m.maxHp) * 100) : 0;
-              return (
-                <button
-                  key={m.id}
-                  className={`battle-bench-monster ${m.isFainted ? 'fainted' : ''}`}
-                  disabled={!canSwitch || m.isFainted}
-                  title={`${m.name} (Lv. ${m.level}) — ${m.currentHp}/${m.maxHp} HP`}
-                  onClick={() => sendAction({ type: 'switch', battleMonsterId: m.id })}
-                >
-                  <img src={m.imgLink || '/images/default_mon.png'} alt={m.name} onError={handleMonImgError} />
-                  <span className="battle-bench-monster__name">{m.name}</span>
-                  <span className="battle-bench-monster__hp">
-                    <span className={`battle-bench-monster__hp-fill battle-hp__fill--${hpBarClass(pct)}`} style={{ width: `${pct}%` }} />
-                  </span>
-                </button>
-              );
-            })}
+            {bench.map(m => (
+              <BenchMonsterButton
+                key={m.id}
+                monster={m}
+                disabled={!canSwitch || m.isFainted}
+                onSwitch={() => sendAction({ type: 'switch', battleMonsterId: m.id })}
+              />
+            ))}
           </div>
         </div>
 
@@ -669,9 +744,7 @@ const BattleArenaPage = () => {
                       className="button primary"
                       onClick={() => {
                         setLoading(true);
-                        prevHpRef.current = new Map();
-                        prevFaintedRef.current = new Set();
-                        setFaintingIds(new Set());
+                        fx.reset();
                         navigate(`/adventures/battle/${settlement.gauntlet!.nextBattleId}`);
                       }}
                     >

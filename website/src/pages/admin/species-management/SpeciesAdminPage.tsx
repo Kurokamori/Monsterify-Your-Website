@@ -4,8 +4,11 @@ import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { AdminRoute } from '@components/common/AdminRoute';
 import { AdminTable, type FilterConfig } from '@components/admin/AdminTable';
 import { ConfirmModal } from '@components/common/ConfirmModal';
+import { InfoModal } from '@components/common/InfoModal';
 import speciesService, {
   type Species,
+  type WikiImportSummary,
+  type ImageRefreshSummary,
   FRANCHISE_CONFIG,
 } from '@services/speciesService';
 import {
@@ -45,6 +48,18 @@ function SpeciesAdminContent() {
 
   // Delete
   const [deleteTarget, setDeleteTarget] = useState<Species | null>(null);
+
+  // Wiki import
+  const [importConfirmOpen, setImportConfirmOpen] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [importSummary, setImportSummary] = useState<WikiImportSummary | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+
+  // Image refresh
+  const [refreshConfirmOpen, setRefreshConfirmOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshSummary, setRefreshSummary] = useState<ImageRefreshSummary | null>(null);
+  const [refreshError, setRefreshError] = useState<string | null>(null);
 
   // Dynamic filter options (fetched from backend endpoints)
   const [dynamicFilterOptions, setDynamicFilterOptions] = useState<Record<string, string[]>>({});
@@ -140,6 +155,40 @@ function SpeciesAdminContent() {
     setFilterValues({});
     setCurrentPage(1);
   }, []);
+
+  const handleImport = useCallback(async () => {
+    if (!franchiseKey) return;
+    setImporting(true);
+    setImportError(null);
+    try {
+      const summary = await speciesService.importFromWiki(franchiseKey);
+      setImportConfirmOpen(false);
+      setImportSummary(summary);
+      fetchData();
+    } catch (err) {
+      console.error('Error importing species from wiki:', err);
+      setImportError('Import failed. Please try again.');
+    } finally {
+      setImporting(false);
+    }
+  }, [franchiseKey, fetchData]);
+
+  const handleRefreshImages = useCallback(async () => {
+    if (!franchiseKey) return;
+    setRefreshing(true);
+    setRefreshError(null);
+    try {
+      const summary = await speciesService.refreshImages(franchiseKey);
+      setRefreshConfirmOpen(false);
+      setRefreshSummary(summary);
+      fetchData();
+    } catch (err) {
+      console.error('Error refreshing species images:', err);
+      setRefreshError('Image refresh failed. Please try again.');
+    } finally {
+      setRefreshing(false);
+    }
+  }, [franchiseKey, fetchData]);
 
   const handleDelete = useCallback(async () => {
     if (!deleteTarget || !franchiseKey) return;
@@ -259,6 +308,22 @@ function SpeciesAdminContent() {
             <i className="fas fa-images"></i> Mass Add {config.label}
           </Link>
         )}
+        {config.wikiImport && (
+          <button
+            className="button secondary"
+            onClick={() => { setImportError(null); setImportConfirmOpen(true); }}
+          >
+            <i className="fas fa-cloud-download-alt"></i> {config.wikiImport.label}
+          </button>
+        )}
+        {config.imageRefresh && (
+          <button
+            className="button secondary"
+            onClick={() => { setRefreshError(null); setRefreshConfirmOpen(true); }}
+          >
+            <i className="fas fa-sync-alt"></i> {config.imageRefresh.label}
+          </button>
+        )}
       </div>
 
       <ConfirmModal
@@ -271,6 +336,110 @@ function SpeciesAdminContent() {
         confirmText="Delete"
         variant="danger"
         confirmIcon="fas fa-trash"
+      />
+
+      {config.wikiImport && (
+        <ConfirmModal
+          isOpen={importConfirmOpen}
+          onClose={() => { if (!importing) setImportConfirmOpen(false); }}
+          onConfirm={handleImport}
+          title={`Import ${config.label} from Wiki`}
+          message={`This will scrape ${config.wikiImport.source} and add any ${config.label} not already in the database. Existing entries are left unchanged.`}
+          details={importError ? <p className="alert error">{importError}</p> : undefined}
+          confirmText={importing ? 'Importing…' : 'Import'}
+          confirmIcon="fas fa-cloud-download-alt"
+          loading={importing}
+          confirmDisabled={importing}
+        />
+      )}
+
+      <InfoModal
+        isOpen={!!importSummary}
+        onClose={() => setImportSummary(null)}
+        title={`${config.label} Import Complete`}
+        size="medium"
+        metadata={importSummary ? [
+          { label: 'Scraped from wiki', value: importSummary.scraped },
+          { label: 'Already in database', value: importSummary.existing },
+          { label: 'Newly added', value: importSummary.added.length },
+          ...(importSummary.missingImages.length > 0
+            ? [{ label: 'Added without image', value: importSummary.missingImages.length }]
+            : []),
+          ...(importSummary.failed.length > 0
+            ? [{ label: 'Failed', value: importSummary.failed.length }]
+            : []),
+        ] : undefined}
+        sections={importSummary && importSummary.added.length > 0 ? [
+          {
+            title: `Added ${importSummary.added.length} ${config.label}`,
+            icon: 'fas fa-plus-circle',
+            content: (
+              <ul className="species-import-added">
+                {importSummary.added.map((pal) => (
+                  <li key={pal.name}>
+                    {pal.number ? `#${pal.number} ` : ''}{pal.name}
+                  </li>
+                ))}
+              </ul>
+            ),
+          },
+        ] : undefined}
+        description={importSummary && importSummary.added.length === 0
+          ? `No new ${config.label} found — the database is already up to date.`
+          : undefined}
+      />
+
+      {config.imageRefresh && (
+        <ConfirmModal
+          isOpen={refreshConfirmOpen}
+          onClose={() => { if (!refreshing) setRefreshConfirmOpen(false); }}
+          onConfirm={handleRefreshImages}
+          title={`Update ${config.label} Images`}
+          message={`This will re-point every ${config.label} entry at the best image available: our own artwork when it has been uploaded, falling back to the ${config.imageRefresh.fallbackSource} image otherwise. Entries with no image from either source are left unchanged.`}
+          details={refreshError ? <p className="alert error">{refreshError}</p> : undefined}
+          confirmText={refreshing ? 'Updating…' : 'Update Images'}
+          confirmIcon="fas fa-sync-alt"
+          loading={refreshing}
+          confirmDisabled={refreshing}
+        />
+      )}
+
+      <InfoModal
+        isOpen={!!refreshSummary}
+        onClose={() => setRefreshSummary(null)}
+        title={`${config.label} Images Updated`}
+        size="medium"
+        metadata={refreshSummary ? [
+          { label: 'Checked', value: refreshSummary.checked },
+          { label: 'Already current', value: refreshSummary.unchanged },
+          { label: 'Updated', value: refreshSummary.updated.length },
+          ...(refreshSummary.unresolved.length > 0
+            ? [{ label: 'No image available', value: refreshSummary.unresolved.length }]
+            : []),
+          ...(refreshSummary.failed.length > 0
+            ? [{ label: 'Failed', value: refreshSummary.failed.length }]
+            : []),
+        ] : undefined}
+        sections={refreshSummary && refreshSummary.updated.length > 0 ? [
+          {
+            title: `Updated ${refreshSummary.updated.length} image(s)`,
+            icon: 'fas fa-sync-alt',
+            content: (
+              <ul className="species-import-added">
+                {refreshSummary.updated.map((change) => (
+                  <li key={change.id}>
+                    {change.name} — {change.source === 'self-hosted'
+                      ? 'now using our own artwork'
+                      : `now using the ${config.imageRefresh?.fallbackSource ?? 'fallback'} image`}
+                  </li>
+                ))}
+              </ul>
+            ),
+          },
+        ] : undefined}
+        description={refreshSummary && refreshSummary.updated.length === 0
+          ? `Every ${config.label} entry is already using the best image available.`
+          : undefined}
       />
     </>
   );

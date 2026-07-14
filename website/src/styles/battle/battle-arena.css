@@ -69,7 +69,15 @@
 
 /* ── Battlefield ── */
 
+/* The two sprite-zone sizes are the single knob for how big the monsters and their
+   place-spots are drawn. Everything inside a zone (sprite, spot, platform) is sized as
+   a percentage of it, so changing these two values rescales the combatants and nothing
+   else — the info cards, dialogue and controls are siblings and keep their own scale.
+   The player's zone is the larger of the two: their monster is "nearer" the camera. */
 .battle-field {
+  --battle-zone-enemy: clamp(170px, 20vw, 250px);
+  --battle-zone-player: clamp(210px, 26vw, 320px);
+
   position: relative;
   border-radius: 14px;
   border: 1px solid var(--border-color);
@@ -108,24 +116,47 @@
 }
 
 .battle-field__sprite-zone {
+  --battle-zone: var(--battle-zone-enemy);
   position: relative;
-  width: 190px;
-  height: 190px;
+  width: var(--battle-zone);
+  height: var(--battle-zone);
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  flex: none;
+}
+
+.battle-field__side--player .battle-field__sprite-zone {
+  --battle-zone: var(--battle-zone-player);
 }
 
 .battle-field__platform {
   position: absolute;
-  bottom: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 170px;
-  height: 44px;
+  bottom: 3%;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: 89%;
+  height: 23%;
   border-radius: 50%;
   background: var(--overlay-dark);
   filter: blur(1px);
+}
+
+/* ── Nearest-neighbour scaling ──
+   Opt-in per battle asset (backgrounds, place-spots, text-box skins). Without it the
+   browser smooths scaled artwork, which turns pixel art into mush. `pixelated` is the
+   modern keyword; `crisp-edges` covers browsers that only implement the older one.
+   Applies to <img>, CSS background-image and border-image alike. */
+
+.battle-asset--pixelated {
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+/* Pixel art gets hard edges, so the soft drop-shadow on a spot fights the look. */
+img.battle-field__spot.battle-asset--pixelated {
+  filter: none;
 }
 
 /* ── Background scene ── */
@@ -158,10 +189,11 @@
 .battle-field__spot {
   position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 185px;
-  max-height: 78px;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: 97%;
+  max-height: 41%;
   object-fit: contain;
   object-position: bottom;
   pointer-events: none;
@@ -169,20 +201,46 @@
   filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.3));
 }
 
+/* Laid out in flow (the zone centres it) rather than absolutely positioned, so that
+   `transform` stays free for the enter/shake/faint animations instead of being spent
+   on centring — a keyframe that sets transform would otherwise knock it off-centre. */
 .battle-field__sprite {
   position: relative;
-  max-width: 165px;
-  max-height: 165px;
+  z-index: 1;
+  margin-bottom: 8%;
+  max-width: 87%;
+  max-height: 87%;
   object-fit: contain;
   image-rendering: auto;
   filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.35));
 }
 
-.battle-field__sprite--enemy {
+/* ── Send-in slide ──
+   On a wrapper, not on the sprite itself. The sprite's own `animation` is claimed in
+   turn by the hit-shake, the lunge and the faint-drop; if the entry slide also lived
+   there, then every time one of those classes came off, `animation-name` would fall
+   back to the entry keyframes — which counts as a *new* animation and replays it. Every
+   attack would end with the attacker sliding in from off-screen again. Here the two
+   compose instead of fighting: the wrapper travels, the sprite acts, and their
+   transforms multiply. It is keyed by monster id in the page, so it remounts (and the
+   slide replays) exactly when a new monster is sent out. */
+
+/* Fills the zone and re-centres the sprite exactly as the zone did, so wrapping the
+   sprite costs it nothing: its percentage sizing still resolves against the full zone. */
+.battle-field__sprite-enter {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.battle-field__sprite-enter--enemy {
   animation: battle-enter-right 0.5s ease-out;
 }
 
-.battle-field__sprite--player {
+.battle-field__sprite-enter--player {
   animation: battle-enter-left 0.5s ease-out;
 }
 
@@ -216,6 +274,44 @@
   to { transform: translateX(0); opacity: 1; }
 }
 
+/* ── Trainers ──
+   The trainer/gym-leader art, standing on their side of the field. Parked just off
+   the edge of the battlefield and slid in by adding --in, so the same transition
+   plays in reverse when they leave. They sit above the monsters but below the
+   dialogue box, and never eat clicks. */
+
+.battle-field__trainer {
+  position: absolute;
+  z-index: 2;
+  height: 62%;
+  max-width: 34%;
+  object-fit: contain;
+  object-position: bottom;
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.4));
+  transition: transform 0.45s ease-out, opacity 0.35s ease-out;
+}
+
+.battle-field__trainer--enemy {
+  top: 4%;
+  right: 1.5%;
+  transform: translateX(140%);
+  scale: 1.2;
+}
+
+.battle-field__trainer--player {
+  bottom: 20%;
+  left: 5%;
+  transform: translateX(-140%);
+  scale: 1.5;
+}
+
+.battle-field__trainer--in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* Taking a hit: colour flash (opacity/filter) + a positional shake. The two
    keyframe sets animate disjoint properties so they compose cleanly. */
 .battle-field__sprite-zone--hit .battle-field__sprite {
@@ -239,9 +335,20 @@
 @media (prefers-reduced-motion: reduce) {
   .battle-field__sprite--fainting,
   .battle-field__sprite-zone--hit .battle-field__sprite,
-  .battle-field__sprite--enemy,
-  .battle-field__sprite--player {
+  .battle-field__sprite-enter--enemy,
+  .battle-field__sprite-enter--player {
     animation: none;
+  }
+
+  /* Trainers still appear and disappear, they just don't travel to do it. */
+  .battle-field__trainer {
+    transition: opacity 0.2s linear;
+  }
+
+  .battle-field__trainer--enemy,
+  .battle-field__trainer--player,
+  .battle-field__trainer--in {
+    transform: none;
   }
 }
 
@@ -258,6 +365,14 @@
 
 .battle-info-card--fainted {
   opacity: 0.7;
+}
+
+/* The monster hasn't been thrown out yet: the card keeps its space (so the field
+   doesn't jump when the monster lands) but shows nothing. */
+.battle-info-card--concealed {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease-out;
 }
 
 .battle-info-card__top {
@@ -285,6 +400,7 @@
 }
 
 .battle-hp__bar {
+  position: relative;
   height: 10px;
   border-radius: 999px;
   background: var(--overlay-dark);
@@ -292,10 +408,27 @@
 }
 
 .battle-hp__fill {
+  position: relative;
+  z-index: 1;
   display: block;
   height: 100%;
   border-radius: 999px;
   transition: width 0.6s ease, background-color 0.6s ease;
+}
+
+/* The trail left behind a hit: the same width as the fill, but it drains slower and
+   starts later, so for about a second the gap between the two shows exactly how much
+   HP was just taken off. It only ever lags — on a heal the fill overtakes it and it
+   is hidden underneath. */
+.battle-hp__ghost {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--error-light);
+  opacity: 0.75;
+  transition: width 0.9s ease-out 0.35s;
 }
 
 .battle-hp__fill--high { background: var(--success-light); }
@@ -718,6 +851,66 @@
   }
 }
 
+/* ── League badge case + champion badge ── */
+
+.battle-badge-case--league .battle-badge-case__grid {
+  border-color: var(--accent-color, #b8860b);
+  box-shadow: inset 0 0 0 1px rgba(184, 134, 11, 0.25);
+}
+
+.battle-badge-case__item--champion {
+  position: relative;
+  border-radius: 12px;
+}
+
+/* Soft, unclipped glow — a circular gradient that fades fully to transparent
+   past the item bounds, so there are no hard rectangular edges. */
+.battle-badge-case__item--champion::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(255, 215, 0, 0.3),
+    rgba(255, 215, 0, 0.12) 45%,
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+.battle-badge-case__item--champion::after {
+  content: 'Champion';
+  position: absolute;
+  top: -0.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7a5c00;
+  background: linear-gradient(180deg, #ffe680, #f5c518);
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.battle-badge-case__item--champion img,
+.battle-badge-case__item--champion .battle-badge-placeholder {
+  filter: drop-shadow(0 0 8px rgba(255, 200, 0, 0.7));
+}
+
+.battle-badge-case__item--champion .battle-badge-placeholder {
+  color: #f5c518;
+}
+
+.battle-badge-case__item--champion .battle-badge-case__name {
+  color: #b8860b;
+  font-weight: 800;
+}
+
 /* ── Dialogue box (Pokémon-style) ── */
 
 .battle-dialogue {
@@ -831,6 +1024,8 @@
   }
 
   .battle-field {
+    --battle-zone-enemy: clamp(140px, 34vw, 190px);
+    --battle-zone-player: clamp(170px, 42vw, 230px);
     min-height: 320px;
     padding: 0.75rem;
   }
@@ -846,16 +1041,6 @@
 
   .battle-field__side--player {
     align-items: flex-start;
-  }
-
-  .battle-field__sprite-zone {
-    width: 140px;
-    height: 140px;
-  }
-
-  .battle-field__sprite {
-    max-width: 120px;
-    max-height: 120px;
   }
 
   .battle-info-card {

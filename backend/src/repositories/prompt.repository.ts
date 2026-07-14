@@ -179,7 +179,7 @@ export class PromptRepository extends BaseRepository<Prompt, PromptCreateInput, 
     super('prompts');
   }
 
-  async findAll(options: PromptQueryOptions = {}): Promise<Prompt[]> {
+  private buildFilters(options: PromptQueryOptions): { whereClause: string; params: unknown[] } {
     const conditions: string[] = [];
     const params: unknown[] = [];
 
@@ -215,7 +215,14 @@ export class PromptRepository extends BaseRepository<Prompt, PromptCreateInput, 
       `);
     }
 
-    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    return {
+      whereClause: conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '',
+      params,
+    };
+  }
+
+  async findAll(options: PromptQueryOptions = {}): Promise<Prompt[]> {
+    const { whereClause, params } = this.buildFilters(options);
 
     let query = `
       ${BASE_SELECT}
@@ -236,6 +243,17 @@ export class PromptRepository extends BaseRepository<Prompt, PromptCreateInput, 
 
     const result = await db.query<PromptWithStats>(query, params);
     return result.rows.map(normalizePrompt);
+  }
+
+  async countAll(options: PromptQueryOptions = {}): Promise<number> {
+    const { whereClause, params } = this.buildFilters(options);
+
+    const result = await db.query<{ total: string }>(
+      `SELECT COUNT(*)::text as total FROM prompts p ${whereClause}`,
+      params
+    );
+
+    return Number(result.rows[0]?.total ?? 0);
   }
 
   override async findById(id: number): Promise<Prompt | null> {

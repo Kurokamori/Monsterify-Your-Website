@@ -22,6 +22,23 @@ export interface SpeciesAdminConfig {
   validate: (values: Record<string, unknown>) => Record<string, string>;
   filterOptions?: Record<string, string[]>;
   hasMassAdd?: boolean;
+  /**
+   * When set, exposes a re-runnable "Import from Wiki" action that scrapes the
+   * source wiki and adds any species missing from the database.
+   */
+  wikiImport?: {
+    label: string;
+    source: string;
+  };
+  /**
+   * When set, exposes a re-runnable "Update Images" action that re-points every
+   * stored species at the best image available — self-hosted artwork when we have
+   * it, and the scrape source's image as a fallback.
+   */
+  imageRefresh?: {
+    label: string;
+    fallbackSource: string;
+  };
 }
 
 // ── URL slug → FranchiseKey mapping ─────────────────────────────────
@@ -296,6 +313,14 @@ const palsConfig: SpeciesAdminConfig = {
   franchise: 'pals',
   label: 'Palworld',
   icon: 'fas fa-heart',
+  wikiImport: {
+    label: 'Import from Wiki',
+    source: 'palpedia.com',
+  },
+  imageRefresh: {
+    label: 'Update Images',
+    fallbackSource: 'palpedia.com',
+  },
   columns: [
     { key: 'name', header: 'Name', sortable: true },
   ],

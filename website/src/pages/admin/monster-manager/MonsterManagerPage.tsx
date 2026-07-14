@@ -9,6 +9,7 @@ import monsterService from '@services/monsterService'
 import trainerService from '@services/trainerService'
 import adminService from '@services/adminService'
 import { AdminMonsterEditModal } from '@components/admin/AdminMonsterEditModal'
+import { StatMoveRollerModal } from '@components/admin/StatMoveRollerModal'
 import type { Monster } from '@services/monsterService'
 import type { Trainer } from '@components/trainers/types/Trainer'
 import { MONSTER_TYPES, MONSTER_ATTRIBUTES } from '@utils/staticValues'
@@ -97,6 +98,10 @@ function MonsterManagerContent() {
 
   // Admin Edit modal state
   const [adminEditTarget, setAdminEditTarget] = useState<Monster | null>(null)
+
+  // Stat & Move Roller modal state
+  const [showRollerModal, setShowRollerModal] = useState(false)
+  const [rollerTarget, setRollerTarget] = useState<Monster | null>(null)
 
   // --- Fetch filter options on mount ---
 
@@ -608,6 +613,9 @@ function MonsterManagerContent() {
         <button className="button primary" onClick={openAddModal}>
           <i className="fas fa-plus" /> Add Monster to Trainer
         </button>
+        <button className="button secondary" onClick={() => setShowRollerModal(true)}>
+          <i className="fas fa-dice" /> Stat &amp; Move Roller
+        </button>
       </div>
 
       <AdminTable<Monster>
@@ -635,6 +643,12 @@ function MonsterManagerContent() {
               onClick={() => setAdminEditTarget(monster)}
             >
               <i className="fas fa-wrench" /> Admin Edit
+            </button>
+            <button
+              className="button sm secondary"
+              onClick={() => setRollerTarget(monster)}
+            >
+              <i className="fas fa-dice" /> Roll
             </button>
             <button
               className="button sm secondary"
@@ -796,6 +810,23 @@ function MonsterManagerContent() {
         onClose={() => setAdminEditTarget(null)}
         onSuccess={(msg) => { setStatusMsg({ type: 'success', text: msg }); fetchData() }}
         onError={(msg) => setStatusMsg({ type: 'error', text: msg })}
+      />
+
+      {/* Stat & Move Roller Modals */}
+      <StatMoveRollerModal
+        isOpen={showRollerModal}
+        onClose={() => setShowRollerModal(false)}
+        onSuccess={(msg) => { setStatusMsg({ type: 'success', text: msg }); fetchData() }}
+        onError={(msg) => setStatusMsg({ type: 'error', text: msg })}
+        onApplied={fetchData}
+      />
+      <StatMoveRollerModal
+        isOpen={!!rollerTarget}
+        singleMonster={rollerTarget}
+        onClose={() => setRollerTarget(null)}
+        onSuccess={(msg) => { setStatusMsg({ type: 'success', text: msg }); fetchData() }}
+        onError={(msg) => setStatusMsg({ type: 'error', text: msg })}
+        onApplied={fetchData}
       />
 
       {/* Add Monster Modal */}

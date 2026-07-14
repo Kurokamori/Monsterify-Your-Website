@@ -37,8 +37,17 @@ import {
 import {
   DamageCalculatorService,
   MoveData,
+  WeatherType,
 } from './damage-calculator.service';
 import { isStatusMove } from '../../utils/constants/monster-status-moves';
+import {
+  WeatherValue,
+  isValidWeather,
+  getWeatherResidualDamage,
+  getWeatherDisplayName,
+} from '../../utils/constants/weather-terrain';
+import { normalizeMonsterType, MonsterTypeValue } from '../../utils/constants/monster-types';
+import { computeBattleLevelReward } from '../../utils/constants/battle-constants';
 
 // ============================================================================
 // Types
@@ -680,6 +689,12 @@ export class BattleActionService {
       battleId,
       battleState
     );
+
+    // Persist any battle-wide field effects the move signalled (weather, sports,
+    // side screens) so they actually influence later damage calculations.
+    if (result && !this.isSpecialDamageMoveResult(result) && result.additionalEffects) {
+      await this.applyFieldEffects(battleId, participant, target, result.additionalEffects);
+    }
 
     // Calculate word count bonus
     const wordCount = message.split(' ').filter((word) => word.length > 0).length;
@@ -1719,7 +1734,7 @@ export class BattleActionService {
    * NOTE: Requires StatusEffectManager to be fully implemented
    */
   private async processStatusEffects(
-    _battleId: number,
+    battleId: number,
     monster: BattleMonster
   ): Promise<StatusProcessingResult> {
     // Placeholder implementation
@@ -1746,7 +1761,55 @@ export class BattleActionService {
       }
     }
 
+    // Apply weather residual damage (Sandstorm/Hail/Shadow Sky) at turn start.
+    const weatherMessage = await this.applyWeatherResidualDamage(battleId, monster);
+    if (weatherMessage) {
+      messages.push(weatherMessage);
+    }
+
     return { canAct, messages };
+  }
+
+  /**
+   * Deal end-of-turn weather chip damage to a monster that isn't immune to the
+   * active battle weather. Returns a log message when damage was dealt.
+   */
+  private async applyWeatherResidualDamage(
+    battleId: number,
+    monster: BattleMonster
+  ): Promise<string | null> {
+    const battle = await this.battleRepository.findById(battleId);
+    const weather = (battle?.battleData as Record<string, unknown> | undefined)?.weather as
+      | WeatherValue
+      | undefined;
+    if (!weather || !isValidWeather(weather)) {
+      return null;
+    }
+
+    const monsterData = monster.monsterData as MonsterData;
+    const types = [monsterData.type1, monsterData.type2, monsterData.type3, monsterData.type4, monsterData.type5]
+      .filter((t): t is string => !!t)
+      .map((t) => normalizeMonsterType(t))
+      .filter((t): t is MonsterTypeValue => t !== null);
+
+    // Shadow Sky spares only Shadow-type Pokémon (not a standard MonsterType).
+    if (weather === 'shadow_sky') {
+      const isShadow = [monsterData.type1, monsterData.type2, monsterData.type3, monsterData.type4, monsterData.type5]
+        .some((t) => (t ?? '').toLowerCase() === 'shadow');
+      if (isShadow) {
+        return null;
+      }
+    }
+
+    const fraction = getWeatherResidualDamage(weather, types);
+    if (fraction <= 0) {
+      return null;
+    }
+
+    const damage = Math.max(1, Math.floor(monster.maxHp * fraction));
+    await this.battleMonsterRepository.dealDamage(monster.id, damage);
+    const name = monsterData.name ?? 'Monster';
+    return `🌑 ${name} was buffeted by the ${getWeatherDisplayName(weather)}! (-${damage} HP)`;
   }
 
   /**
@@ -1772,11 +1835,18 @@ export class BattleActionService {
       description: move.description ?? undefined,
     };
 
+    // Resolve battle-wide field state (weather, sports, defender-side screens)
+    // so it actually modifies the damage.
+    const field = await this.resolveFieldModifiers(move, ids?.battleId, ids?.defenderId);
+
     // Use DamageCalculatorService for damage calculation
     const result = await this.damageCalculator.calculateDamage(attacker, defender, moveData, {
       battleId: ids?.battleId ?? null,
       attackerId: ids?.attackerId,
       defenderId: ids?.defenderId,
+      weather: field.weather,
+      fieldEffects: field.fieldEffects,
+      customMultiplier: field.barrierMultiplier,
     });
 
     // Convert DamageCalcResult to DamageResult (add moveData as Move type)
@@ -1784,6 +1854,113 @@ export class BattleActionService {
       ...result,
       moveData: move,
     };
+  }
+
+  /**
+   * Read battle-wide field state and compute how it modifies an incoming move:
+   * active weather, field sports, and the defending side's screens.
+   */
+  private async resolveFieldModifiers(
+    move: Move,
+    battleId?: number,
+    defenderId?: number
+  ): Promise<{ weather: WeatherType | null; fieldEffects: string[]; barrierMultiplier: number }> {
+    const empty = { weather: null as WeatherType | null, fieldEffects: [] as string[], barrierMultiplier: 1.0 };
+    if (!battleId) {
+      return empty;
+    }
+
+    const battle = await this.battleRepository.findById(battleId);
+    const battleData = battle?.battleData as Record<string, unknown> | undefined;
+    if (!battleData) {
+      return empty;
+    }
+
+    const weather = (battleData.weather as WeatherType | undefined) ?? null;
+    const fieldEffects = (battleData.fieldEffects as string[] | undefined) ?? [];
+    let barrierMultiplier = 1.0;
+
+    const screens = battleData.screens as Record<string, Record<string, number>> | undefined;
+    if (screens && defenderId) {
+      const defender = await this.battleMonsterRepository.findById(defenderId);
+      const side = defender?.teamSide ?? undefined;
+      const sideScreens = side ? screens[side] : undefined;
+      if (sideScreens) {
+        const category = (move.moveCategory ?? '').toLowerCase();
+        const auroraVeil = (sideScreens.aurora_veil ?? 0) > 0;
+        const reflect = (sideScreens.reflect ?? 0) > 0;
+        const lightScreen = (sideScreens.light_screen ?? 0) > 0;
+        if (auroraVeil && (category === 'physical' || category === 'special')) {
+          barrierMultiplier *= 0.5;
+        } else if (category === 'physical' && reflect) {
+          barrierMultiplier *= 0.5;
+        } else if (category === 'special' && lightScreen) {
+          barrierMultiplier *= 0.5;
+        }
+      }
+    }
+
+    return { weather, fieldEffects, barrierMultiplier };
+  }
+
+  /**
+   * Persist battle-wide field effects signalled by a status move (weather,
+   * field sports, side screens) into the battle's battleData.
+   */
+  private async applyFieldEffects(
+    battleId: number,
+    participant: BattleParticipantWithDetails,
+    target: BattleMonsterWithDetails,
+    additionalEffects: Record<string, unknown>
+  ): Promise<void> {
+    const weatherIntent = additionalEffects.weather as string | undefined;
+    const fieldIntent = additionalEffects.fieldEffect as { effect: string; duration: number } | undefined;
+    const screenIntent = additionalEffects.teamScreen as
+      | { effect: string; barrierType?: string; duration: number }
+      | undefined;
+    const removeBarriers = additionalEffects.removeBarriers === true;
+
+    if (!weatherIntent && !fieldIntent && !screenIntent && !removeBarriers) {
+      return;
+    }
+
+    const battle = await this.battleRepository.findById(battleId);
+    if (!battle) {
+      return;
+    }
+    const battleData = { ...((battle.battleData as Record<string, unknown> | undefined) ?? {}) };
+
+    if (weatherIntent) {
+      battleData.weather = weatherIntent;
+      battleData.weatherTurns = 5;
+    }
+
+    if (fieldIntent) {
+      const fieldEffects = new Set((battleData.fieldEffects as string[] | undefined) ?? []);
+      fieldEffects.add(fieldIntent.effect);
+      battleData.fieldEffects = Array.from(fieldEffects);
+    }
+
+    const screens = (battleData.screens as Record<string, Record<string, number>> | undefined) ?? {};
+
+    if (screenIntent && participant.teamSide) {
+      screens[participant.teamSide] = {
+        ...(screens[participant.teamSide] ?? {}),
+        [screenIntent.effect]: screenIntent.duration,
+      };
+      battleData.screens = screens;
+    }
+
+    if (removeBarriers && target.teamSide && screens[target.teamSide]) {
+      const remaining = { ...screens[target.teamSide] };
+      for (const barrier of ['reflect', 'light_screen', 'aurora_veil', 'safeguard']) {
+        delete remaining[barrier];
+      }
+      screens[target.teamSide] = remaining;
+      battleData.screens = screens;
+    }
+
+    await this.battleRepository.update(battleId, { battleData });
   }
 
   /**
@@ -2032,9 +2209,15 @@ export class BattleActionService {
       isActive: false,
     });
 
-    // Award experience to the opposing team's active monsters
+    // Web battles award levels once at settlement (scaled per winner vs. the
+    // whole losing team) — awarding again per knockout here would double-count.
+    const battle = await this.battleRepository.findById(battleId);
+    const isWebBattle = (battle?.battleData as Record<string, unknown> | undefined)?.web === true;
+    if (isWebBattle) {
+      return;
+    }
+
     const defeatedLevel = monsterData.level ?? 1;
-    const expGain = Math.max(1, Math.floor(defeatedLevel / 2));
 
     // Determine which team defeated this monster
     const participant = await this.battleParticipantRepository.findById(monster.participantId);
@@ -2046,16 +2229,22 @@ export class BattleActionService {
     );
 
     for (const attacker of attackerParticipants) {
-      // Award levels to the attacker's active monsters' real counterparts
+      // Award levels to the attacker's active monsters' real counterparts,
+      // scaled on how each winner's level compares to the defeated monster.
       const activeMonsters = await this.battleMonsterRepository.findActiveByParticipant(attacker.id);
       for (const activeMonster of activeMonsters) {
         if (activeMonster.monsterId && !activeMonster.isFainted) {
+          const activeData = activeMonster.monsterData as MonsterData;
+          const winnerLevel = activeData.level ?? 1;
+          const levels = computeBattleLevelReward(winnerLevel, defeatedLevel);
+          if (levels <= 0) {
+            continue;
+          }
           // Full level-up: recalculates stats, disperses EVs, updates friendship
           // and rolls new move learning (not just a raw level bump).
-          await this.monsterInitializer.levelUpMonster(activeMonster.monsterId, expGain);
-          const activeData = activeMonster.monsterData as MonsterData;
+          await this.monsterInitializer.levelUpMonster(activeMonster.monsterId, levels);
           console.log(
-            `Awarded ${expGain} level(s) to ${activeData.name ?? 'monster'} for defeating ${monsterName}`
+            `Awarded ${levels} level(s) to ${activeData.name ?? 'monster'} for defeating ${monsterName}`
           );
         }
       }

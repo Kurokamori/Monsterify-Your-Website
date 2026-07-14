@@ -129,6 +129,33 @@ function normalizeArrayResponse(data: unknown): MonsterArrayResponse {
   return { success: true, data: Array.isArray(data) ? data : [] };
 }
 
+// --- Reroll types ---
+
+export type RerollScope = 'single' | 'all' | 'wrong';
+export type RerollMoveMode = 'replace' | 'topup';
+
+export interface AdminRerollRequest {
+  scope: RerollScope;
+  monsterId?: number;
+  rerollStats: boolean;
+  rerollMoves: boolean;
+  rerollIVs: boolean;
+  moveMode: RerollMoveMode;
+  dryRun?: boolean;
+}
+
+export interface AdminRerollResult {
+  scope: RerollScope;
+  dryRun: boolean;
+  scanned: number;
+  matched: number;
+  statsToReroll: number;
+  movesToReroll: number;
+  statsRerolled: number;
+  movesRerolled: number;
+  failed: { id: number; reason: string }[];
+}
+
 // --- Service ---
 
 const monsterService = {
@@ -476,6 +503,12 @@ const monsterService = {
   // Admin: Update monster (admin-level fields like EVs, IVs, level, moves, abilities)
   adminUpdateMonster: async (id: number | string, data: Record<string, unknown>) => {
     const response = await api.put(`/monsters/${id}`, data);
+    return response.data;
+  },
+
+  // Admin: Reroll monster stats and/or moves (single, all, or only "wrong" ones)
+  adminRerollMonsters: async (request: AdminRerollRequest): Promise<{ success: boolean; message: string; data: AdminRerollResult }> => {
+    const response = await api.post('/monsters/admin/reroll', request);
     return response.data;
   },
 

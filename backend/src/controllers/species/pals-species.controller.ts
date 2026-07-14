@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { PalsSpeciesRepository } from '../../repositories';
+import { importPalsFromWiki, refreshPalImages } from '../../services';
 
 const repo = new PalsSpeciesRepository();
 
@@ -112,6 +113,48 @@ export async function updatePals(req: Request, res: Response): Promise<void> {
   } catch (error) {
     console.error('Error updating Pal:', error);
     res.status(500).json({ success: false, message: 'Error updating Pal' });
+  }
+}
+
+export async function importPals(req: Request, res: Response): Promise<void> {
+  try {
+    const body = (req.body ?? {}) as Record<string, unknown>;
+    const dryRun = body.dryRun === true || req.query.dryRun === 'true';
+
+    const summary = await importPalsFromWiki({ dryRun });
+
+    res.json({
+      success: true,
+      data: summary,
+      message: summary.dryRun
+        ? `Dry run: ${summary.added.length} new Pal(s) would be imported.`
+        : `Imported ${summary.added.length} new Pal(s).`,
+    });
+  } catch (error) {
+    console.error('Error importing Pals from wiki:', error);
+    res.status(500).json({ success: false, message: 'Error importing Pals from wiki' });
+  }
+}
+
+export async function refreshPalImagesHandler(req: Request, res: Response): Promise<void> {
+  try {
+    const body = (req.body ?? {}) as Record<string, unknown>;
+    const dryRun = body.dryRun === true || req.query.dryRun === 'true';
+
+    const summary = await refreshPalImages({ dryRun });
+
+    const promoted = summary.updated.filter((change) => change.source === 'self-hosted').length;
+
+    res.json({
+      success: true,
+      data: summary,
+      message: summary.dryRun
+        ? `Dry run: ${summary.updated.length} Pal image(s) would be updated (${promoted} promoted to self-hosted artwork).`
+        : `Updated ${summary.updated.length} Pal image(s) (${promoted} promoted to self-hosted artwork).`,
+    });
+  } catch (error) {
+    console.error('Error refreshing Pal images:', error);
+    res.status(500).json({ success: false, message: 'Error refreshing Pal images' });
   }
 }
 

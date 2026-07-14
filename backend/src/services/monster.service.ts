@@ -19,7 +19,7 @@ import type {
   MonsterLineage,
 } from '../repositories/monster-lineage.repository';
 import { MonsterInitializerService } from './monster-initializer.service';
-import type { InitializedMonster } from './monster-initializer.service';
+import type { InitializedMonster, RerollMoveMode, MonsterData } from './monster-initializer.service';
 import { BazarService } from './bazar.service';
 
 // ============================================================================
@@ -86,6 +86,30 @@ export type BulkAddMonstersResult = {
   errorCount: number;
   results: BulkAddMonsterResult[];
   errors: string[];
+};
+
+export type RerollScope = 'single' | 'all' | 'wrong';
+
+export type AdminRerollOptions = {
+  scope: RerollScope;
+  monsterId?: number;
+  rerollStats: boolean;
+  rerollMoves: boolean;
+  rerollIVs: boolean;
+  moveMode: RerollMoveMode;
+  dryRun?: boolean;
+};
+
+export type AdminRerollResult = {
+  scope: RerollScope;
+  dryRun: boolean;
+  scanned: number;
+  matched: number;
+  statsToReroll: number;
+  movesToReroll: number;
+  statsRerolled: number;
+  movesRerolled: number;
+  failed: { id: number; reason: string }[];
 };
 
 // ============================================================================
@@ -524,6 +548,123 @@ export class MonsterService {
 
   async initializeMonster(monsterId: number): Promise<InitializedMonster> {
     return this.initializer.initializeMonster(monsterId);
+  }
+
+  // ==========================================================================
+  // Admin Stat & Move Reroll
+  // ==========================================================================
+
+  /**
+   * Reroll stats and/or moves for a single monster, every monster, or only the
+   * monsters detected as "wrong" (stat totals that don't match the level
+   * formula, or too few moves for the level).
+   *
+   * In 'single' and 'all' scope, the selected reroll(s) are applied to every
+   * targeted monster. In 'wrong' scope, each monster is only touched in the
+   * dimension(s) that are actually wrong (and selected), so correct data is
+   * left untouched. When dryRun is set, nothing is written — the result reports
+   * how many monsters would be affected.
+   */
+  async adminRerollMonsters(options: AdminRerollOptions): Promise<AdminRerollResult> {
+    const { scope, monsterId, rerollStats, rerollMoves, rerollIVs, moveMode, dryRun = false } = options;
+
+    if (!rerollStats && !rerollMoves) {
+      throw new Error('At least one of rerollStats or rerollMoves must be selected');
+    }
+
+    const result: AdminRerollResult = {
+      scope,
+      dryRun,
+      scanned: 0,
+      matched: 0,
+      statsToReroll: 0,
+      movesToReroll: 0,
+      statsRerolled: 0,
+      movesRerolled: 0,
+      failed: [],
+    };
+
+    if (scope === 'single') {
+      if (!monsterId) {
+        throw new Error('monsterId is required for single reroll');
+      }
+      const monster = await this.monsterRepo.findById(monsterId);
+      if (!monster) {
+        throw new Error('Monster not found');
+      }
+
+      result.scanned = 1;
+      result.matched = 1;
+      result.statsToReroll = rerollStats ? 1 : 0;
+      result.movesToReroll = rerollMoves ? 1 : 0;
+
+      if (!dryRun) {
+        const rerolled = await this.initializer.rerollMonster(monsterId, {
+          rerollStats,
+          rerollMoves,
+          rerollIVs,
+          moveMode,
+        });
+        if (rerolled.statsChanged) { result.statsRerolled++; }
+        if (rerolled.movesChanged) { result.movesRerolled++; }
+      }
+
+      return result;
+    }
+
+    // scope === 'all' | 'wrong': audit every monster to build the work list
+    const auditRows = await this.monsterRepo.findAllForAudit();
+    result.scanned = auditRows.length;
+
+    type PlannedReroll = { id: number; doStats: boolean; doMoves: boolean };
+    const planned: PlannedReroll[] = [];
+
+    for (const row of auditRows) {
+      let doStats = false;
+      let doMoves = false;
+
+      if (scope === 'all') {
+        doStats = rerollStats;
+        doMoves = rerollMoves;
+      } else {
+        // scope === 'wrong': only fix the dimensions that are actually wrong
+        if (rerollStats && this.initializer.areStatsWrong(row as unknown as MonsterData)) {
+          doStats = true;
+        }
+        if (rerollMoves && this.initializer.isMovesetWrong(row.level, row.moveset)) {
+          doMoves = true;
+        }
+      }
+
+      if (doStats || doMoves) {
+        planned.push({ id: row.id, doStats, doMoves });
+        result.matched++;
+        if (doStats) { result.statsToReroll++; }
+        if (doMoves) { result.movesToReroll++; }
+      }
+    }
+
+    if (dryRun) {
+      return result;
+    }
+
+    for (const item of planned) {
+      try {
+        const rerolled = await this.initializer.rerollMonster(item.id, {
+          rerollStats: item.doStats,
+          rerollMoves: item.doMoves,
+          rerollIVs,
+          moveMode,
+        });
+        if (rerolled.statsChanged) { result.statsRerolled++; }
+        if (rerolled.movesChanged) { result.movesRerolled++; }
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : 'Unknown error';
+        result.failed.push({ id: item.id, reason: msg });
+      }
+    }
+
+    return result;
   }
 
   // ==========================================================================

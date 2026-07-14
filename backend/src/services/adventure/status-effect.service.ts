@@ -575,6 +575,17 @@ export const STATUS_EFFECT_METADATA: Record<string, StatusEffectMetadata> = {
     duration: 1,
     curable: false,
   },
+  [VolatileStatus.KINGS_SHIELD]: {
+    name: "King's Shield",
+    emoji: '🛡️',
+    damagePerTurn: null,
+    healPerTurn: null,
+    preventAction: false,
+    protection: true,
+    contactEffect: { stat: 'attack', change: -2 },
+    duration: 1,
+    curable: false,
+  },
   [VolatileStatus.CRAFTY_SHIELD]: {
     name: 'Crafty Shield',
     emoji: '🛡️',
@@ -705,6 +716,15 @@ export const STATUS_EFFECT_METADATA: Record<string, StatusEffectMetadata> = {
     healPerTurn: (monster) => Math.floor(monster.max_hp / 16),
     preventAction: false,
     trapped: true,
+    duration: -1,
+    curable: true,
+  },
+  [VolatileStatus.AQUA_RING]: {
+    name: 'Aqua Ring',
+    emoji: '💧',
+    damagePerTurn: null,
+    healPerTurn: (monster) => Math.max(1, Math.floor(monster.max_hp / 16)),
+    preventAction: false,
     duration: -1,
     curable: true,
   },
@@ -1780,6 +1800,20 @@ export class StatusEffectService {
           }
         }
         results.ingrainTrapped = true;
+        break;
+      }
+
+      case VolatileStatus.AQUA_RING: {
+        if (metadata.healPerTurn) {
+          const healAmount = metadata.healPerTurn(monster);
+          if (healAmount > 0) {
+            const healResult = await this.battleMonsterRepository.heal(monster.id, healAmount);
+            results.healingDone += healResult.healAmount;
+            results.messages.push(
+              `${metadata.emoji} **${monsterName}** recovered ${healResult.healAmount} HP thanks to Aqua Ring!`
+            );
+          }
+        }
         break;
       }
 

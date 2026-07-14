@@ -30,6 +30,9 @@ export * from './regions';
 // Battle mechanics
 export * from './battle-constants';
 
+// Authored stat inputs (nature/IV/EV) for generated battle monsters
+export * from './battle-stat-spec';
+
 // Status effects
 export * from './status-effects';
 

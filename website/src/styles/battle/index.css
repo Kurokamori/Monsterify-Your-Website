@@ -4,3 +4,5 @@
 
 @import "./battle-hub.css";
 @import "./battle-arena.css";
+/* Last: the effects layer refines selectors battle-arena.css establishes. */
+@import "./battle-fx.css";

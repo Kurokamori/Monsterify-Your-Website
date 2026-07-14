@@ -10,6 +10,23 @@ import { GymRepository } from '../../repositories/gym.repository';
 import { TrainerRepository } from '../../repositories/trainer.repository';
 import { UserRow } from '../../repositories/user.repository';
 import { emitBattleUpdate, emitBattleChallenge } from '../../socket/battle-events';
+import {
+  BATTLE_DIFFICULTIES,
+  BATTLE_ROLES,
+  DIFFICULTY_PROFILES,
+  ROLE_PROFILES,
+  DEFAULT_BATTLE_DIFFICULTY,
+  DEFAULT_BATTLE_ROLE,
+  NATURE_NAMES,
+  MAX_IV,
+  MAX_EV_PER_STAT,
+  MAX_EV_TOTAL,
+} from '../../utils/constants';
+import type {
+  BattleDifficultyValue,
+  BattleRoleValue,
+  PartialBattleStatSpec,
+} from '../../utils/constants';
 
 const webBattleService = new WebBattleService();
 const teamRepo = new BattleTeamRepository();
@@ -203,6 +220,87 @@ export async function adminDeleteGym(req: Request, res: Response): Promise<void>
     res.json({ success: true });
   } catch (err) {
     fail(res, err, 'Failed to delete gym');
+  }
+}
+
+// ============================================================================
+// Admin: generated-monster stat authoring
+//
+// The stat curve lives on the server. The admin tool never recomputes totals
+// itself — it asks these endpoints — so the numbers a designer sees while
+// authoring are exactly the numbers the battle will use.
+// ============================================================================
+
+/** The presets and bounds the admin stat editor renders its controls from. */
+export async function adminGetStatPresets(_req: Request, res: Response): Promise<void> {
+  try {
+    res.json({
+      success: true,
+      difficulties: BATTLE_DIFFICULTIES.map((value) => ({
+        value,
+        label: DIFFICULTY_PROFILES[value].label,
+        evBudget: DIFFICULTY_PROFILES[value].evBudget,
+        ivFloor: DIFFICULTY_PROFILES[value].ivFloor,
+        ivCeiling: DIFFICULTY_PROFILES[value].ivCeiling,
+      })),
+      roles: BATTLE_ROLES.map((value) => ({
+        value,
+        label: ROLE_PROFILES[value].label,
+        description: ROLE_PROFILES[value].description,
+      })),
+      natures: NATURE_NAMES,
+      bounds: {
+        maxIv: MAX_IV,
+        maxEvPerStat: MAX_EV_PER_STAT,
+        maxEvTotal: MAX_EV_TOTAL,
+      },
+      defaults: {
+        difficulty: DEFAULT_BATTLE_DIFFICULTY,
+        role: DEFAULT_BATTLE_ROLE,
+      },
+    });
+  } catch (err) {
+    fail(res, err, 'Failed to load stat presets');
+  }
+}
+
+/** Roll a nature/IV/EV spec from a difficulty + role preset. */
+export async function adminRollSpecStats(req: Request, res: Response): Promise<void> {
+  try {
+    const level = parseInt(String(req.body.level ?? ''), 10);
+    if (!Number.isFinite(level)) {
+      throw new Error('A level is required to roll stats');
+    }
+
+    const difficulty = String(req.body.difficulty ?? '') as BattleDifficultyValue;
+    const role = String(req.body.role ?? '') as BattleRoleValue;
+    if (!BATTLE_DIFFICULTIES.includes(difficulty)) {
+      throw new Error(`Unknown difficulty "${difficulty}"`);
+    }
+    if (!BATTLE_ROLES.includes(role)) {
+      throw new Error(`Unknown role "${role}"`);
+    }
+
+    const preview = webBattleService.rollSpecMonsterStats(level, difficulty, role);
+    res.json({ success: true, preview });
+  } catch (err) {
+    fail(res, err, 'Failed to roll stats');
+  }
+}
+
+/** Resolve a hand-authored spec and return the totals it produces. */
+export async function adminPreviewSpecStats(req: Request, res: Response): Promise<void> {
+  try {
+    const level = parseInt(String(req.body.level ?? ''), 10);
+    if (!Number.isFinite(level)) {
+      throw new Error('A level is required to preview stats');
+    }
+
+    const stats = (req.body.stats ?? null) as PartialBattleStatSpec | null;
+    const preview = webBattleService.previewSpecMonsterStats(level, stats);
+    res.json({ success: true, preview });
+  } catch (err) {
+    fail(res, err, 'Failed to preview stats');
   }
 }
 

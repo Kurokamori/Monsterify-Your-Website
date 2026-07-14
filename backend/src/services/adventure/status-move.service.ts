@@ -4,7 +4,6 @@
  */
 
 import {
-  ALL_STATUS_MOVES,
   STAT_BUFF_DEBUFF_MOVES,
   STATUS_AFFLICTION_MOVES,
   HEALING_MOVES,
@@ -16,6 +15,8 @@ import {
   OtherStatusMove,
   StatusMoveTarget,
   StatChanges,
+  resolveStatusMoveName,
+  normalizeMoveName,
 } from '../../utils/constants/monster-status-moves';
 import { StatusEffectValue } from '../../utils/constants/status-effects';
 import { WeatherValue } from '../../utils/constants/weather-terrain';
@@ -173,7 +174,7 @@ export interface SpecialDamageMove {
   message: (user: string, target: string, ...args: unknown[]) => string;
 }
 
-const SPECIAL_DAMAGE_MOVES: Record<string, SpecialDamageMove> = {
+export const SPECIAL_DAMAGE_MOVES: Record<string, SpecialDamageMove> = {
   'Leech Life': {
     type: 'damage_heal',
     target: 'opponent',
@@ -229,6 +230,27 @@ const SPECIAL_DAMAGE_MOVES: Record<string, SpecialDamageMove> = {
   },
 };
 
+/**
+ * Punctuation/whitespace-insensitive index of special damage move names, so DB
+ * spellings (which strip apostrophes and hyphens) resolve to the canonical key.
+ */
+const NORMALIZED_SPECIAL_DAMAGE_INDEX: Record<string, string> = Object.keys(
+  SPECIAL_DAMAGE_MOVES
+).reduce((index, key) => {
+  index[normalizeMoveName(key)] = key;
+  return index;
+}, {} as Record<string, string>);
+
+/**
+ * Resolve a move name to its canonical SPECIAL_DAMAGE_MOVES key, or undefined.
+ */
+function resolveSpecialDamageMoveName(moveName: string): string | undefined {
+  if (moveName in SPECIAL_DAMAGE_MOVES) {
+    return moveName;
+  }
+  return NORMALIZED_SPECIAL_DAMAGE_INDEX[normalizeMoveName(moveName)];
+}
+
 // ============================================================================
 // Service Class
 // ============================================================================
@@ -268,7 +290,9 @@ export class StatusMoveService {
     battleId: number,
     battleState?: BattleState
   ): Promise<StatusMoveResult | SpecialDamageMoveResult | null> {
-    const moveName = move.move_name;
+    // Reconcile DB spellings (which strip apostrophes/hyphens) with the
+    // punctuated dictionary keys before dispatching.
+    const moveName = resolveStatusMoveName(move.move_name) ?? move.move_name;
 
     // Check stat buff/debuff moves
     if (STAT_BUFF_DEBUFF_MOVES[moveName]) {
@@ -317,8 +341,14 @@ export class StatusMoveService {
     }
 
     // Check special damage moves
-    if (SPECIAL_DAMAGE_MOVES[moveName]) {
-      return this.executeSpecialDamageMove(SPECIAL_DAMAGE_MOVES[moveName], move, attacker, target);
+    const specialName = resolveSpecialDamageMoveName(move.move_name);
+    if (specialName) {
+      return this.executeSpecialDamageMove(
+        SPECIAL_DAMAGE_MOVES[specialName]!,
+        move,
+        attacker,
+        target
+      );
     }
 
     // Not a status move
@@ -329,7 +359,10 @@ export class StatusMoveService {
    * Check if a move is a status move
    */
   isStatusMove(moveName: string): boolean {
-    return moveName in ALL_STATUS_MOVES || moveName in SPECIAL_DAMAGE_MOVES;
+    return (
+      resolveStatusMoveName(moveName) !== undefined ||
+      resolveSpecialDamageMoveName(moveName) !== undefined
+    );
   }
 
   // ==========================================================================
@@ -1232,14 +1265,31 @@ export class StatusMoveService {
         break;
 
       case 'team_barrier':
-        await this.statusEffectManager.applyStatusEffect(
-          battleId,
-          null,
-          moveConfig.effect,
-          moveConfig.duration ?? 5,
-          { team: true, barrierType: moveConfig.barrierType, damageReduction: moveConfig.damageReduction }
-        );
-        additionalEffects.teamBarrier = { barrierType: moveConfig.barrierType };
+        // Signal a side-wide screen; the battle orchestrator persists it to the
+        // user's side in battleData.screens (the null-target status is inert here).
+        additionalEffects.teamScreen = {
+          effect: moveConfig.effect,
+          barrierType: moveConfig.barrierType,
+          duration: moveConfig.duration ?? 5,
+        };
+        break;
+
+      case 'team_protection':
+        // Safeguard-style side-wide protection (no damage reduction, just a screen entry).
+        additionalEffects.teamScreen = {
+          effect: moveConfig.effect,
+          duration: moveConfig.duration ?? 5,
+        };
+        break;
+
+      case 'field_effect':
+        // Mud Sport / Water Sport - battle-wide type-weakening field effect.
+        additionalEffects.fieldEffect = { effect: moveConfig.effect, duration: moveConfig.duration ?? 5 };
+        break;
+
+      case 'remove_barriers':
+        // Shadow Shed - strip the target side's screens (Reflect/Light Screen/Safeguard).
+        additionalEffects.removeBarriers = true;
         break;
 
       case 'hp_average': {
@@ -1280,6 +1330,30 @@ export class StatusMoveService {
         // Hold Hands, Celebrate
         additionalEffects.noBattleEffect = true;
         break;
+
+      case 'type_replace': {
+        // Soak - overwrite the target's typing with a single pure type.
+        const newType = moveConfig.changeType;
+        if (newType) {
+          const actualTarget = moveConfig.target === StatusMoveTarget.SELF ? attacker : target;
+          const previousTypes = [
+            actualTarget.monster_data?.type1,
+            actualTarget.monster_data?.type2,
+          ].filter((t): t is string => !!t);
+          await this.battleMonsterRepo.update(actualTarget.id, {
+            monster_data: {
+              ...actualTarget.monster_data,
+              type1: newType,
+              type2: null,
+              type3: null,
+              type4: null,
+              type5: null,
+            },
+          });
+          additionalEffects.typeReplaced = { newType, previousTypes };
+        }
+        break;
+      }
 
       default:
         // Apply generic status effect

@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { MonsterService } from '../../services/monster.service';
+import type { RerollScope } from '../../services/monster.service';
+import type { RerollMoveMode } from '../../services/monster-initializer.service';
 import { MoveRepository } from '../../repositories/move.repository';
 
 const monsterService = new MonsterService();
@@ -1004,6 +1006,69 @@ export async function searchMoves(req: Request, res: Response): Promise<void> {
   } catch (error) {
     console.error('Error in searchMoves:', error);
     res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
+
+export async function adminRerollMonsters(req: Request, res: Response): Promise<void> {
+  try {
+    const {
+      scope,
+      monsterId,
+      rerollStats,
+      rerollMoves,
+      rerollIVs,
+      moveMode,
+      dryRun,
+    } = req.body as {
+      scope?: RerollScope;
+      monsterId?: number;
+      rerollStats?: boolean;
+      rerollMoves?: boolean;
+      rerollIVs?: boolean;
+      moveMode?: RerollMoveMode;
+      dryRun?: boolean;
+    };
+
+    if (scope !== 'single' && scope !== 'all' && scope !== 'wrong') {
+      res.status(400).json({ success: false, message: 'scope must be one of: single, all, wrong' });
+      return;
+    }
+
+    if (!rerollStats && !rerollMoves) {
+      res.status(400).json({ success: false, message: 'At least one of rerollStats or rerollMoves must be selected' });
+      return;
+    }
+
+    if (scope === 'single' && !monsterId) {
+      res.status(400).json({ success: false, message: 'monsterId is required for single reroll' });
+      return;
+    }
+
+    const result = await monsterService.adminRerollMonsters({
+      scope,
+      monsterId,
+      rerollStats: !!rerollStats,
+      rerollMoves: !!rerollMoves,
+      rerollIVs: !!rerollIVs,
+      moveMode: moveMode === 'topup' ? 'topup' : 'replace',
+      dryRun: !!dryRun,
+    });
+
+    const verb = result.dryRun ? 'Would reroll' : 'Rerolled';
+    const message = result.dryRun
+      ? `${result.matched} of ${result.scanned} monster(s) match (${result.statsToReroll} stats, ${result.movesToReroll} moves)`
+      : `${verb} ${result.statsRerolled} stat set(s) and ${result.movesRerolled} moveset(s) across ${result.matched} monster(s)` +
+        (result.failed.length > 0 ? `, ${result.failed.length} failed` : '');
+
+    res.json({ success: true, message, data: result });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Server error';
+    console.error('Error in adminRerollMonsters:', error);
+    if (msg.includes('not found')) {
+      res.status(404).json({ success: false, message: msg });
+      return;
+    }
+    res.status(500).json({ success: false, message: msg });
   }
 }
 

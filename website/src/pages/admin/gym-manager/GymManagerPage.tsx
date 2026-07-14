@@ -3,15 +3,18 @@ import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { ConfirmModal } from '@components/common/ConfirmModal';
 import { useConfirmModal } from '@components/common/useConfirmModal';
 import { FileUpload } from '@components/common/FileUpload';
-import { MONSTER_TYPES, MONSTER_ATTRIBUTES } from '@utils/staticValues';
+import { MONSTER_TYPES, MONSTER_ATTRIBUTES, MONSTER_GENDERS } from '@utils/staticValues';
 import battleService, {
   type AdminGym,
   type AdminGymInput,
+  type GymKind,
   type GymLeaderTeamMonster,
   type GauntletTrainer,
   type BattleDialogue,
   type BattleAsset,
+  type SpecStatPresets,
 } from '@services/battleService';
+import { SpecStatEditor } from './SpecStatEditor';
 import '@styles/admin/gym-manager.css';
 
 // ============================================================================
@@ -38,6 +41,7 @@ const emptySpec = (): GymLeaderTeamMonster => ({
   type4: '',
   type5: '',
   attribute: '',
+  gender: '',
   level: 20,
   imgLink: '',
 });
@@ -64,6 +68,7 @@ const emptyGym = (): AdminGymInput => ({
   leaderTeam: [emptySpec()],
   gauntletTrainers: [],
   isGym: true,
+  gymKind: 'gym',
   leaderTrainerId: null,
   leaderMonsterIds: [],
   leaderDialogue: null,
@@ -93,6 +98,7 @@ const gymToForm = (gym: AdminGym): AdminGymInput => ({
     team: t.team.length > 0 ? t.team.map(s => ({ ...emptySpec(), ...s })) : [emptySpec()],
   })),
   isGym: gym.isGym,
+  gymKind: gym.gymKind ?? (gym.isGym ? 'gym' : 'ai'),
   leaderTrainerId: gym.leaderTrainerId ?? null,
   leaderMonsterIds: gym.leaderMonsterIds ?? [],
   leaderDialogue: gym.leaderDialogue ?? null,
@@ -125,6 +131,8 @@ const cleanDialogue = (d?: BattleDialogue | null): BattleDialogue | null => {
 };
 
 // Normalise a spec for saving: trim strings, drop empties to null.
+// `moves` and `stats` are passed through untouched — they are authored elsewhere
+// (or not at all), and rebuilding the object field-by-field would silently drop them.
 const cleanSpec = (s: GymLeaderTeamMonster): GymLeaderTeamMonster => ({
   name: s.name.trim(),
   species1: (s.species1 ?? '').trim(),
@@ -136,8 +144,11 @@ const cleanSpec = (s: GymLeaderTeamMonster): GymLeaderTeamMonster => ({
   type4: s.type4 || null,
   type5: s.type5 || null,
   attribute: s.attribute || null,
+  gender: s.gender || null,
   level: Number(s.level) || 1,
   imgLink: (s.imgLink ?? '').trim() || null,
+  moves: s.moves,
+  stats: s.stats ?? null,
 });
 
 const specIsFilled = (s: GymLeaderTeamMonster): boolean =>
@@ -152,14 +163,30 @@ const cleanTeam = (team: GymLeaderTeamMonster[]): GymLeaderTeamMonster[] =>
 
 const OPTIONAL_TYPE_OPTIONS = ['', ...MONSTER_TYPES];
 
+const GYM_KIND_OPTIONS: Array<{ value: GymKind; label: string; hint: string }> = [
+  { value: 'ai', label: 'AI Battle (no badge)', hint: 'A standalone fight or gauntlet. Awards coins only.' },
+  { value: 'gym', label: 'Badge Gym', hint: 'Awards a gym badge on completion. May include gauntlet trainers.' },
+  { value: 'league', label: 'League Battle', hint: 'Awards a league badge. Unlocked once the trainer holds every gym badge. No gauntlet — a single elite battle.' },
+  { value: 'champion', label: 'Champion', hint: 'Awards the champion badge. Unlocked once the trainer holds every gym badge and all league badges. No gauntlet.' },
+];
+
+const KIND_TABLE_LABEL: Record<GymKind, string> = {
+  ai: 'AI Battle',
+  gym: 'Gym',
+  league: 'League',
+  champion: 'Champion',
+};
+
 function SpecEditor({
   spec,
   label,
+  presets,
   onChange,
   onRemove,
 }: {
   spec: GymLeaderTeamMonster;
   label: string;
+  presets: SpecStatPresets | null;
   onChange: (spec: GymLeaderTeamMonster) => void;
   onRemove?: () => void;
 }) {
@@ -206,6 +233,17 @@ function SpecEditor({
           >
             <option value="">— none —</option>
             {MONSTER_ATTRIBUTES.map(a => <option key={a} value={a}>{a}</option>)}
+          </select>
+        </div>
+        <div className="gym-manager__field">
+          <label>Gender</label>
+          <select
+            className="gym-manager__input"
+            value={spec.gender ?? ''}
+            onChange={e => set({ gender: e.target.value })}
+          >
+            <option value="">— unset —</option>
+            {MONSTER_GENDERS.map(g => <option key={g} value={g}>{g}</option>)}
           </select>
         </div>
       </div>
@@ -269,16 +307,25 @@ function SpecEditor({
           onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
       )}
+
+      <SpecStatEditor
+        level={spec.level}
+        stats={spec.stats}
+        presets={presets}
+        onChange={stats => set({ stats })}
+      />
     </div>
   );
 }
 
 function TeamEditor({
   team,
+  presets,
   onChange,
   max = 6,
 }: {
   team: GymLeaderTeamMonster[];
+  presets: SpecStatPresets | null;
   onChange: (team: GymLeaderTeamMonster[]) => void;
   max?: number;
 }) {
@@ -289,6 +336,7 @@ function TeamEditor({
           key={i}
           label={`Monster #${i + 1}`}
           spec={spec}
+          presets={presets}
           onChange={updated => onChange(team.map((s, j) => (j === i ? updated : s)))}
           onRemove={team.length > 1 ? () => onChange(team.filter((_, j) => j !== i)) : undefined}
         />
@@ -413,6 +461,7 @@ export default function GymManagerPage() {
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState<AdminGymInput>(emptyGym());
   const [assets, setAssets] = useState<BattleAsset[]>([]);
+  const [statPresets, setStatPresets] = useState<SpecStatPresets | null>(null);
 
   const showingForm = creating || editingId !== null;
 
@@ -437,7 +486,36 @@ export default function GymManagerPage() {
     battleService.adminListAssets().then(setAssets).catch(() => { /* non-fatal: selectors just stay empty */ });
   }, []);
 
+  useEffect(() => {
+    battleService
+      .adminGetSpecStatPresets()
+      .then(setStatPresets)
+      .catch(() => { /* non-fatal: the stat editor falls back to its own bounds */ });
+  }, []);
+
   const patch = (p: Partial<AdminGymInput>) => setForm(prev => ({ ...prev, ...p }));
+
+  // Whether the current battle class awards a badge and whether it may have
+  // gauntlet stages (league / champion battles never do).
+  const awardsBadge = form.gymKind !== 'ai';
+  const allowsGauntlet = form.gymKind === 'ai' || form.gymKind === 'gym';
+  const leaderTeamHeading =
+    form.gymKind === 'champion'
+      ? 'Champion Team'
+      : form.gymKind === 'league'
+        ? 'League Team'
+        : form.gymKind === 'gym'
+          ? 'Gym Leader Team'
+          : 'Opponent Team';
+
+  const setKind = (gymKind: GymKind) => {
+    patch({
+      gymKind,
+      isGym: gymKind !== 'ai',
+      // League / champion battles can't have gauntlet trainers.
+      ...(gymKind === 'league' || gymKind === 'champion' ? { gauntletTrainers: [] } : {}),
+    });
+  };
 
   const startCreate = () => {
     setEditingId(null);
@@ -464,11 +542,11 @@ export default function GymManagerPage() {
       return;
     }
     if (!form.leaderName.trim()) {
-      setStatusMsg({ type: 'error', text: `${form.isGym ? 'Leader' : 'Opponent'} name is required` });
+      setStatusMsg({ type: 'error', text: `${awardsBadge ? 'Leader' : 'Opponent'} name is required` });
       return;
     }
-    if (form.isGym && !form.badgeName.trim()) {
-      setStatusMsg({ type: 'error', text: 'Badge name is required for a gym' });
+    if (awardsBadge && !form.badgeName.trim()) {
+      setStatusMsg({ type: 'error', text: `Badge name is required for a ${KIND_TABLE_LABEL[form.gymKind].toLowerCase()}` });
       return;
     }
 
@@ -477,6 +555,8 @@ export default function GymManagerPage() {
       name: form.name.trim(),
       description: (form.description ?? '').trim() || null,
       typeTheme: form.typeTheme || null,
+      gymKind: form.gymKind,
+      isGym: form.gymKind !== 'ai',
       badgeName: form.badgeName.trim() || form.name.trim(),
       badgeImgLink: (form.badgeImgLink ?? '').trim() || null,
       leaderName: form.leaderName.trim(),
@@ -488,7 +568,8 @@ export default function GymManagerPage() {
       spotAssetId: form.spotAssetId ?? null,
       spotRandom: form.spotRandom ?? false,
       textboxAssetId: form.textboxAssetId ?? null,
-      gauntletTrainers: form.gauntletTrainers
+      // League / champion battles never carry gauntlet stages.
+      gauntletTrainers: (allowsGauntlet ? form.gauntletTrainers : [])
         .filter(t => t.name.trim())
         .map(t => ({
           name: t.name.trim(),
@@ -547,19 +628,24 @@ export default function GymManagerPage() {
     );
   };
 
+  const kindOf = (gym: AdminGym): GymKind => gym.gymKind ?? (gym.isGym ? 'gym' : 'ai');
+
   const kindLabel = (gym: AdminGym): string => {
-    if (gym.isGym) return 'Gym';
-    return gym.gauntletTrainers.length === 0 ? 'AI Battle (one-off)' : 'AI Battle (gauntlet)';
+    const kind = kindOf(gym);
+    if (kind === 'ai') {
+      return gym.gauntletTrainers.length === 0 ? 'AI Battle (one-off)' : 'AI Battle (gauntlet)';
+    }
+    return KIND_TABLE_LABEL[kind];
   };
 
   return (
     <div className="main-container">
       <h1><i className="fas fa-fist-raised" /> Battle &amp; Gym Manager</h1>
       <p className="gym-manager__intro">
-        Author gyms (which award badges), gym leaders, gauntlet trainers, and standalone AI battles.
-        Turn <strong>&ldquo;This is a badge gym&rdquo;</strong> off to make an AI battle: leave the gauntlet trainers
-        empty for a one-off fight, or add trainers for a non-badge gauntlet. AI opponent monsters can have unique
-        names &amp; images, up to 3 species and 5 types.
+        Author badge gyms, league &amp; champion battles, and standalone AI battles. Pick a <strong>Battle Class</strong>:
+        gyms award a gym badge (and may include gauntlet trainers), <strong>League</strong> and <strong>Champion</strong>
+        battles award their own badges and are single elite fights unlocked by badge progression, and AI battles award
+        coins only. Opponent monsters can have unique names &amp; images, up to 3 species and 5 types.
       </p>
 
       {statusMsg && (
@@ -574,7 +660,10 @@ export default function GymManagerPage() {
 
       <div className="gym-manager__toolbar">
         <span className="gym-manager__muted">
-          {gyms.filter(g => g.isGym).length} gym(s), {gyms.filter(g => !g.isGym).length} AI battle(s)
+          {gyms.filter(g => kindOf(g) === 'gym').length} gym(s),{' '}
+          {gyms.filter(g => kindOf(g) === 'league').length} league,{' '}
+          {gyms.filter(g => kindOf(g) === 'champion').length} champion,{' '}
+          {gyms.filter(g => kindOf(g) === 'ai').length} AI battle(s)
         </span>
         <button className="button primary" onClick={startCreate} disabled={saving}>
           <i className="fas fa-plus" /> New Gym / AI Battle
@@ -586,14 +675,19 @@ export default function GymManagerPage() {
         <div className="gym-manager__form">
           <h3>{editingId !== null ? `Edit: ${form.name || '(unnamed)'}` : 'Create New'}</h3>
 
-          <label className="gym-manager__toggle">
-            <input
-              type="checkbox"
-              checked={form.isGym}
-              onChange={e => patch({ isGym: e.target.checked })}
-            />
-            <span>This is a badge gym (awards a badge on gauntlet completion)</span>
-          </label>
+          <div className="gym-manager__field">
+            <label>Battle Class</label>
+            <select
+              className="gym-manager__input"
+              value={form.gymKind}
+              onChange={e => setKind(e.target.value as GymKind)}
+            >
+              {GYM_KIND_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+            <span className="gym-manager__optional">
+              {GYM_KIND_OPTIONS.find(o => o.value === form.gymKind)?.hint}
+            </span>
+          </div>
 
           <div className="gym-manager__row">
             <div className="gym-manager__field gym-manager__field--grow">
@@ -620,19 +714,19 @@ export default function GymManagerPage() {
 
           <div className="gym-manager__row">
             <div className="gym-manager__field gym-manager__field--grow">
-              <label>{form.isGym ? 'Leader Name' : 'Opponent Name'}</label>
+              <label>{awardsBadge ? 'Leader Name' : 'Opponent Name'}</label>
               <input className="gym-manager__input" value={form.leaderName} onChange={e => patch({ leaderName: e.target.value })} />
             </div>
             <div className="gym-manager__field gym-manager__field--grow">
-              <label>{form.isGym ? 'Leader Image URL' : 'Opponent Image URL'}</label>
+              <label>{awardsBadge ? 'Leader Image URL' : 'Opponent Image URL'}</label>
               <input className="gym-manager__input" value={form.leaderImgLink ?? ''} onChange={e => patch({ leaderImgLink: e.target.value })} placeholder="https://…" />
             </div>
           </div>
 
-          {form.isGym && (
+          {awardsBadge && (
             <div className="gym-manager__row">
               <div className="gym-manager__field gym-manager__field--grow">
-                <label>Badge Name</label>
+                <label>{form.gymKind === 'champion' ? 'Champion Badge Name' : form.gymKind === 'league' ? 'League Badge Name' : 'Badge Name'}</label>
                 <input className="gym-manager__input" value={form.badgeName} onChange={e => patch({ badgeName: e.target.value })} placeholder="e.g., Ember Badge" />
               </div>
               <div className="gym-manager__field gym-manager__field--grow">
@@ -661,7 +755,7 @@ export default function GymManagerPage() {
           <div className="gym-manager__section">
             <h4><span className="gym-manager__section-icon"><i className="fas fa-panorama" /></span> Battle Scenery <span className="gym-manager__optional">(from the Battle Assets library)</span></h4>
             <p className="gym-manager__muted">
-              The background &amp; place-spots for this {form.isGym ? 'gym’s battles' : 'battle'}. Gauntlet trainers can
+              The background &amp; place-spots for this {form.gymKind === 'gym' ? 'gym’s battles' : 'battle'}. Gauntlet trainers can
               override these per-stage. Choose “Random” to pick a fresh one from the library each fight.
               {backgrounds.length === 0 && spots.length === 0 && textboxes.length === 0 && (
                 <> Add assets in the <strong>Battle Assets</strong> tool first.</>
@@ -696,7 +790,9 @@ export default function GymManagerPage() {
             </div>
           </div>
 
-          {/* Gauntlet trainers — the earlier stages, fought in order */}
+          {/* Gauntlet trainers — the earlier stages, fought in order.
+              League & champion battles never have gauntlet stages. */}
+          {allowsGauntlet && (
           <div className="gym-manager__section">
             <div className="gym-manager__section-head">
               <h4><span className="gym-manager__section-icon"><i className="fas fa-route" /></span> Gauntlet Trainers <span className="gym-manager__optional">(optional, up to 5)</span></h4>
@@ -753,6 +849,7 @@ export default function GymManagerPage() {
                 </div>
                 <TeamEditor
                   team={trainer.team}
+                  presets={statPresets}
                   onChange={team => patch({
                     gauntletTrainers: form.gauntletTrainers.map((t, j) => j === ti ? { ...t, team } : t),
                   })}
@@ -792,23 +889,24 @@ export default function GymManagerPage() {
               </div>
             ))}
           </div>
+          )}
 
           {/* Leader / boss team — the final battle */}
           <div className="gym-manager__section">
             <div className="gym-manager__section-head">
-              <h4><span className="gym-manager__section-icon"><i className="fas fa-crown" /></span> {form.isGym ? 'Gym Leader Team' : 'Opponent Team'}</h4>
+              <h4><span className="gym-manager__section-icon"><i className="fas fa-crown" /></span> {leaderTeamHeading}</h4>
               <span className="gym-manager__stage gym-manager__stage--final">
-                {form.gauntletTrainers.length > 0 ? 'Final Battle' : 'The Battle'}
+                {allowsGauntlet && form.gauntletTrainers.length > 0 ? 'Final Battle' : 'The Battle'}
               </span>
             </div>
             <p className="gym-manager__muted">
-              {form.gauntletTrainers.length > 0
-                ? `The final showdown${form.isGym ? ' against the gym leader' : ''}, fought after every stage above.`
-                : `For a one-off ${form.isGym ? 'gym' : 'AI battle'}, this is the only fight.`}
+              {allowsGauntlet && form.gauntletTrainers.length > 0
+                ? `The final showdown${form.gymKind === 'gym' ? ' against the gym leader' : ''}, fought after every stage above.`
+                : `The single ${KIND_TABLE_LABEL[form.gymKind].toLowerCase()} battle.`}
             </p>
-            <TeamEditor team={form.leaderTeam} onChange={leaderTeam => patch({ leaderTeam })} />
+            <TeamEditor team={form.leaderTeam} presets={statPresets} onChange={leaderTeam => patch({ leaderTeam })} />
             <DialogueEditor
-              title={form.isGym ? 'Leader Dialogue' : 'Opponent Dialogue'}
+              title={awardsBadge ? 'Leader Dialogue' : 'Opponent Dialogue'}
               dialogue={form.leaderDialogue ?? null}
               onChange={leaderDialogue => patch({ leaderDialogue })}
             />
@@ -847,7 +945,7 @@ export default function GymManagerPage() {
                 <tr key={gym.id} className={editingId === gym.id ? 'gym-manager__row--active' : ''}>
                   <td>{gym.id}</td>
                   <td>{gym.name}</td>
-                  <td><span className={`gym-manager__kind gym-manager__kind--${gym.isGym ? 'gym' : 'ai'}`}>{kindLabel(gym)}</span></td>
+                  <td><span className={`gym-manager__kind gym-manager__kind--${kindOf(gym)}`}>{kindLabel(gym)}</span></td>
                   <td>{gym.leaderName}</td>
                   <td>{gym.gauntletTrainers.length + 1}</td>
                   <td>{gym.isActive ? <i className="fas fa-check gym-manager__yes" /> : <i className="fas fa-times gym-manager__no" />}</td>

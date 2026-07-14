@@ -423,3 +423,53 @@
 .monster-manager__admin-edit-btn:hover {
   background: var(--accent-color-hover);
 }
+
+/* --- Stat & Move Roller --- */
+
+.monster-manager__roller-check {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-xxsmall);
+  font-weight: 400;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.monster-manager__roller-check input {
+  width: auto;
+  margin: 0;
+}
+
+.monster-manager__roller-hint {
+  margin: var(--spacing-xxsmall) 0 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.4;
+}
+
+.monster-manager__roller-hint--warn {
+  color: var(--warning-color, var(--error-color));
+}
+
+.monster-manager__roller-preview {
+  margin-top: var(--spacing-xsmall);
+  padding: var(--spacing-small);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  background: var(--background-color-subtle, rgba(0, 0, 0, 0.04));
+}
+
+.monster-manager__roller-preview-title {
+  font-weight: 600;
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.monster-manager__roller-preview ul {
+  margin: 0;
+  padding-left: var(--spacing-medium);
+}
+
+.monster-manager__roller-preview li {
+  font-size: var(--font-size-small);
+}

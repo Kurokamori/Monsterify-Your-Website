@@ -13,6 +13,8 @@ interface TeamPickModalProps {
   onClose: () => void;
   title: string;
   trainers: Trainer[];
+  /** Trainer chosen in the battle hub — pre-selected when the modal opens. */
+  initialTrainerId?: number | null;
   showDifficulty?: boolean;
   confirmLabel?: string;
   submitting?: boolean;
@@ -32,6 +34,7 @@ export function TeamPickModal({
   onClose,
   title,
   trainers,
+  initialTrainerId = null,
   showDifficulty = false,
   confirmLabel = 'Start Battle',
   submitting = false,
@@ -45,16 +48,19 @@ export function TeamPickModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Reset when opened
+  // Reset when opened — pre-select the trainer chosen in the battle hub.
   useEffect(() => {
-    if (isOpen) {
-      setSelectedIds([]);
-      setError(null);
-      if (trainerId == null && trainers.length > 0) {
-        setTrainerId(trainers[0].id);
-      }
-    }
-  }, [isOpen, trainers, trainerId]);
+    if (!isOpen) return;
+    setSelectedIds([]);
+    setError(null);
+    const preferred =
+      initialTrainerId != null && trainers.some(t => t.id === initialTrainerId)
+        ? initialTrainerId
+        : trainers.length > 0
+          ? trainers[0].id
+          : null;
+    setTrainerId(preferred);
+  }, [isOpen, initialTrainerId, trainers]);
 
   // Load monsters + saved teams for the selected trainer
   useEffect(() => {

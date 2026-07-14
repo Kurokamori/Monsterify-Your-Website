@@ -67,6 +67,8 @@ export type DamageCalculationOptions = {
   attackerId?: number;
   /** Battle-monster row id of the defender (needed to persist stat-move changes). */
   defenderId?: number;
+  /** Active battle-wide field effects (e.g. 'water_sport', 'mud_sport'). */
+  fieldEffects?: string[];
 };
 
 export type DamageResult = {
@@ -124,7 +126,8 @@ export type WeatherType =
   | 'sandstorm'
   | 'hail'
   | 'snow'
-  | 'fog';
+  | 'fog'
+  | 'shadow_sky';
 
 export type TerrainType =
   | 'normal'
@@ -203,6 +206,7 @@ export class DamageCalculatorService {
       battleId = null,
       attackerId,
       defenderId,
+      fieldEffects = [],
     } = options;
 
     // Get move data if move name is provided
@@ -246,9 +250,10 @@ export class DamageCalculatorService {
       }
     }
 
-    // Calculate weather and terrain modifiers
+    // Calculate weather, terrain, and field-effect modifiers
     const weatherModifier = this.calculateWeatherModifier(moveData, weather);
     const terrainModifier = this.calculateTerrainModifier(moveData, terrain);
+    const fieldModifier = this.calculateFieldModifier(moveData, fieldEffects);
 
     // Check if move hits
     const accuracy = this.calculateAccuracy(attacker, defender, moveData);
@@ -275,9 +280,10 @@ export class DamageCalculatorService {
     const stabMultiplier = this.calculateSTAB(attacker, moveData);
     damage *= stabMultiplier;
 
-    // Apply weather, terrain, and custom modifiers
+    // Apply weather, terrain, field, and custom modifiers
     damage *= weatherModifier;
     damage *= terrainModifier;
+    damage *= fieldModifier;
     damage *= customMultiplier;
 
     // Apply random factor
@@ -285,8 +291,9 @@ export class DamageCalculatorService {
       RANDOM_FACTOR_MIN + Math.random() * (RANDOM_FACTOR_MAX - RANDOM_FACTOR_MIN);
     damage *= randomFactor;
 
-    // Round damage
-    damage = Math.max(1, Math.floor(damage));
+    // Round damage. An immune matchup (effectiveness 0) deals no damage; every
+    // other hit deals at least 1.
+    damage = effectiveness === 0 ? 0 : Math.max(1, Math.floor(damage));
 
     // Generate damage message
     const message = this.generateDamageMessage(attacker, defender, moveData, {
@@ -746,18 +753,17 @@ export class DamageCalculatorService {
 
     switch (statusEffect.type) {
       case 'burn':
-        damage = Math.floor(maxHp / 16); // 1/16 of max HP
+        damage = Math.max(1, Math.floor(maxHp / 16)); // 1/16 of max HP, minimum 1
         message = `${name} is hurt by its burn!`;
         break;
       case 'poison':
-        damage = Math.floor(maxHp / 8); // 1/8 of max HP
+        damage = Math.max(1, Math.floor(maxHp / 8)); // 1/8 of max HP, minimum 1
         message = `${name} is hurt by poison!`;
         break;
       default:
+        // Non-damaging conditions (paralysis, sleep, freeze, etc.) deal no residual damage.
         damage = 0;
     }
-
-    damage = Math.max(1, damage); // Minimum 1 damage
 
     return {
       damage,
@@ -801,9 +807,40 @@ export class DamageCalculatorService {
           return 1.2;
         }
         break;
+      case 'shadow_sky':
+        // Shadow Sky empowers Shadow-type moves.
+        if (moveType === 'Shadow') {
+          return 1.5;
+        }
+        break;
     }
 
     return 1.0;
+  }
+
+  /**
+   * Calculate field-effect modifier for damage (Mud Sport / Water Sport).
+   * These battle-wide effects weaken a specific move type regardless of target.
+   */
+  calculateFieldModifier(move: MoveData, fieldEffects: string[]): number {
+    if (!fieldEffects || fieldEffects.length === 0) {
+      return 1.0;
+    }
+
+    const moveType = move.move_type ?? move.type;
+    if (!moveType) {
+      return 1.0;
+    }
+
+    let modifier = 1.0;
+    if (fieldEffects.includes('water_sport') && moveType === 'Fire') {
+      modifier *= 0.5;
+    }
+    if (fieldEffects.includes('mud_sport') && moveType === 'Electric') {
+      modifier *= 0.5;
+    }
+
+    return modifier;
   }
 
   /**

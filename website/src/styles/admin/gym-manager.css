@@ -124,7 +124,6 @@
 }
 
 .gym-manager__input {
-  width: 100%;
   padding: var(--spacing-xsmall) var(--spacing-small);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-medium);
@@ -444,6 +443,16 @@ textarea.gym-manager__input {
   color: var(--discord-color);
 }
 
+.gym-manager__kind--league {
+  background: rgba(184, 134, 11, 0.15);
+  color: #b8860b;
+}
+
+.gym-manager__kind--champion {
+  background: rgba(212, 175, 55, 0.18);
+  color: #d4af37;
+}
+
 .gym-manager__yes { color: var(--success-color); }
 .gym-manager__no  { color: var(--error-color); }
 
@@ -472,9 +481,148 @@ textarea.gym-manager__input {
 
 .gym-manager__empty p { margin: 0; }
 
+/* ── Spec stat editor (nature / IVs / EVs) ── */
+
+.gym-manager__stats {
+  margin-top: var(--spacing-small);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--secondary-color, var(--primary-color));
+}
+
+.gym-manager__stats-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  width: 100%;
+  padding: var(--spacing-small) var(--spacing-medium);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  text-align: left;
+}
+
+.gym-manager__stats-toggle:hover {
+  color: var(--accent-color);
+}
+
+.gym-manager__stats-badge {
+  margin-left: auto;
+  padding: 2px var(--spacing-small);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  font-weight: 400;
+}
+
+.gym-manager__stats-badge--custom {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.gym-manager__stats-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  padding: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+}
+
+.gym-manager__stats-note,
+.gym-manager__stats-hint {
+  margin: 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.gym-manager__stats-warn {
+  margin: 0;
+  color: var(--error-color);
+  font-size: var(--font-size-small);
+}
+
+.gym-manager__stats-roller {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.gym-manager__stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.gym-manager__stats-row {
+  display: flex;
+  gap: var(--spacing-xsmall, var(--spacing-small));
+}
+
+.gym-manager__stats-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.gym-manager__stats-cell span {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  text-align: center;
+}
+
+.gym-manager__stats-cell .gym-manager__input {
+  text-align: center;
+  padding-left: var(--spacing-xxsmall);
+  padding-right: var(--spacing-xxsmall);
+}
+
+.gym-manager__ev-total {
+  margin-left: var(--spacing-small);
+  color: var(--text-color-muted);
+  font-weight: 400;
+}
+
+.gym-manager__ev-total--over {
+  color: var(--error-color);
+  font-weight: 600;
+}
+
+.gym-manager__stats-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--primary-color);
+  font-size: var(--font-size-small);
+}
+
+.gym-manager__stats-preview-label {
+  color: var(--text-color-muted);
+  font-weight: 600;
+}
+
+.gym-manager__stats-preview-stat em {
+  color: var(--text-color-muted);
+  font-style: normal;
+  margin-right: 2px;
+}
+
 /* ── Responsive ── */
 
 @media (max-width: 768px) {
+  .gym-manager__stats-roller { flex-direction: column; align-items: stretch; }
+  .gym-manager__stats-row { flex-wrap: wrap; }
+  .gym-manager__stats-cell { flex: 0 0 30%; }
   .gym-manager__toolbar { flex-direction: column; align-items: stretch; }
   .gym-manager__row { flex-direction: column; }
   .gym-manager__field,

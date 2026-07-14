@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Pagination } from '@components/common/Pagination';
 
 export interface PromptData {
   id: number;
@@ -32,6 +33,13 @@ interface AdminPromptListProps {
   onEdit: (prompt: PromptData) => void;
   onDelete: (promptId: number) => Promise<void>;
   onRefresh: () => void;
+  currentPage: number;
+  totalPages: number;
+  totalPrompts: number;
+  perPage: number;
+  perPageOptions: number[];
+  onPageChange: (page: number) => void;
+  onPerPageChange: (perPage: number) => void;
 }
 
 function formatRewards(rewards: string | Record<string, unknown> | undefined): string {
@@ -57,8 +65,13 @@ function getStatusBadge(prompt: PromptData): { text: string; className: string }
   return { text: 'Scheduled', className: 'scheduled' };
 }
 
-export function AdminPromptList({ prompts, loading, filters, onFiltersChange, onEdit, onDelete, onRefresh }: AdminPromptListProps) {
+export function AdminPromptList({
+  prompts, loading, filters, onFiltersChange, onEdit, onDelete, onRefresh,
+  currentPage, totalPages, totalPrompts, perPage, perPageOptions, onPageChange, onPerPageChange,
+}: AdminPromptListProps) {
   const [selectedPrompts, setSelectedPrompts] = useState<number[]>([]);
+
+  useEffect(() => { setSelectedPrompts([]); }, [prompts]);
 
   const handleFilterChange = (key: keyof PromptFilters, value: string) => {
     onFiltersChange({ ...filters, [key]: value });
@@ -182,12 +195,22 @@ export function AdminPromptList({ prompts, loading, filters, onFiltersChange, on
         </table>
       </div>
 
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+        perPage={perPage}
+        onPerPageChange={onPerPageChange}
+        perPageOptions={perPageOptions}
+      />
+
       {/* Summary Stats */}
       <div className="item-config">
         <div className="summary-stats">
-          <div className="stat-item"><span className="admin-prompt__stat-label">Total Prompts:</span> <span className="stat-value">{prompts.length}</span></div>
-          <div className="stat-item"><span className="admin-prompt__stat-label">Active:</span> <span className="stat-value">{prompts.filter(p => p.isActive ?? p.is_active).length}</span></div>
-          <div className="stat-item"><span className="admin-prompt__stat-label">Total Submissions:</span> <span className="stat-value">{prompts.reduce((sum, p) => sum + (p.submission_count || 0), 0)}</span></div>
+          <div className="stat-item"><span className="admin-prompt__stat-label">Total Prompts:</span> <span className="stat-value">{totalPrompts}</span></div>
+          <div className="stat-item"><span className="admin-prompt__stat-label">Showing:</span> <span className="stat-value">{prompts.length} (page {currentPage} of {totalPages})</span></div>
+          <div className="stat-item"><span className="admin-prompt__stat-label">Active (this page):</span> <span className="stat-value">{prompts.filter(p => p.isActive ?? p.is_active).length}</span></div>
+          <div className="stat-item"><span className="admin-prompt__stat-label">Submissions (this page):</span> <span className="stat-value">{prompts.reduce((sum, p) => sum + (p.submission_count || 0), 0)}</span></div>
         </div>
       </div>
     </div>

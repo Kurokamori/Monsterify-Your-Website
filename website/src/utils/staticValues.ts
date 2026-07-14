@@ -34,6 +34,9 @@ export const TYPE_CHART: Record<string, Record<string, number>> = {
 // Monster attributes
 export const MONSTER_ATTRIBUTES = ['Vaccine', 'Data', 'Virus', 'Free', 'Variable'] as const;
 
+// Monster genders. Mirrors the backend's monster-genders constants.
+export const MONSTER_GENDERS = ['Male', 'Female', 'Non-binary', 'Genderless'] as const;
+
 // Monster natures
 export const MONSTER_NATURES = [ 'Adamant', 'Bashful', 'Bold', 'Brave', 'Calm', 'Careful', 'Docile', 'Gentle',
     'Hardy', 'Hasty', 'Impish', 'Jolly', 'Lax', 'Lonely', 'Mild', 'Modest', 'Naive', 'Naughty', 'Quiet',
@@ -157,6 +160,7 @@ export const BERRIES = [
 // Type exports
 export type MonsterType = typeof MONSTER_TYPES[number];
 export type MonsterAttribute = typeof MONSTER_ATTRIBUTES[number];
+export type MonsterGender = typeof MONSTER_GENDERS[number];
 export type MonsterNature = typeof MONSTER_NATURES[number];
 export type MonsterCharacteristic = typeof MONSTER_CHARACTERISTICS[number];
 export type TypeChart = typeof TYPE_CHART;

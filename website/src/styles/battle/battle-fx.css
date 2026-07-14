@@ -1,0 +1,357 @@
+/* ==============================
+   Battle Arena — effects layer
+   Attack choreography, stat-stage visuals, gender icons and the hover detail panel.
+   Loaded after battle-arena.css, which owns the field and card layout this builds on.
+   ============================== */
+
+/* ── Attack lunge ──
+   The generic "I am attacking you" motion: the sprite winds up, drives toward the
+   opposing corner, then settles. Each side leans toward the other — the player is at
+   the bottom-left and lunges up-right, the opponent mirrors it.
+
+   Two classes deep so it beats the unconditional entry animation on
+   .battle-field__sprite--player/--enemy, which would otherwise keep the property. */
+
+.battle-field__sprite--player.battle-field__sprite--lurch {
+  animation: battle-lurch-player 0.52s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+
+.battle-field__sprite--enemy.battle-field__sprite--lurch {
+  animation: battle-lurch-enemy 0.52s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+
+@keyframes battle-lurch-player {
+  0%   { transform: translate(0, 0) scale(1); }
+  22%  { transform: translate(-10px, 6px) scale(0.97); }
+  48%  { transform: translate(34px, -22px) scale(1.06); }
+  70%  { transform: translate(20px, -12px) scale(1.02); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes battle-lurch-enemy {
+  0%   { transform: translate(0, 0) scale(1); }
+  22%  { transform: translate(10px, -6px) scale(0.97); }
+  48%  { transform: translate(-34px, 22px) scale(1.06); }
+  70%  { transform: translate(-20px, 12px) scale(1.02); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* ── Impact ──
+   A burst under the struck sprite, sized to the zone so it scales with the combatants.
+   Purely decorative and never interactive. */
+
+.battle-field__impact {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  width: 46%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.9) 0%,
+    var(--error-light) 35%,
+    rgba(255, 90, 90, 0) 70%
+  );
+  animation: battle-impact 0.45s ease-out forwards;
+}
+
+@keyframes battle-impact {
+  0%   { opacity: 0;    scale: 0.3; }
+  25%  { opacity: 0.95; scale: 0.85; }
+  100% { opacity: 0;    scale: 1.5; }
+}
+
+/* ── Floating numbers & stat arrows ──
+   Anchored to the top of the sprite zone. Several can be in flight at once (a hit that
+   also drops a stat, a multi-stat move), so each is pushed down by its index rather
+   than stacking on top of the last. */
+
+.battle-fx-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.battle-fx-damage,
+.battle-fx-stat {
+  position: absolute;
+  left: 50%;
+  top: calc(14% + (var(--fx-index, 0) * 1.85rem));
+  translate: -50% 0;
+  white-space: nowrap;
+  font-weight: 800;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.65),
+    0 0 6px rgba(0, 0, 0, 0.4);
+  animation: battle-fx-float 1.2s ease-out forwards;
+}
+
+.battle-fx-damage {
+  font-size: 1.5rem;
+  color: var(--error-light);
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.35);
+}
+
+.battle-fx-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  background: var(--overlay-dark);
+  border: 1px solid currentColor;
+  backdrop-filter: blur(2px);
+  animation-duration: 1.5s;
+}
+
+.battle-fx-stat--up { color: var(--success-light); }
+.battle-fx-stat--down { color: var(--error-light); }
+
+.battle-fx-stat__label em {
+  font-style: normal;
+  opacity: 0.85;
+}
+
+@keyframes battle-fx-float {
+  0%   { opacity: 0; transform: translateY(10px) scale(0.85); }
+  15%  { opacity: 1; transform: translateY(0) scale(1.08); }
+  30%  { transform: translateY(-4px) scale(1); }
+  100% { opacity: 0; transform: translateY(-38px) scale(1); }
+}
+
+/* ── Stat stage chips ──
+   The persistent read-out of what a monster is currently riding, on the info card and
+   in the hover panel. Colour alone doesn't carry it — the caret does too. */
+
+.battle-info-card__stages {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  margin-top: 0.35rem;
+}
+
+.battle-stat-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border: 1px solid currentColor;
+  background: var(--overlay-light);
+}
+
+.battle-stat-stage--up { color: var(--success-color); }
+.battle-stat-stage--down { color: var(--error-color); }
+
+/* ── Gender ── */
+
+.battle-gender {
+  margin-left: 0.35rem;
+  font-size: 0.85em;
+  vertical-align: baseline;
+}
+
+.battle-gender--male { color: var(--water-type, #6890f0); }
+.battle-gender--female { color: var(--fairy-type, #ee99ac); }
+.battle-gender--nonbinary { color: var(--psychic-type, #f85888); }
+.battle-gender--genderless { color: var(--text-color-muted); }
+.battle-gender--unknown { color: var(--text-color-muted); }
+
+/* ── Hover detail panel ──
+   Portalled to the body and fixed-positioned: the battlefield clips its overflow to keep
+   the background art inside its rounded frame, so a panel laid out inside a card would
+   be cut off by it. Never takes the pointer — it must not be possible to hover the panel
+   itself and trap the cursor between it and its anchor. */
+
+.battle-hover-panel__layer {
+  position: fixed;
+  z-index: 1100;
+  pointer-events: none;
+  animation: battle-hover-in 0.14s ease-out;
+}
+
+@keyframes battle-hover-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.battle-hover-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 10px;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-large, 0 10px 30px rgba(0, 0, 0, 0.45));
+  color: var(--text-color);
+  font-size: 0.8rem;
+}
+
+.battle-hover-panel__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.battle-hover-panel__name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.battle-hover-panel__level {
+  color: var(--text-color-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.battle-hover-panel__hp {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-color-muted);
+  font-size: 0.78rem;
+}
+
+.battle-hover-panel__hp-pct {
+  font-weight: 700;
+}
+
+.battle-hover-panel__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.battle-hover-panel__label {
+  color: var(--text-color-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.battle-hover-panel__badges,
+.battle-hover-panel__species,
+.battle-hover-panel__stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.battle-species-chip {
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: var(--overlay-light);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.battle-hover-panel__none {
+  color: var(--text-color-muted);
+  font-style: italic;
+  font-size: 0.75rem;
+}
+
+/* ── Info card affordance ──
+   A quiet marker that the card has more behind it. It brightens on hover/focus rather
+   than shouting for attention while you are reading the HP bar. */
+
+.battle-info-card {
+  position: relative;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.battle-info-card:hover,
+.battle-info-card:focus-visible {
+  border-color: var(--accent-color);
+  box-shadow: var(--shadow-medium);
+  outline: none;
+}
+
+.battle-info-card__hint {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.4rem;
+  font-size: 0.65rem;
+  color: var(--text-color-muted);
+  opacity: 0.4;
+  transition: opacity 0.15s ease;
+}
+
+/* Keep the level clear of the hint sitting in the card's top-right corner. */
+.battle-info-card__top {
+  padding-right: 0.85rem;
+}
+
+.battle-info-card:hover .battle-info-card__hint,
+.battle-info-card:focus-visible .battle-info-card__hint {
+  opacity: 1;
+  color: var(--accent-color);
+}
+
+.battle-info-card__name {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ── Move buttons, keyed by category ──
+   A colour spine down the edge so physical/special/status are separable at a glance,
+   without repainting the whole button. */
+
+.battle-move-button {
+  border-left: 3px solid var(--border-color);
+}
+
+.battle-move-button--physical { border-left-color: var(--fighting-type); }
+.battle-move-button--special { border-left-color: var(--psychic-type); }
+.battle-move-button--status { border-left-color: var(--steel-type); }
+
+/* ── Reduced motion ──
+   Everything here is decoration over information that is already on the page in text or
+   in a bar, so it can all simply stop. The hover panel keeps working; it just appears. */
+
+@media (prefers-reduced-motion: reduce) {
+  .battle-field__sprite--player.battle-field__sprite--lurch,
+  .battle-field__sprite--enemy.battle-field__sprite--lurch,
+  .battle-field__impact,
+  .battle-hover-panel__layer {
+    animation: none;
+  }
+
+  .battle-field__impact {
+    opacity: 0;
+  }
+
+  /* The trail is pure decoration — the bar itself still shows the new HP. */
+  .battle-hp__ghost {
+    transition: none;
+    opacity: 0;
+  }
+
+  /* The numbers still need to be readable and still need to leave, they just don't fly. */
+  .battle-fx-damage,
+  .battle-fx-stat {
+    animation: battle-fx-fade 1.2s ease-out forwards;
+  }
+
+  @keyframes battle-fx-fade {
+    0%, 70% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+}

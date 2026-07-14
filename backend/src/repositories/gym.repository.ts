@@ -1,9 +1,17 @@
 import { BaseRepository } from './base.repository';
 import { db } from '../database';
+import { PartialBattleStatSpec } from '../utils/constants';
 
 /**
  * A monster spec used for gym leader / gauntlet trainer teams.
  * These are generated battle monsters (monster_id = 0), not real monster rows.
+ *
+ * `stats` holds the optional authored nature/IV/EV inputs. It is deliberately the
+ * *input* to the shared stat curve rather than a set of final totals: the battle
+ * builder feeds it through MonsterInitializerService.calculateStats, the same
+ * formula player-owned monsters use, so a spec monster and a trainer monster of
+ * the same level are directly comparable. When absent (every gym authored before
+ * this field existed), resolveBattleStatSpec supplies the medium/balanced preset.
  */
 export type GymMonsterSpec = {
   name: string;
@@ -16,9 +24,12 @@ export type GymMonsterSpec = {
   type4?: string | null;
   type5?: string | null;
   attribute?: string | null;
+  /** One of the values in monster-genders; null when the author left it unset. */
+  gender?: string | null;
   level: number;
   imgLink?: string | null;
   moves?: string[];
+  stats?: PartialBattleStatSpec | null;
 };
 
 /**
@@ -34,6 +45,46 @@ export type BattleDialogue = {
   loss?: string[];
   generic?: string[];
   talkingSprite?: string | null;
+};
+
+/**
+ * The class of a battle authored in the gym manager:
+ * - `ai`: a standalone AI battle / gauntlet that awards no badge.
+ * - `gym`: a standard badge gym.
+ * - `league`: an elite battle that awards a league badge; only challengeable
+ *   once the trainer holds every gym badge. Has no gauntlet stages.
+ * - `champion`: the final battle that awards the special champion badge; only
+ *   challengeable once the trainer holds every gym badge and every league badge.
+ *   Has no gauntlet stages.
+ */
+export type GymKind = 'ai' | 'gym' | 'league' | 'champion';
+
+export const GYM_KINDS: GymKind[] = ['ai', 'gym', 'league', 'champion'];
+
+/** Kinds that award a badge to the trainer when their final battle is won. */
+export const BADGE_GYM_KINDS: GymKind[] = ['gym', 'league', 'champion'];
+
+/** Normalise a persisted gym_kind, falling back to the legacy is_gym flag. */
+const normalizeGymKind = (
+  value: string | null | undefined,
+  isGym: boolean | null | undefined
+): GymKind => {
+  if (value === 'ai' || value === 'gym' || value === 'league' || value === 'champion') {
+    return value;
+  }
+  return isGym === false ? 'ai' : 'gym';
+};
+
+/** Resolve the gym_kind to persist from a create/update input. gymKind wins; the
+ * legacy isGym flag is used only when gymKind is absent. */
+const resolveGymKindForWrite = (input: {
+  gymKind?: GymKind;
+  isGym?: boolean;
+}): GymKind => {
+  if (input.gymKind) {
+    return input.gymKind;
+  }
+  return input.isGym === false ? 'ai' : 'gym';
 };
 
 export type GymGauntletTrainer = {
@@ -65,6 +116,7 @@ export type GymRow = {
   leader_team: string | object;
   gauntlet_trainers: string | object;
   is_gym: boolean;
+  gym_kind: string | null;
   leader_trainer_id: number | null;
   leader_monster_ids: number[] | null;
   leader_dialogue: string | object | null;
@@ -93,6 +145,7 @@ export type Gym = {
   leaderTeam: GymMonsterSpec[];
   gauntletTrainers: GymGauntletTrainer[];
   isGym: boolean;
+  gymKind: GymKind;
   leaderTrainerId: number | null;
   leaderMonsterIds: number[];
   leaderDialogue: BattleDialogue;
@@ -120,6 +173,7 @@ export type GymCreateInput = {
   leaderTeam?: GymMonsterSpec[];
   gauntletTrainers?: GymGauntletTrainer[];
   isGym?: boolean;
+  gymKind?: GymKind;
   leaderTrainerId?: number | null;
   leaderMonsterIds?: number[];
   leaderDialogue?: BattleDialogue | null;
@@ -153,6 +207,7 @@ export type TrainerBadge = {
   badgeImgLink: string | null;
   typeTheme: string | null;
   leaderName: string;
+  badgeKind: GymKind;
 };
 
 export type GauntletRunStatus = 'active' | 'completed' | 'failed' | 'abandoned';
@@ -207,6 +262,7 @@ const normalizeGym = (row: GymRow): Gym => ({
   leaderTeam: parseJson<GymMonsterSpec[]>(row.leader_team, []),
   gauntletTrainers: parseJson<GymGauntletTrainer[]>(row.gauntlet_trainers, []),
   isGym: row.is_gym ?? true,
+  gymKind: normalizeGymKind(row.gym_kind, row.is_gym),
   leaderTrainerId: row.leader_trainer_id ?? null,
   leaderMonsterIds: row.leader_monster_ids ?? [],
   leaderDialogue: parseJson<BattleDialogue>(row.leader_dialogue, {}),
@@ -261,16 +317,21 @@ export class GymRepository extends BaseRepository<Gym, GymCreateInput, GymUpdate
   }
 
   override async create(input: GymCreateInput): Promise<Gym> {
+    const gymKind = resolveGymKindForWrite(input);
+    const isGym = gymKind !== 'ai';
+    // League / champion battles never have gauntlet stages.
+    const gauntletTrainers =
+      gymKind === 'league' || gymKind === 'champion' ? [] : input.gauntletTrainers ?? [];
     const result = await db.query<{ id: number }>(
       `
         INSERT INTO gyms (
           name, description, type_theme, badge_name, badge_img_link,
           leader_name, leader_img_link, leader_team, gauntlet_trainers,
-          is_gym, leader_trainer_id, leader_monster_ids, leader_dialogue,
+          is_gym, gym_kind, leader_trainer_id, leader_monster_ids, leader_dialogue,
           background_asset_id, background_random, spot_asset_id, spot_random, textbox_asset_id,
           win_reward, loss_penalty, display_order, is_active
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
         RETURNING id
       `,
       [
@@ -282,8 +343,9 @@ export class GymRepository extends BaseRepository<Gym, GymCreateInput, GymUpdate
         input.leaderName,
         input.leaderImgLink ?? null,
         JSON.stringify(input.leaderTeam ?? []),
-        JSON.stringify(input.gauntletTrainers ?? []),
-        input.isGym ?? true,
+        JSON.stringify(gauntletTrainers),
+        isGym,
+        gymKind,
         input.leaderTrainerId ?? null,
         input.leaderMonsterIds ?? [],
         JSON.stringify(input.leaderDialogue ?? {}),
@@ -327,8 +389,21 @@ export class GymRepository extends BaseRepository<Gym, GymCreateInput, GymUpdate
     if (input.leaderName !== undefined) {push('leader_name', input.leaderName);}
     if (input.leaderImgLink !== undefined) {push('leader_img_link', input.leaderImgLink);}
     if (input.leaderTeam !== undefined) {push('leader_team', JSON.stringify(input.leaderTeam));}
-    if (input.gauntletTrainers !== undefined) {push('gauntlet_trainers', JSON.stringify(input.gauntletTrainers));}
-    if (input.isGym !== undefined) {push('is_gym', input.isGym);}
+    // League / champion battles never keep gauntlet stages — force them empty.
+    const forcedNoGauntlet = input.gymKind === 'league' || input.gymKind === 'champion';
+    if (forcedNoGauntlet) {
+      push('gauntlet_trainers', JSON.stringify([]));
+    } else if (input.gauntletTrainers !== undefined) {
+      push('gauntlet_trainers', JSON.stringify(input.gauntletTrainers));
+    }
+    // Keep gym_kind and the legacy is_gym flag in sync. gymKind wins when present.
+    if (input.gymKind !== undefined) {
+      push('gym_kind', input.gymKind);
+      push('is_gym', input.gymKind !== 'ai');
+    } else if (input.isGym !== undefined) {
+      push('is_gym', input.isGym);
+      push('gym_kind', input.isGym ? 'gym' : 'ai');
+    }
     if (input.leaderTrainerId !== undefined) {push('leader_trainer_id', input.leaderTrainerId);}
     if (input.leaderMonsterIds !== undefined) {push('leader_monster_ids', input.leaderMonsterIds);}
     if (input.leaderDialogue !== undefined) {push('leader_dialogue', JSON.stringify(input.leaderDialogue ?? {}));}
@@ -373,9 +448,12 @@ export class GymRepository extends BaseRepository<Gym, GymCreateInput, GymUpdate
       badge_img_link: string | null;
       type_theme: string | null;
       leader_name: string;
+      gym_kind: string | null;
+      is_gym: boolean;
     }>(
       `
-        SELECT tb.*, g.name as gym_name, g.badge_name, g.badge_img_link, g.type_theme, g.leader_name
+        SELECT tb.*, g.name as gym_name, g.badge_name, g.badge_img_link, g.type_theme,
+               g.leader_name, g.gym_kind, g.is_gym
         FROM trainer_badges tb
         JOIN gyms g ON tb.gym_id = g.id
         WHERE tb.trainer_id = $1
@@ -394,6 +472,7 @@ export class GymRepository extends BaseRepository<Gym, GymCreateInput, GymUpdate
       badgeImgLink: row.badge_img_link,
       typeTheme: row.type_theme,
       leaderName: row.leader_name,
+      badgeKind: normalizeGymKind(row.gym_kind, row.is_gym),
     }));
   }
 

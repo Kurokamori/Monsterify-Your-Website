@@ -16,6 +16,7 @@ export const Weather = {
   FOG: 'fog',
   THUNDERSTORM: 'thunderstorm',
   WIND: 'wind',
+  SHADOW_SKY: 'shadow_sky',
 } as const;
 
 export type WeatherKey = keyof typeof Weather;
@@ -50,6 +51,7 @@ export const WEATHER_DISPLAY_NAMES: Record<WeatherValue, string> = {
   [Weather.FOG]: 'Fog',
   [Weather.THUNDERSTORM]: 'Thunderstorm',
   [Weather.WIND]: 'Strong Winds',
+  [Weather.SHADOW_SKY]: 'Shadow Sky',
 };
 
 /**
@@ -101,6 +103,7 @@ export const WEATHER_TYPE_MODIFIERS: Record<WeatherValue, Partial<Record<Monster
     [MonsterType.FLYING]: 1.3,
     [MonsterType.FIRE]: 0.8,
   },
+  [Weather.SHADOW_SKY]: {},
 };
 
 /**
@@ -138,6 +141,7 @@ export const WEATHER_RESIDUAL_DAMAGE: Record<WeatherValue, number> = {
   [Weather.FOG]: 0,
   [Weather.THUNDERSTORM]: 0,
   [Weather.WIND]: 0,
+  [Weather.SHADOW_SKY]: 1 / 16, // 6.25% damage to non-Shadow Pokémon
 };
 
 /**
@@ -153,6 +157,9 @@ export const WEATHER_IMMUNE_TYPES: Record<WeatherValue, MonsterTypeValue[]> = {
   [Weather.FOG]: [],
   [Weather.THUNDERSTORM]: [],
   [Weather.WIND]: [],
+  // 'Shadow' is not a standard MonsterType; Shadow-type immunity is handled
+  // directly where residual damage is applied.
+  [Weather.SHADOW_SKY]: [],
 };
 
 /**
