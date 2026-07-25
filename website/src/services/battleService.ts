@@ -341,6 +341,31 @@ export interface BattleLevelReward {
   newLevel: number;
 }
 
+/** In a mock battle each side is driven either by the owning user or by the AI. */
+export type MockSideControl = 'user' | 'ai';
+
+/** Mock-battle outcome: which of the owner's trainers won (no rewards). */
+export interface BattleMockResult {
+  winnerSide: 'players' | 'opponents' | 'draw' | null;
+  winnerLabel: string | null;
+}
+
+/**
+ * The live control picture for a mock battle. Both trainers belong to the owner,
+ * and each side is controlled by the user (hotseat) or the AI.
+ */
+export interface WebBattleMockView {
+  playersControl: MockSideControl;
+  opponentsControl: MockSideControl;
+  playersLabel: string;
+  opponentsLabel: string;
+  turnSide: 'players' | 'opponents';
+  /** The side the user should act for right now (null while an AI turn is up). */
+  controlledSide: 'players' | 'opponents' | null;
+  /** True when the active side is AI-controlled and the user should advance it. */
+  awaitingStep: boolean;
+}
+
 export interface BattleSettlement {
   won: boolean;
   currencyDelta: number;
@@ -357,6 +382,8 @@ export interface BattleSettlement {
     totalStages: number;
     nextBattleId: number | null;
   } | null;
+  /** Present only for mock battles. */
+  mock?: BattleMockResult | null;
 }
 
 export interface BattleStage {
@@ -369,7 +396,7 @@ export interface BattleStage {
 export interface WebBattleStateView {
   battleId: number;
   status: 'active' | 'completed' | 'cancelled';
-  mode: 'friendly' | 'gauntlet' | 'pvp';
+  mode: 'friendly' | 'gauntlet' | 'pvp' | 'mock';
   pending: boolean;
   winnerType: 'players' | 'opponents' | 'draw' | null;
   yourSide: 'players' | 'opponents' | null;
@@ -388,6 +415,8 @@ export interface WebBattleStateView {
   /** The last few actions, oldest-first. Absent on battles served by an older backend. */
   recentTurns?: BattleTurnView[];
   settlement: BattleSettlement | null;
+  /** Present only for mock battles: the two-sided control/turn picture. */
+  mock?: WebBattleMockView | null;
 }
 
 export interface IncomingChallenge {
@@ -398,7 +427,7 @@ export interface IncomingChallenge {
 
 export interface MyBattleSummary {
   battleId: number;
-  mode: 'friendly' | 'gauntlet' | 'pvp';
+  mode: 'friendly' | 'gauntlet' | 'pvp' | 'mock';
   opponentLabel: string;
   pending: boolean;
   isYourTurn: boolean;
@@ -408,7 +437,18 @@ export interface MyBattleSummary {
 export type BattleAction =
   | { type: 'move'; moveName: string }
   | { type: 'switch'; battleMonsterId: number }
-  | { type: 'forfeit' };
+  | { type: 'forfeit' }
+  | { type: 'advance' };
+
+export interface StartMockBattleInput {
+  playersTrainerId: number;
+  playersMonsterIds: number[];
+  opponentsTrainerId: number;
+  opponentsMonsterIds: number[];
+  playersControl: MockSideControl;
+  opponentsControl: MockSideControl;
+  difficulty?: BattleDifficulty;
+}
 
 export interface BattleActionResult {
   success: boolean;
@@ -547,6 +587,11 @@ const battleService = {
     difficulty?: BattleDifficulty;
   }): Promise<WebBattleStateView> => {
     const response = await api.post('/battle/start', data);
+    return response.data.state;
+  },
+
+  startMockBattle: async (data: StartMockBattleInput): Promise<WebBattleStateView> => {
+    const response = await api.post('/battle/mock/start', data);
     return response.data.state;
   },
 

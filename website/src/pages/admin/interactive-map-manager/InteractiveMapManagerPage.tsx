@@ -193,6 +193,7 @@ export default function InteractiveMapManagerPage() {
           wildlife: '',
           resources: '',
           lore: '',
+          inspiration: '',
           dominantTypes: [],
           areas: [],
           mapCoordinates: coords,

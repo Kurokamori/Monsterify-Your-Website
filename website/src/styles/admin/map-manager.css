@@ -202,7 +202,7 @@
 
 .map-manager__cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: var(--spacing-small);
 }
 
@@ -215,6 +215,7 @@
   overflow: hidden;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
+  height: 300px;
 }
 
 .map-entity-card:hover {
@@ -228,7 +229,7 @@
 }
 
 .map-entity-card__image {
-  width: 80px;
+  width: 180px;
   min-height: 80px;
   object-fit: cover;
   flex-shrink: 0;

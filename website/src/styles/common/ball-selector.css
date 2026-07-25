@@ -96,7 +96,7 @@
 
 .ball-selector__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 130px), 1fr));
   gap: 4px;
   padding: var(--spacing-xsmall);
 }

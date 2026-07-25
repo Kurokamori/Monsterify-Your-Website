@@ -82,6 +82,53 @@
   gap: var(--spacing-medium);
 }
 
+/* ---------- Rolled Species Gallery ---------- */
+
+.antique-appraisal__species-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.antique-appraisal__species {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  max-width: 120px;
+}
+
+.antique-appraisal__species-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--background-color-hover);
+  overflow: hidden;
+}
+
+.antique-appraisal__species-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.antique-appraisal__species-image i {
+  color: var(--text-color-muted);
+  font-size: 1.5rem;
+}
+
+.antique-appraisal__species-name {
+  font-size: var(--font-size-small);
+  text-align: center;
+  word-break: break-word;
+}
+
 .antique-auction__options {
   display: flex;
   flex-direction: column;

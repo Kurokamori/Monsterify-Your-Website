@@ -519,8 +519,11 @@ export async function getTrainerMonsters(req: Request, res: Response): Promise<v
 
     const page = parseInt((req.query.page as string) ?? '1') || 1;
     const limit = parseInt((req.query.limit as string) ?? '12') || 12;
+    const hasImageParam = req.query.hasImage as string | undefined;
+    const hasImage: 'yes' | 'no' | 'all' =
+      hasImageParam === 'yes' || hasImageParam === 'no' ? hasImageParam : 'all';
 
-    const result = await trainerService.getTrainerMonsters(id, page, limit);
+    const result = await trainerService.getTrainerMonsters(id, page, limit, hasImage);
     res.json({ success: true, ...result });
   } catch (error) {
     console.error('Error in getTrainerMonsters:', error);

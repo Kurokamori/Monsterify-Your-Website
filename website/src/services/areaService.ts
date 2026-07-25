@@ -90,6 +90,7 @@ export interface RegionGuide {
   wildlife: string;
   resources: string;
   lore: string;
+  inspiration?: string;
   image: string;
   overworldImage: string;
   description: string;

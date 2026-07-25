@@ -50,6 +50,71 @@ export interface TrainerSummary {
   name: string;
   unreferencedCount: number;
   player_user_id?: string;
+  ownerName?: string;
+}
+
+/** User summary aggregating all of a user's trainers */
+export interface UserSummary {
+  userId: string;
+  name: string;
+  trainerCount: number;
+  unreferencedCount: number;
+}
+
+/** All of a user's trainers with their unreferenced monsters */
+export interface UserWithTrainers {
+  userId: string;
+  name: string;
+  trainers: TrainerWithMonsters[];
+}
+
+/** Whether the helper browses by individual trainer or by whole user */
+export type BrowseMode = 'trainer' | 'user';
+
+export const BROWSE_MODE_OPTIONS: Array<{ value: BrowseMode; label: string }> = [
+  { value: 'trainer', label: 'By Trainer' },
+  { value: 'user', label: 'By User' },
+];
+
+/** How the trainer selector is ordered */
+export type TrainerSortMode = 'refs' | 'trainer' | 'owner';
+
+export const TRAINER_SORT_OPTIONS: Array<{ value: TrainerSortMode; label: string }> = [
+  { value: 'refs', label: 'Most refs needed' },
+  { value: 'trainer', label: 'Trainer name' },
+  { value: 'owner', label: 'Owner' },
+];
+
+/** How the user selector is ordered */
+export type UserSortMode = 'refs' | 'user';
+
+export const USER_SORT_OPTIONS: Array<{ value: UserSortMode; label: string }> = [
+  { value: 'refs', label: 'Most refs needed' },
+  { value: 'user', label: 'User name' },
+];
+
+/** Group trainer summaries into per-user summaries */
+export function buildUserSummaries(trainers: TrainerSummary[]): UserSummary[] {
+  const byUser = new Map<string, UserSummary>();
+
+  for (const trainer of trainers) {
+    if (!trainer.player_user_id) continue;
+
+    const existing = byUser.get(trainer.player_user_id);
+    if (existing) {
+      existing.trainerCount += 1;
+      existing.unreferencedCount += trainer.unreferencedCount;
+    } else {
+      byUser.set(trainer.player_user_id, {
+        userId: trainer.player_user_id,
+        name: trainer.ownerName || 'Unknown Owner',
+        trainerCount: 1,
+        unreferencedCount: trainer.unreferencedCount,
+      });
+    }
+  }
+
+  return Array.from(byUser.values());
 }
 
 /** Image size presets */

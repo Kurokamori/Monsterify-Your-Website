@@ -143,6 +143,12 @@ const RegionGuidePage = () => {
                   <h3>Elevation</h3>
                   <p>{region.elevation}</p>
                 </div>
+                {region.inspiration && (
+                  <div className="map-info-card">
+                    <h3>Inspiration</h3>
+                    <p>{region.inspiration}</p>
+                  </div>
+                )}
                 <div className="map-info-card">
                   <h3>Dominant Types</h3>
                   <div className="map-type-badges">

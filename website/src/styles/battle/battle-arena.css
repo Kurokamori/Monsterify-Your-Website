@@ -709,6 +709,48 @@ img.battle-field__spot.battle-asset--pixelated {
 .battle-overlay__card--victory h2 { color: var(--accent-color); }
 .battle-overlay__card--defeat h2 { color: var(--error-color); }
 
+.battle-overlay__card--mock {
+  border-color: var(--info-color, #4f9dde);
+  box-shadow: 0 0 24px rgba(79, 157, 222, 0.35), var(--shadow-large);
+}
+
+.battle-overlay__card--mock h2 { color: var(--info-color, #4f9dde); }
+
+.battle-overlay__mock-note {
+  color: var(--text-color-muted);
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+
+/* ── Mock battle header / turn banner ── */
+
+.battle-arena__mock-title {
+  font-size: 0.95rem;
+}
+
+.battle-arena__mock-side {
+  white-space: nowrap;
+}
+
+.battle-arena__mock-side i {
+  margin-left: 0.35rem;
+  font-size: 0.8em;
+  color: var(--text-color-muted);
+}
+
+.battle-arena__mock-step {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.battle-arena__mock-step-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .battle-overlay__currency {
   font-size: 1.15rem;
   font-weight: 700;

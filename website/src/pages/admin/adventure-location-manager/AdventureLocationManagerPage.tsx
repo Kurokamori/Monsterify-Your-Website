@@ -6,6 +6,7 @@ import { ArrayFieldEditor } from '@components/admin/map-manager/ArrayFieldEditor
 import areaService from '@services/areaService';
 import type { LandmassGuide, RegionGuideSummary, RegionAreaSummary } from '@services/areaService';
 import '@styles/admin/adventure-location-manager.css';
+import { AutoGrowTextarea } from '@/components/common/AutoGrowTextarea';
 
 // ── Types ──────────────────────────────────────────────────
 
@@ -512,11 +513,11 @@ function AdventureLocationManagerContent() {
             <CollapsibleSection title="Welcome Messages" defaultOpen>
               <div className="form-group">
                 <label className="form-label">Base Message</label>
-                <textarea className="form-input" rows={2} value={areaData.welcomeMessages.base} onChange={e => updateArea({ welcomeMessages: { ...areaData.welcomeMessages, base: e.target.value } })} />
+                <AutoGrowTextarea className="form-input" minRows={2} value={areaData.welcomeMessages.base} onChange={e => updateArea({ welcomeMessages: { ...areaData.welcomeMessages, base: e.target.value } })} />
               </div>
               <div className="form-group">
                 <label className="form-label">Variations (one per line)</label>
-                <textarea className="form-input" rows={4} value={areaData.welcomeMessages.variations.join('\n')} onChange={e => updateArea({ welcomeMessages: { ...areaData.welcomeMessages, variations: e.target.value.split('\n').filter(Boolean) } })} />
+                <AutoGrowTextarea className="form-input" minRows={4} value={areaData.welcomeMessages.variations.join('\n')} onChange={e => updateArea({ welcomeMessages: { ...areaData.welcomeMessages, variations: e.target.value.split('\n').filter(Boolean) } })} />
               </div>
             </CollapsibleSection>
 
@@ -570,7 +571,7 @@ function AdventureLocationManagerContent() {
               </div>
               <div className="form-group">
                 <label className="form-label">Description</label>
-                <textarea className="form-input" rows={4} value={areaData.description ?? ''} onChange={e => updateArea({ description: e.target.value })} />
+                <AutoGrowTextarea className="form-input" minRows={4} value={areaData.description ?? ''} onChange={e => updateArea({ description: e.target.value })} />
               </div>
               <div className="form-group">
                 <label className="form-label">Special Features (comma-separated)</label>

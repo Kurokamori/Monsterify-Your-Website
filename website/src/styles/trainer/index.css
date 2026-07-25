@@ -129,18 +129,33 @@
   color: var(--text-color);
 }
 
-/* Form grid layout */
+/* Form grid layout.
+   Tracks resolve to the requested column count while the container is wide
+   enough to keep every column above --form-grid-min, then step down to fewer
+   columns and finally to a single column. The outer min() with 100% guarantees
+   the track never exceeds the container, so fields can never overflow or
+   overlap at narrow (phone) widths. */
 .form-grid {
+  --form-grid-gap: var(--spacing-small);
+  --form-grid-min: 14rem;
   display: grid;
-  gap: var(--spacing-small);
+  gap: var(--form-grid-gap);
+  grid-template-columns: 1fr;
 }
 
 .form-grid.cols-2 {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 30vw), 1fr));
+  --form-grid-min: 18rem;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, max(var(--form-grid-min), (100% - var(--form-grid-gap)) / 2)), 1fr)
+  );
 }
 
 .form-grid.cols-3 {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20vw), 1fr));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, max(var(--form-grid-min), (100% - 2 * var(--form-grid-gap)) / 3)), 1fr)
+  );
 }
 
 .form-grid.cols-1 {

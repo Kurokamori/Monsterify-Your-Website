@@ -46,7 +46,17 @@ export const MonsterReferenceTable = ({
             {monsters.map((monster) => (
               <Fragment key={monster.id}>
                 <tr>
-                  <td className="ref-table__cell--name">{monster.name}</td>
+                  <td className="ref-table__cell--name">
+                    <a
+                      href={`/monsters/${monster.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ref-table__name-link"
+                      title="Open monster page in a new tab"
+                    >
+                      {monster.name}
+                    </a>
+                  </td>
                   <td className="ref-table__cell--species">
                     {[monster.species1, monster.species2, monster.species3]
                       .filter(Boolean)

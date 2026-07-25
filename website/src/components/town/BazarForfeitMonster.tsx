@@ -53,6 +53,9 @@ export function BazarForfeitMonster({
     limit: 24
   });
 
+  // Reference image filter
+  const [imageFilter, setImageFilter] = useState<'all' | 'yes' | 'no'>('all');
+
   // Species images cache
   const [speciesImages, setSpeciesImages] = useState<SpeciesImageMap>({});
 
@@ -76,6 +79,9 @@ export function BazarForfeitMonster({
       const params = new URLSearchParams();
       params.append('page', page.toString());
       params.append('limit', pagination.limit.toString());
+      if (imageFilter !== 'all') {
+        params.append('hasImage', imageFilter);
+      }
 
       const response = await api.get(`/trainers/${trainerId}/monsters?${params.toString()}`);
 
@@ -92,7 +98,7 @@ export function BazarForfeitMonster({
     } finally {
       setMonstersLoading(false);
     }
-  }, [pagination.limit]);
+  }, [pagination.limit, imageFilter]);
 
   // Fetch species images when monsters change
   useEffect(() => {
@@ -153,6 +159,17 @@ export function BazarForfeitMonster({
   const handlePerPageChange = useCallback((newLimit: number) => {
     setPagination(prev => ({ ...prev, limit: newLimit, page: 1 }));
   }, []);
+
+  // Refetch when the reference image filter changes
+  const prevImageFilterRef = useRef(imageFilter);
+  useEffect(() => {
+    if (imageFilter !== prevImageFilterRef.current) {
+      prevImageFilterRef.current = imageFilter;
+      if (selectedTrainer) {
+        fetchMonsters(selectedTrainer.id, 1);
+      }
+    }
+  }, [imageFilter, selectedTrainer, fetchMonsters]);
 
   // Toggle monster selection
   const toggleMonsterSelection = useCallback((monsterId: number) => {
@@ -279,6 +296,39 @@ export function BazarForfeitMonster({
 
         {selectedTrainer && (
           <>
+            {/* Reference Image Filter */}
+            <div className="bazar-forfeit-monster__filter">
+              <span className="bazar-forfeit-monster__filter-label">
+                Reference image:
+              </span>
+              <div className="bazar-forfeit-monster__filter-buttons">
+                <button
+                  type="button"
+                  className={`button sm ${imageFilter === 'all' ? 'primary' : 'secondary'}`}
+                  onClick={() => setImageFilter('all')}
+                  disabled={monstersLoading}
+                >
+                  All
+                </button>
+                <button
+                  type="button"
+                  className={`button sm ${imageFilter === 'yes' ? 'primary' : 'secondary'}`}
+                  onClick={() => setImageFilter('yes')}
+                  disabled={monstersLoading}
+                >
+                  <i className="fas fa-image"></i> Drawn
+                </button>
+                <button
+                  type="button"
+                  className={`button sm ${imageFilter === 'no' ? 'primary' : 'secondary'}`}
+                  onClick={() => setImageFilter('no')}
+                  disabled={monstersLoading}
+                >
+                  <i className="fas fa-pencil-alt"></i> Not drawn
+                </button>
+              </div>
+            </div>
+
             {/* Selection Controls */}
             <div className="bazar-forfeit-monster__controls">
               <div className="bazar-forfeit-monster__selection-info">

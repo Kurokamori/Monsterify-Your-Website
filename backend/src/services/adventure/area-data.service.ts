@@ -377,6 +377,7 @@ export class AreaDataService {
       wildlife: region.wildlife,
       resources: region.resources,
       lore: region.lore,
+      inspiration: region.inspiration,
       mapCoordinates: region.mapCoordinates,
       areas,
     };

@@ -343,6 +343,50 @@ export async function startFriendlyBattle(req: Request, res: Response): Promise<
   }
 }
 
+export async function startMockBattle(req: Request, res: Response): Promise<void> {
+  try {
+    const user = getUser(req);
+    const {
+      playersTrainerId,
+      playersMonsterIds,
+      opponentsTrainerId,
+      opponentsMonsterIds,
+      playersControl,
+      opponentsControl,
+      difficulty,
+    } = req.body as {
+      playersTrainerId: number;
+      playersMonsterIds: number[];
+      opponentsTrainerId: number;
+      opponentsMonsterIds: number[];
+      playersControl: 'user' | 'ai';
+      opponentsControl: 'user' | 'ai';
+      difficulty?: 'easy' | 'medium' | 'hard';
+    };
+    if (
+      !playersTrainerId ||
+      !opponentsTrainerId ||
+      !Array.isArray(playersMonsterIds) ||
+      !Array.isArray(opponentsMonsterIds)
+    ) {
+      res.status(400).json({ success: false, message: 'Missing required fields' });
+      return;
+    }
+    const state = await webBattleService.startMockBattle(user, {
+      playersTrainerId,
+      playersMonsterIds,
+      opponentsTrainerId,
+      opponentsMonsterIds,
+      playersControl: playersControl === 'user' ? 'user' : 'ai',
+      opponentsControl: opponentsControl === 'user' ? 'user' : 'ai',
+      difficulty: difficulty ?? 'medium',
+    });
+    res.status(201).json({ success: true, state });
+  } catch (err) {
+    fail(res, err, 'Failed to start mock battle');
+  }
+}
+
 export async function startGauntlet(req: Request, res: Response): Promise<void> {
   try {
     const user = getUser(req);
@@ -455,9 +499,10 @@ export async function performBattleAction(req: Request, res: Response): Promise<
     const action = req.body as
       | { type: 'move'; moveName: string; targetBattleMonsterId?: number }
       | { type: 'switch'; battleMonsterId: number }
-      | { type: 'forfeit' };
+      | { type: 'forfeit' }
+      | { type: 'advance' };
 
-    if (!action || !['move', 'switch', 'forfeit'].includes(action.type)) {
+    if (!action || !['move', 'switch', 'forfeit', 'advance'].includes(action.type)) {
       res.status(400).json({ success: false, message: 'Invalid action' });
       return;
     }

@@ -10,6 +10,16 @@
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: var(--spacing-medium) 0;
+  min-width: 0;
+}
+
+/* The section card already supplies the horizontal inset, so fields only need
+   vertical padding to separate stacked groups. Dropping the inline padding
+   reclaims ~2rem of width per field on narrow screens. */
+.trainer-page-form .form-group {
+  padding-inline: 0;
+  padding-block: var(--spacing-xsmall);
+  min-width: 0;
 }
 
 .trainer-page-form__header {
@@ -133,9 +143,19 @@
 .ref-image-upload {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--spacing-xsmall);
 }
 
+/* The upload trigger shows the selected file name, which can be arbitrarily
+   long -- keep it inside the card instead of pushing the layout wide. */
+.ref-image-upload > label.button {
+  max-width: 100%;
+  max-height: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
 
 /* ---------- Responsive ---------- */
 
@@ -143,7 +163,47 @@
   .trainer-page-form__jump-button {
     position: static;
     float: none;
-    align-self: flex-end;
+    display: block;
+    margin-left: auto;
     margin-bottom: var(--spacing-small);
+  }
+
+  .trainer-page-form__header h1 {
+    font-size: var(--font-size-xlarge);
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 600px) {
+  .trainer-page-form {
+    padding: var(--spacing-small) 0;
+  }
+
+  .trainer-page-form__form .form-section {
+    padding: var(--spacing-small);
+  }
+
+  .dynamic-list__item {
+    padding: var(--spacing-xsmall);
+  }
+
+  .dynamic-list__item-header {
+    gap: var(--spacing-xsmall);
+  }
+
+  .dynamic-list__item-header h4 {
+    overflow-wrap: anywhere;
+  }
+
+  /* Stack the submit/cancel pair so neither button is squeezed. */
+  .trainer-page-form__actions {
+    flex-direction: column-reverse;
+    padding: var(--spacing-small);
+  }
+
+  .trainer-page-form__actions .button {
+    flex: 0 0 auto;
+    width: 100%;
+    justify-content: center;
   }
 }

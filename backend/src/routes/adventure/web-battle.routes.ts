@@ -22,6 +22,7 @@ import {
   adminRollSpecStats,
   adminPreviewSpecStats,
   startFriendlyBattle,
+  startMockBattle,
   startGauntlet,
   createPvpChallenge,
   acceptPvpChallenge,
@@ -68,6 +69,7 @@ router.delete('/admin/assets/:assetId', authenticate, requireAdmin, deleteBattle
 
 // Battles
 router.post('/start', authenticate, startFriendlyBattle);
+router.post('/mock/start', authenticate, startMockBattle);
 router.post('/gauntlet/start', authenticate, startGauntlet);
 router.post('/pvp/challenge', authenticate, createPvpChallenge);
 router.post('/pvp/:battleId/accept', authenticate, acceptPvpChallenge);

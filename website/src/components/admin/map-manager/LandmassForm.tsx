@@ -1,4 +1,5 @@
 import { FileUpload } from '@components/common/FileUpload';
+import { AutoGrowTextarea } from '@components/common/AutoGrowTextarea';
 
 interface LandmassData {
   id: string;
@@ -36,9 +37,9 @@ export function LandmassForm({ data, onChange }: LandmassFormProps) {
 
       <div className="form-group">
         <label className="form-label">Description</label>
-        <textarea
+        <AutoGrowTextarea
           className="form-input"
-          rows={4}
+          minRows={4}
           value={data.description}
           onChange={(e) => update({ description: e.target.value })}
         />
@@ -64,9 +65,9 @@ export function LandmassForm({ data, onChange }: LandmassFormProps) {
 
       <div className="form-group">
         <label className="form-label">Lore</label>
-        <textarea
+        <AutoGrowTextarea
           className="form-input"
-          rows={6}
+          minRows={6}
           value={data.lore}
           onChange={(e) => update({ lore: e.target.value })}
         />

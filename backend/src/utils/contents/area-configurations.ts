@@ -140,6 +140,7 @@ export type RegionDefinition = {
   wildlife: string;
   resources: string;
   lore: string;
+  inspiration?: string;       // Real-world cultural/thematic inspiration (e.g. "egyptian")
   mapCoordinates: Coordinates;
 };
 
@@ -267,6 +268,7 @@ export type RegionGuideView = ResolvedImages & {
   wildlife: string;
   resources: string;
   lore: string;
+  inspiration?: string;
   mapCoordinates: Coordinates;
   areas: AreaGuideSummary[];
 };
@@ -438,11 +440,11 @@ export const regionDefinitions: RegionDefinitionsMap = {
       "fridhof-temple",
       "gladsheim-hall"
     ],
-    "description": "A peaceful northern homeland with cozy settlements, where Normal-type Monsters gather in harmonious communities.",
+    "description": "A peaceful homeland with cozy settlements, where Normal-type Monsters gather in harmonious communities. Here the central city of the region exists where creatures and people of all walks gather to start new lives.",
     "elevation": "200 - 800 ft",
     "wildlife": "Cozy Cabin Monsters, Hearth Spirits, Community Gatherers",
     "resources": "Hearthwood, Comfort Berries, Warm Stones",
-    "lore": "Inspired by northern concepts of community and comfort, Hearthfall Commons has grown into the most welcoming corner of the entire Conoco Region, where the warmth of a shared meal matters more than elemental power or faction rank. Normal-type Pokémon are the backbone of daily life here — Eevee play in cottage gardens, Chansey assist at the local clinic, and the occasional Snorlax becomes a beloved neighbourhood landmark. Moogles from another world entirely have settled here in surprisingly large numbers, their cheerful 'Kupo!' a familiar sound in the market squares, and a handful of domesticated Digimon that emerged from old municipal data systems have quietly integrated into civic life, helping keep records and routing messages. Yokai with gentle natures — Zashiki-warashi and small household spirits — are said to inhabit every old building, bringing luck to families who leave out offerings. Faction politics barely reach this far; everyone is simply a neighbour.",
+    "lore": "Inspired by concepts of community and comfort, Hearthfall Commons has grown into the most welcoming corner of the entire Conoco Region, where it seems the warmth of a shared meal matters more than elemental power or faction rank. Moogles from another world entirely have settled here in surprisingly large numbers, and a handful of domesticated Digimon that emerged from old municipal data systems have quietly integrated into civic life, helping keep records and routing messages. Yokai with gentle natures — Zashiki-warashi and small household spirits — are said to inhabit every old building, bringing luck to families who leave out offerings. Despite this seemingly harmonious energy, power and factions brew beneath the surface. As the centre of the league, contests, and perhaps even more nefarious organisations, battles echo through the cities -- and many things lurk in the underbelly of the larger cities in this region.",
     "mapCoordinates": {
       "x": 30,
       "y": 55,
@@ -451,7 +453,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     },
     "images": {
       "guide": "/images/maps/regions/hearthfall-commons-detailed.png"
-    }
+    },
+    "inspiration": "Norse Mythology"
   },
 
   'agni-peaks': {
@@ -473,21 +476,22 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "elevation": "3,000 - 8,500 ft",
     "wildlife": "Sacred Flame Spirits, Volcanic Salamanders, Fire Temple Guardians",
     "resources": "Sacred Ash, Fire Crystals, Blessed Charcoal",
-    "lore": "Named after the ancient Vedic spirit of fire, Agni Peaks holds that flame itself is the first language of the universe, and every monster that dwells here understands a word or two of it. Fire Yokai of the old tradition — the fearsome Kasha and the towering Oni — revere the sacred summits as divine furnaces and hold rites at the solstices that light the peaks orange for miles around. Flame-natured Digimon such as the Agumon evolutionary line feel an almost magnetic pull toward the region, drawn by the resonant heat-data encoded in the volcanic rock; the Digital Dawn faction considers this pilgrimage sacred. In the uppermost crags, Monster Hunter fire drakes — Rathalos-class wyverns and molten-plated brutes — have claimed territories that even the fire priests dare not enter. The region's eternal flames are said to purify both body and spirit, burning away falsehood and weakness in all who pass the trials of courage.",
+    "lore": "Agni Peaks holds flame itself as the first language of the universe, and every monster that dwells here understands a word or two of it. Fire Yokai of the old tradition revere the sacred summits as divine furnaces and hold rites at the solstices that light the peaks orange for miles around. The Digital Dawn faction considers this pilgrimage sacred. In the uppermost crags, the region's eternal flames are said to purify both body and spirit, burning away falsehood and weakness in all who pass the trials of courage.",
     "mapCoordinates": {
-      "x": 55,
-      "y": 35,
+      "x": 50.845272206303726,
+      "y": 35.811499314144754,
       "width": 18,
       "height": 20
     },
     "images": {
       "guide": "/images/maps/regions/agni-peaks-detailed.png"
-    }
+    },
+    "inspiration": "Hindu Mythology"
   },
 
   'poseidons-reach': {
     "id": "poseidons-reach",
-    "name": "Poseidon's Reach",
+    "name": "Tethys Sound",
     "landmassId": "conoco-island",
     "dominantTypes": [
       "Water"
@@ -504,7 +508,7 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "elevation": "Sea Level - 400 ft",
     "wildlife": "Trident Wielders, Coral Architects, Deep Sea Oracles",
     "resources": "Divine Pearls, Sea Salt, Triton Shells",
-    "lore": "The domain of the sea lord's ancient power, Poseidon's Reach is a place where the ocean is not merely water but a living memory — every current whispering of sunken empires and forgotten covenants. Water Pokémon form complex, layered civilizations beneath the waves, with social hierarchies that rival any surface city, while Water Yokai such as Kappa and the colossal deep-sea Umibōzu hold court in the abyss, demanding tribute from all who sail their waters. Deep-sea Digimon — Gesomon, MarineAngemon, and stranger forms — are drawn to the ancient electromagnetic currents of the sea floor, finding resonance in the mineral-rich sediment that hums with buried data. The Spirit Keepers faction considers the waters of Poseidon's Reach holy ground and maintains strict rites around who may harvest from its depths. When the tides move against the moon's pull, the local oracles say that the sea itself is passing judgment.",
+    "lore": "The domain of the sea lord's ancient power, Tethys Sound is a place where the ocean is not merely water but a living memory — every current whispering of sunken empires and forgotten covenants. Water Pokémon form complex, layered civilisations beneath the waves, with social hierarchies that rival any surface city, while Water Yokai such as Kappa and the colossal deep-sea Umibōzu hold court in the abyss, demanding tribute from all who sail their waters. Deep-sea Digimon — Gesomon, MarineAngemon, and stranger forms — are drawn to the ancient electromagnetic currents of the sea floor, finding resonance in the mineral-rich sediment that hums with buried data. The Spirit Keepers faction considers the waters of Poseidon's Reach holy ground and maintains strict rites around who may harvest from its depths. When the tides move against the moon's pull, the local oracles say that the sea itself is passing judgment.",
     "mapCoordinates": {
       "x": 35,
       "y": 85,
@@ -513,12 +517,13 @@ export const regionDefinitions: RegionDefinitionsMap = {
     },
     "images": {
       "guide": "/images/maps/regions/poseidons-reach-detailed.png"
-    }
+    },
+    "inspiration": "Greek Mythology"
   },
 
   'thunderbird-heights': {
     "id": "thunderbird-heights",
-    "name": "Thunderbird Heights",
+    "name": "Raijin Plateau",
     "landmassId": "conoco-island",
     "dominantTypes": [
       "Electric"
@@ -537,10 +542,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Thunder Feathers, Storm Glass, Lightning Wood",
     "lore": "Sacred to the Thunderbird spirit of ancient legend, Thunderbird Heights crackles with enough raw electrical energy that compasses spin uselessly and unshielded electronics fuse within minutes of arrival. Scholars of the Digital Dawn faction have long theorized that a vast array of ancient data servers lies buried beneath the mesa's bedrock, their cooling vents creating the supercharged atmosphere and their processing power drawing Electric Digimon — Elecmon, Thunderbirmon, and the elusive MetalEtemon — like moths to a lamp. Electric-type Pokémon thrive in the perpetual storm, their cheek sacs charged before they even hatch, and the migration patterns of Jolteon and Magnezone packs seem to follow underground ley-lines that no surface map has ever captured. The indigenous people of the mesa speak of a pact between the first Storm Eagle and the lightning itself, a promise that the storms will never cease as long as the feathered spirits are honoured. Monster Hunter-class flying wyverns occasionally ride the thermals overhead, drawn by the electromagnetic updrafts.",
     "mapCoordinates": {
-      "x": 30,
-      "y": 35,
-      "width": 20,
-      "height": 18
+      "x": 73.4598853868195,
+      "y": 28.69237951425312,
+      "width": 20.05730659025788,
+      "height": 8.594042857307514
     },
     "images": {
       "guide": "/images/maps/regions/thunderbird-heights-detailed.png"
@@ -599,10 +604,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Giant Ice, Frost Berries, Aurora Stones",
     "lore": "The Jötun Tundra is a place that remembers a colder, older world — its ice never melts, sustained by primordial magic that predates the island's recorded history by aeons. Ice Yokai of the most powerful kind hold dominion here: the Yuki-onna, spectral and beautiful, are said to be the original inhabitants, older even than the frost titan myths, and they watch travellers from snowstorms with eyes like chips of blue glacial glass. The Jötun themselves — the frost giants whose names grace this tundra — may not be mythology at all; Monster Hunter scholars believe the region's titanic, glacially slow mega-beasts are the living descendants of those legendary giants, their bodies so large that frozen tundra forms over their backs as they hibernate across decades. Ice-type Pokémon grow to extraordinary sizes in the region's nutrient-dense permafrost, and the few Ice-aligned Digimon that venture this far from digital infrastructure tend to undergo unusual hardening evolutions. The sculptures of frozen water that dot the landscape — intricate, inexplicable, and metres tall — were made by no human hand.",
     "mapCoordinates": {
-      "x": 5,
-      "y": 40,
+      "x": 48.76790830945558,
+      "y": 8.921305315089969,
       "width": 20,
-      "height": 25
+      "height": 16.89394026719537
     },
     "images": {
       "guide": "/images/maps/regions/jotun-tundra-detailed.png"
@@ -630,8 +635,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Training Stones, Warrior Herbs, Honor Metals",
     "lore": "Inspired by the Kshatriya warrior tradition of honour, duty, and righteous combat, this region is a living martial academy where the philosophy of fighting is taken as seriously as the fighting itself. Fighting-type Pokémon and Pals run training grounds side by side, a rare collaboration born of mutual respect — Machamp spotters help Lyleen Noct students with form, and Pal labour-crews maintain the ancient colosseum's stone seating without complaint. Ancient Digimon warrior forms hold a place of special reverence here: Leomon is practically a patron saint, depicted in every mural and statute, and Greymon lines are treated as honoured visiting champions when they pass through. Nexomon with a fierce competitive nature are frequent challengers at the arena's open rounds, their aggressive streak channelled productively by the structured tournament format. The highest honour a combatant can achieve in Kshatriya Arena is not defeating the strongest opponent, but preserving the spirit of fair combat in the face of overwhelming temptation to cheat.",
     "mapCoordinates": {
-      "x": 70,
-      "y": 20,
+      "x": 29.02578796561605,
+      "y": 9.893144905651674,
       "width": 16,
       "height": 18
     },
@@ -692,10 +697,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Sacred Clay, Earth Gems, Fertile Soil",
     "lore": "Terra Madre Basin is shaped like a vast cupped hand, as if the earth mother herself scooped it from the bedrock and filled it with fertile soil and canyon-carved rivers. Ground Yokai of ancient lineage serve as the region's invisible government — Tsuchigumo in their earthen aspect, and unnamed deep-ground spirits that no tradition has fully classified — maintaining the soil's miraculous fertility through rites performed in caverns that no outsider has ever been permitted to enter. Ground-type Pokémon grow to prodigious sizes here, the rich mineral earth pushing their development in ways that confound visiting biologists, while Pals have built some of their most sophisticated agricultural settlements in the basin's rolling plains, their labour-culture perfectly suited to the region's ethos of working with the land rather than against it. The canyon's deepest cuts harbour Monster Hunter-scale beasts — burrowing brutes and armoured herbivores the size of houses — that the Spirit Keepers faction protects with fierce dedication. At the basin's sacred heart, the ancient amphitheater rings with ceremony at every equinox, blessing the earth as it has been blessed since before memory.",
     "mapCoordinates": {
-      "x": 50,
-      "y": 5,
-      "width": 20,
-      "height": 20
+      "x": 63.2163323782235,
+      "y": 51.19304231553953,
+      "width": 20.823782234957037,
+      "height": 11.283471464963739
     },
     "images": {
       "guide": "/images/maps/regions/terra-madre-basin-detailed.png"
@@ -723,8 +728,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Quetzal Feathers, Wind Crystals, Sky Jade",
     "lore": "Sacred to the great feathered serpent spirit of wind and wisdom, Quetzal Winds is a region where the sky is not empty space but a living, breathing highway of ancient significance. Flying-type Yokai and wind-aspect spirits ride the thermals alongside mortal creatures, conducting invisible negotiations that somehow determine whether the rainy season arrives gently or catastrophically. Wind and Sky Digimon — Hawkmon and its evolutions, the magnificent Garudamon — are revered here as sacred kin to the feathered serpent, and the Digital Dawn faction maintains a discrete presence at the uppermost temple to study the relationship between the constant updrafts and the region's peculiar electromagnetic signature. Flying-type Pokémon perform elaborate aerial dances at sunrise that the local sky priests spend lifetimes learning to read, claiming the dances are messages from the serpent spirit itself. The region's floating pyramid temples drift on wind currents, accessible only to those who have learned to read the sky.",
     "mapCoordinates": {
-      "x": 78.58166189111749,
-      "y": 46.22105287425219,
+      "x": 4.369627507163344,
+      "y": 48.36046015699746,
       "width": 18,
       "height": 20
     },
@@ -754,8 +759,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Prophecy Stones, Mind Crystals, Wisdom Herbs",
     "lore": "Oracle's Sanctum is built over a network of geological fault vents that release psychoactive vapors, and it is this — combined with something stranger and deeper in the rock — that has made the region a nexus of prophetic power since the first humans settled Conoco Island. Psychic Yokai sit in lotus posture within the innermost temple vapours, their consciousness stretched so thin across possible futures that their bodies sometimes forget to breathe; the acolytes who tend them are trained as much in resuscitation as in ritual. Data-type Digimon find their processing abilities dramatically enhanced near the sacred springs, their calculation speeds spiking as if they are tapping into some vast, invisible computational network buried beneath the stone — the Digital Dawn faction has dispatched no fewer than three research teams to investigate, none of which have published satisfying conclusions. Psychic-type Pokémon migrate here to meditate, and Gardevoir lineages have established permanent communities within the inner sanctum, their presence so entrenched that the oracle priests now consider them indispensable to the prophetic rites. Only the honest of purpose can enter the deepest vaults without being broken by what they find there.",
     "mapCoordinates": {
-      "x": 35,
-      "y": 75,
+      "x": 80.41547277936962,
+      "y": 23.285361889502397,
       "width": 15,
       "height": 18
     },
@@ -785,10 +790,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Story Silk, Wisdom Honey, Pattern Leaves",
     "lore": "Sacred to the ancient spider lord of stories and cunning, Anansi Woods is a forest that never stops talking — every rustle of silk thread in the canopy is a sentence in some ongoing narrative that the forest has been composing since the first tree took root. Bug Yokai of the old tradition are embedded in every layer of the ecosystem: the great Tsuchigumo spider spirits weave alongside the spider lord's mortal descendants, their webs carrying not just prey but entire genealogies of story, while smaller insect-aspect spirits flit between blossoms acting as living punctuation marks in the forest's endless tale. Bug Digimon have constructed elaborate data-silk networks throughout the forest, information highways that hum between nodes in a pattern that researchers insist is not random, and the Digital Dawn calls the Silk Library's deepest archive their most prized research site. Bug-type Pokémon here are extraordinary storytellers in their own right — the Ariados lay webs that form maps of entire saga-cycles, and Beautifly swarms arrange themselves into formations that the monks interpret as living text. Those who learn to listen to the forest find that it tells the truth, even when the truth is painful.",
     "mapCoordinates": {
-      "x": 60,
-      "y": 75,
+      "x": 51.04584527220631,
+      "y": 3.240810116076677,
       "width": 20,
-      "height": 15
+      "height": 6.123131188546795
     },
     "images": {
       "guide": "/images/maps/regions/anansi-woods-detailed.png"
@@ -816,10 +821,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Druid Stones, Memory Crystals, Ancient Moss",
     "lore": "Stoneheart Cliffs is a landscape that feels older than the island itself — the standing stones predate every known civilization by such a margin that even the most ancient Yokai cannot say who raised them. Rock Yokai in their most powerful form maintain the stones: entities like Gashadokuro in its rare geological aspect — bones of the forgotten earth, slow and immovable as bedrock — serve as wardens, ensuring that the runes carved into the monoliths are never defaced or translated by those unworthy of the knowledge. Rock Digimon such as Gotsumon and Monochromon feel an instinctive duty to these stones, often found pressed against the larger monoliths as if listening, and no researcher has successfully led one away from a stone circle against its will. Rock-type Pokémon have evolved in tandem with the highland's peculiar mineral composition, developing hides that mirror the local stone so precisely they are functionally invisible when still. At celestial alignments — the solstices, the equinoxes, and the days when two moons show simultaneously — the standing stones glow from within, and for a few hours the runes can be read by anyone with an open heart.",
     "mapCoordinates": {
-      "x": 63.02292263610316,
-      "y": 29.556038407893674,
-      "width": 15,
-      "height": 20
+      "x": 56.91260744985672,
+      "y": 58.86539946745358,
+      "width": 21.84813753581662,
+      "height": 13.869261005383102
     },
     "images": {
       "guide": "/images/maps/regions/stoneheart-cliffs-detailed.png"
@@ -847,8 +852,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Spirit Essence, Bone Dust, Afterlife Flowers",
     "lore": "Mictlan Hollows exists in two places simultaneously — the physical world of stone and root, and the realm of spirits, which overlaps it so thoroughly that the boundary becomes meaningless after dark. Ghost Yokai are the native population here, predating any human settlement; they have their own names, their own governance, and their own customs, which the living inhabitants of the surface have slowly learned to respect over centuries of cautious cohabitation. Ghost and Undead Digimon — Bakemon drifting in idle procession, LadyDevimon perched on obsidian pinnacles like dark queens — are drawn to the hollows because the membrane between the Digital World and the spirit realm is at its thinnest here, their data-forms resonating with the afterlife energy like a struck tuning fork. Ghost-type Pokémon are so abundant that newcomers sometimes fail to realize they are surrounded; entire communities of Gastly, Misdreavus, and Drifblim simply drift through solid walls and carry on their affairs with cheerful indifference to the living. The murals that cover every cavern wall depict not mythology but history — a complete record of souls that have passed through on their journey to whatever lies beyond.",
     "mapCoordinates": {
-      "x": 6.217765042979941,
-      "y": 76.25413530367827,
+      "x": 13.094555873925504,
+      "y": 17.23600336587785,
       "width": 18,
       "height": 16
     },
@@ -878,8 +883,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Dragon Scales, Imperial Jade, Wisdom Pearls",
     "lore": "Long Valley carries the weight of an imperial age that most of the world has forgotten — its jade palaces were old when the first stone circles were raised in Stoneheart Cliffs, and the Dragon Elders who hold court here can remember events that human history books have not yet catalogued. Dragon Yokai of immense and ancient power reside in the valley's deepest gorges, coiled around pearl-laden rivers, their patience measured in centuries; they are not hostile to visitors, but they are unimpressed by almost everything, which amounts to the same thing from a practical standpoint. Dragon Digimon such as Examon and the Imperialdramon line are treated as honoured kin and occasional emissaries, their digital nature no barrier to the deep respect that Long Valley's culture extends to all genuine dragon-kind. Dragon-type Monster Hunter beasts — the apex wyverns and elder dragons of legend — coexist with the valley's dragon inhabitants in a wary détente that the Dragon Elders maintain through a combination of ancient compact and sheer overwhelming authority. Those who enter with arrogance leave quickly; those who enter with genuine humility may be permitted to study in the great library, if they can read the script.",
     "mapCoordinates": {
-      "x": 10,
-      "y": 5,
+      "x": 20.601719197707737,
+      "y": 11.639539843002545,
       "width": 25,
       "height": 12
     },
@@ -909,10 +914,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Shadow Berries, Night Stones, Trickster Feathers",
     "lore": "Raven's Shadow is the kind of place that defies straight answers — its paths bend, its landmarks rearrange themselves overnight, and every resident seems to be keeping at least three secrets simultaneously, which in this region qualifies as unusual restraint. Dark Yokai are entirely at home here: Tanuki shamble through the twilight markets in imperfect human disguise, Kitsune with seven or eight tails hold informal court at crossroads shrines, and the trickster aspect of the local spirit tradition runs so deep that even the cartography guilds have stopped trying to make accurate maps of the region. Dark and Virus Digimon prefer the perpetual twilight with an almost aesthetic appreciation — Impmon loitering on rooftops, Devimon in self-imposed semi-retirement in the deeper shadow districts — finding that their data-forms are most stable when neither fully lit nor fully dark. Dark-type Pokémon have evolved remarkable cognitive flexibility here, their cunning honed by generations of outwitting creatures that are themselves masters of deception. The lessons taught in Raven's Shadow are real, important, and almost never comfortable to receive.",
     "mapCoordinates": {
-      "x": 5,
-      "y": 20,
-      "width": 16,
-      "height": 15
+      "x": 28.47421203438396,
+      "y": 28.987470173942114,
+      "width": 12.51146131805158,
+      "height": 9.332299747559162
     },
     "images": {
       "guide": "/images/maps/regions/ravens-shadow-detailed.png"
@@ -940,8 +945,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Divine Metals, Forge Fire, Crafting Crystals",
     "lore": "Hephaestus Forge burns at the intersection of volcanic fury and disciplined craft — a region where the mountain itself is a tool, and the monsters that live here have made it the finest workshop in the known world. Steel-type Pals are the backbone of the labour force, their work ethic legendary even by Pal standards; Anubis operate the smelters with precise timing, Wixen tend the flux calculations, and Orserk handle the most energy-intensive phases of alloy refinement. Steel-aligned Digimon are drawn to the forge's unique energy with almost compulsive need — MetalGreymon seeks to bathe its chrome plating in the divine fire, and Hagurumon colonies integrate themselves into the forge's mechanical apparatus until it becomes impossible to say where machine ends and monster begins. The divine workshop at the region's heart burns with fire that has not been extinguished in recorded history, and scholars disagree on whether the heat sustains the forges or the forges sustain the heat. The metalwork produced here can only be called legendary by those who have never seen it; those who have call it something closer to sacred.",
     "mapCoordinates": {
-      "x": 59.856733524355306,
-      "y": 21.720920313994903,
+      "x": 60.143266475644715,
+      "y": 26.95877952347469,
       "width": 12,
       "height": 15
     },
@@ -971,8 +976,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Fairy Dust, Dream Crystals, Enchanted Flowers",
     "lore": "Seelie Courts is the realm of the benevolent fairy court, a place where beauty is not aesthetic preference but fundamental law — ugliness, in all its forms, gradually unravels here as if the region itself refuses to sustain it. Fairy Yokai live under the court's protection in arrangements that predate human civilization: Tengu in their graceful avian aspect serve as heralds and border-wardens, and the beloved Zashiki-warashi — child-spirits who bring fortune to households — cluster densely in every settlement, their presence a reliable indicator that the court considers a home worthy of blessing. Fairy Digimon dance at the eternal court's gatherings, their light-data weaving into the bioluminescent flowering that illuminates the Seelie nights, and Gatomon in her celestial aspect is occasionally glimpsed presiding over these gatherings as an honoured guest of the court. Fairy-type Pokémon thrive in a state of perpetual creative joy, and the region's Togekiss are so relaxed that they have been known to fall asleep mid-flight, trusting the court's magic to keep them aloft. Time moves according to emotional tides rather than celestial mechanics here — if you are having a magnificent time, you will have been there a week before you notice; if you are suffering, every minute is a century.",
     "mapCoordinates": {
-      "x": 75.77363896848138,
-      "y": 34.334720413126924,
+      "x": 77.34957020057307,
+      "y": 37.80203566447269,
       "width": 18,
       "height": 15
     },

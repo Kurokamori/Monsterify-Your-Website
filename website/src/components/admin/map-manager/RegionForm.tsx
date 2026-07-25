@@ -1,4 +1,5 @@
 import { FileUpload } from '@components/common/FileUpload';
+import { AutoGrowTextarea } from '@components/common/AutoGrowTextarea';
 
 interface RegionData {
   id: string;
@@ -10,6 +11,7 @@ interface RegionData {
   wildlife: string;
   resources: string;
   lore: string;
+  inspiration?: string;
   dominantTypes: string[];
   images?: { guide?: string; overworld?: string };
 }
@@ -40,9 +42,9 @@ export function RegionForm({ data, onChange }: RegionFormProps) {
 
       <div className="form-group">
         <label className="form-label">Description</label>
-        <textarea
+        <AutoGrowTextarea
           className="form-input"
-          rows={4}
+          minRows={4}
           value={data.description}
           onChange={(e) => update({ description: e.target.value })}
         />
@@ -77,10 +79,20 @@ export function RegionForm({ data, onChange }: RegionFormProps) {
       </div>
 
       <div className="form-group">
-        <label className="form-label">Wildlife</label>
-        <textarea
+        <label className="form-label">Inspiration</label>
+        <input
           className="form-input"
-          rows={3}
+          placeholder="e.g. Egyptian, Greek"
+          value={data.inspiration ?? ''}
+          onChange={(e) => update({ inspiration: e.target.value })}
+        />
+      </div>
+
+      <div className="form-group">
+        <label className="form-label">Wildlife</label>
+        <AutoGrowTextarea
+          className="form-input"
+          minRows={3}
           value={data.wildlife}
           onChange={(e) => update({ wildlife: e.target.value })}
         />
@@ -88,9 +100,9 @@ export function RegionForm({ data, onChange }: RegionFormProps) {
 
       <div className="form-group">
         <label className="form-label">Resources</label>
-        <textarea
+        <AutoGrowTextarea
           className="form-input"
-          rows={3}
+          minRows={3}
           value={data.resources}
           onChange={(e) => update({ resources: e.target.value })}
         />
@@ -98,9 +110,9 @@ export function RegionForm({ data, onChange }: RegionFormProps) {
 
       <div className="form-group">
         <label className="form-label">Lore</label>
-        <textarea
+        <AutoGrowTextarea
           className="form-input"
-          rows={6}
+          minRows={6}
           value={data.lore}
           onChange={(e) => update({ lore: e.target.value })}
         />

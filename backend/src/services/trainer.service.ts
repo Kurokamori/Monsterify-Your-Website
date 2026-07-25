@@ -438,10 +438,17 @@ export class TrainerService {
     trainerId: number,
     page: number,
     limit: number,
+    hasImage: 'yes' | 'no' | 'all' = 'all',
   ): Promise<PaginatedMonsters> {
     await this.monsterRepo.normalizeTypesInDb(trainerId);
     await this.monsterRepo.autoAssignBoxPositions(trainerId);
-    const monsters = await this.monsterRepo.findByTrainerId(trainerId);
+    const allMonsters = await this.monsterRepo.findByTrainerId(trainerId);
+    const monsters =
+      hasImage === 'yes'
+        ? allMonsters.filter((m) => !!m.img_link && m.img_link.trim() !== '')
+        : hasImage === 'no'
+          ? allMonsters.filter((m) => !m.img_link || m.img_link.trim() === '')
+          : allMonsters;
     const totalMonsters = monsters.length;
     const totalPages = Math.ceil(totalMonsters / limit);
     const startIndex = (page - 1) * limit;

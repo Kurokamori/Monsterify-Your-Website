@@ -632,6 +632,26 @@
   border: 1px solid var(--border-color);
 }
 
+.bazar-forfeit-monster__filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
+}
+
+.bazar-forfeit-monster__filter-label {
+  color: var(--text-secondary-color, var(--accent-color));
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.bazar-forfeit-monster__filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+}
+
 .bazar-forfeit-monster__selection-info {
   display: flex;
   align-items: center;
@@ -802,6 +822,15 @@
   .bazar-forfeit-monster__controls {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .bazar-forfeit-monster__filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bazar-forfeit-monster__filter-buttons {
+    justify-content: center;
   }
 
   .bazar-forfeit-monster__selection-info {

@@ -79,6 +79,8 @@ const BattleArenaPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [actionPending, setActionPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  // Mock battle: auto-run AI-controlled turns without a click.
+  const [autoPlay, setAutoPlay] = useState(false);
   // Dialogue: intro plays before the fight, the outcome line after it ends.
   const [introDismissed, setIntroDismissed] = useState(false);
   const [outcomeDismissed, setOutcomeDismissed] = useState(false);
@@ -400,11 +402,25 @@ const BattleArenaPage = () => {
     }
   }, [battleId, applyState]);
 
+  // Mock battle auto-play: while enabled and an AI-controlled side is up, advance
+  // it on a short cadence so the two teams play out on their own.
+  useEffect(() => {
+    if (!autoPlay) return;
+    if (state?.mode !== 'mock' || state.status !== 'active') return;
+    if (!state.mock?.awaitingStep || actionPending) return;
+    const timer = setTimeout(() => { sendAction({ type: 'advance' }); }, 1100);
+    return () => clearTimeout(timer);
+  }, [autoPlay, state?.mode, state?.status, state?.mock?.awaitingStep, actionPending, sendAction]);
+
+  const isMock = state?.mode === 'mock';
+
   const handleForfeit = () => {
     confirmModal.confirmDanger(
-      'Are you sure you want to forfeit this battle? You will take the loss.',
+      isMock
+        ? 'End this mock battle? The current side will concede.'
+        : 'Are you sure you want to forfeit this battle? You will take the loss.',
       () => sendAction({ type: 'forfeit' }),
-      { title: 'Forfeit Battle', confirmText: 'Forfeit' },
+      { title: isMock ? 'End Mock Battle' : 'Forfeit Battle', confirmText: isMock ? 'End Battle' : 'Forfeit' },
     );
   };
 
@@ -433,6 +449,7 @@ const BattleArenaPage = () => {
   }
 
   const settlement = state.settlement;
+  const mockResult = settlement?.mock ?? null;
   const won = settlement?.won ?? (state.winnerType === yourSide);
 
   /**
@@ -507,7 +524,22 @@ const BattleArenaPage = () => {
         <div className="battle-arena__header-center">
           <h1>
             <span className={`battle-mode-chip battle-mode-chip--${state.mode}`}>{state.mode}</span>
-            {' '}vs {state.opponentLabel}
+            {isMock && state.mock ? (
+              <span className="battle-arena__mock-title">
+                {' '}
+                <span className="battle-arena__mock-side">
+                  {state.mock.playersLabel}
+                  <i className={state.mock.playersControl === 'user' ? 'fas fa-user' : 'fas fa-robot'} title={state.mock.playersControl === 'user' ? 'You' : 'AI'}></i>
+                </span>
+                {' vs '}
+                <span className="battle-arena__mock-side">
+                  {state.mock.opponentsLabel}
+                  <i className={state.mock.opponentsControl === 'user' ? 'fas fa-user' : 'fas fa-robot'} title={state.mock.opponentsControl === 'user' ? 'You' : 'AI'}></i>
+                </span>
+              </span>
+            ) : (
+              <>{' '}vs {state.opponentLabel}</>
+            )}
           </h1>
           {state.stage && (
             <div className={`battle-arena__stage ${state.stage.stageType === 'leader' ? 'battle-arena__stage--leader' : ''}`}>
@@ -531,7 +563,40 @@ const BattleArenaPage = () => {
       )}
 
       {/* Turn indicator */}
-      {!battleOver && !state.pending && (
+      {!battleOver && !state.pending && isMock && state.mock ? (
+        <div className={`battle-arena__banner ${state.mustSwitch ? 'battle-arena__banner--switch' : state.isYourTurn ? 'battle-arena__banner--your-turn' : ''}`}>
+          {(() => {
+            const turnLabel = state.mock.turnSide === 'players' ? state.mock.playersLabel : state.mock.opponentsLabel;
+            if (state.mustSwitch) {
+              return <><i className="fas fa-exchange-alt"></i> {turnLabel}: choose the next monster!</>;
+            }
+            if (state.mock.controlledSide) {
+              return <><i className="fas fa-bolt"></i> Controlling <strong>{turnLabel}</strong> — choose a move!</>;
+            }
+            // AI-controlled side is up: let the user step it (or auto-play).
+            return (
+              <span className="battle-arena__mock-step">
+                <span><i className="fas fa-robot"></i> {turnLabel} (AI) is up.</span>
+                <span className="battle-arena__mock-step-actions">
+                  <button
+                    className="button primary sm"
+                    disabled={actionPending}
+                    onClick={() => sendAction({ type: 'advance' })}
+                  >
+                    <i className="fas fa-forward-step"></i> Next
+                  </button>
+                  <button
+                    className={`button sm ${autoPlay ? 'danger' : 'secondary'}`}
+                    onClick={() => setAutoPlay(v => !v)}
+                  >
+                    <i className={autoPlay ? 'fas fa-pause' : 'fas fa-play'}></i> {autoPlay ? 'Stop Auto' : 'Auto-play'}
+                  </button>
+                </span>
+              </span>
+            );
+          })()}
+        </div>
+      ) : !battleOver && !state.pending && (
         <div className={`battle-arena__banner ${state.mustSwitch ? 'battle-arena__banner--switch' : state.isYourTurn ? 'battle-arena__banner--your-turn' : ''}`}>
           {state.mustSwitch
             ? <><i className="fas fa-exchange-alt"></i> Choose your next monster!</>
@@ -695,12 +760,21 @@ const BattleArenaPage = () => {
       {/* End-of-battle overlay (waits for the outcome dialogue to finish) */}
       {battleOver && !outcomeActive && (
         <div className="battle-overlay">
-          <div className={`battle-overlay__card ${won ? 'battle-overlay__card--victory' : 'battle-overlay__card--defeat'}`}>
+          <div className={`battle-overlay__card ${isMock ? 'battle-overlay__card--mock' : won ? 'battle-overlay__card--victory' : 'battle-overlay__card--defeat'}`}>
             <h2>
-              {state.winnerType === 'draw'
-                ? 'Draw!'
-                : won ? 'Victory!' : 'Defeat...'}
+              {isMock
+                ? (state.winnerType === 'draw' || !mockResult?.winnerLabel
+                    ? 'Mock battle over'
+                    : `${mockResult.winnerLabel} wins!`)
+                : state.winnerType === 'draw'
+                  ? 'Draw!'
+                  : won ? 'Victory!' : 'Defeat...'}
             </h2>
+            {isMock && (
+              <p className="battle-overlay__mock-note">
+                <i className="fas fa-masks-theater"></i> A mock battle — no levels or currency changed hands.
+              </p>
+            )}
 
             {settlement && settlement.currencyDelta !== 0 && (
               <p className={`battle-overlay__currency ${settlement.currencyDelta > 0 ? 'gain' : 'loss'}`}>

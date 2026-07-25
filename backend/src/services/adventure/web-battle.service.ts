@@ -74,7 +74,10 @@ import {
  */
 const RECENT_TURN_WINDOW = 8;
 
-export type WebBattleMode = 'friendly' | 'gauntlet' | 'pvp';
+export type WebBattleMode = 'friendly' | 'gauntlet' | 'pvp' | 'mock';
+
+/** In a mock battle each side is driven either by the owning user or by the AI. */
+export type MockSideControl = 'user' | 'ai';
 
 /**
  * The resolved stat spec for a generated battle monster plus the totals it
@@ -141,13 +144,24 @@ export type WebBattleData = {
   appearance?: WebBattleAppearance | null;
   dialogue?: WebBattleDialogueView | null;
   waiting_for_switch?: unknown;
+  // Mock-battle fields: two of the owner's own trainers fight, with each side
+  // controlled by the user or the AI. No currency or levels change hands.
+  playersControl?: MockSideControl;
+  opponentsControl?: MockSideControl;
+  playersKey?: string;
+  opponentsKey?: string;
+  playersLabel?: string;
+  opponentsLabel?: string;
+  turnSide?: 'players' | 'opponents';
   [key: string]: unknown;
 };
 
 export type WebBattleAction =
   | { type: 'move'; moveName: string; targetBattleMonsterId?: number }
   | { type: 'switch'; battleMonsterId: number }
-  | { type: 'forfeit' };
+  | { type: 'forfeit' }
+  // Advance an AI-controlled side by one action in a mock battle (spectating).
+  | { type: 'advance' };
 
 /**
  * The seven stat stages a monster can carry in battle, in the order they are shown.
@@ -168,6 +182,23 @@ export type BattleStatStageKey = (typeof BATTLE_STAT_STAGE_KEYS)[number];
 
 /** Stage values, -6..+6. Only stats that are actually modified are present. */
 export type BattleStatStages = Partial<Record<BattleStatStageKey, number>>;
+
+/**
+ * The live control picture for a mock battle. Both trainers belong to the owner,
+ * and each side is driven by the user (hotseat) or the AI.
+ */
+export type WebBattleMockView = {
+  playersControl: MockSideControl;
+  opponentsControl: MockSideControl;
+  playersLabel: string;
+  opponentsLabel: string;
+  /** Whose turn it currently is. */
+  turnSide: 'players' | 'opponents';
+  /** The side the user should act for right now (null while spectating an AI turn). */
+  controlledSide: 'players' | 'opponents' | null;
+  /** True when the active side is AI-controlled and the user should advance it. */
+  awaitingStep: boolean;
+};
 
 export type WebBattleMonsterView = {
   id: number;
@@ -233,6 +264,11 @@ export type WebBattleLevelReward = {
   newLevel: number;
 };
 
+export type WebBattleMockResult = {
+  winnerSide: 'players' | 'opponents' | 'draw' | null;
+  winnerLabel: string | null;
+};
+
 export type WebBattleSettlement = {
   won: boolean;
   currencyDelta: number;
@@ -245,6 +281,8 @@ export type WebBattleSettlement = {
     totalStages: number;
     nextBattleId: number | null;
   } | null;
+  /** Mock-battle outcome (no rewards); which of the owner's trainers won. */
+  mock?: WebBattleMockResult | null;
 };
 
 export type WebBattleStateView = {
@@ -269,6 +307,8 @@ export type WebBattleStateView = {
   /** The last few actions, oldest-first. Drives the arena's attack animations. */
   recentTurns: WebBattleTurnView[];
   settlement: WebBattleSettlement | null;
+  /** Present only for mock battles: the two-sided control/turn picture. */
+  mock: WebBattleMockView | null;
 };
 
 export type WebActionResult = {
@@ -782,6 +822,128 @@ export class WebBattleService {
   }
 
   // ==========================================================================
+  // Battle creation — mock (two of your own trainers, hotseat + AI)
+  //
+  // A mock battle pits two trainers the same user owns against each other. Each
+  // side is controlled by the user (hotseat) or the AI. Nothing is at stake: no
+  // currency changes hands and no monster gains levels — it is purely a sandbox
+  // for pairing your own characters.
+  // ==========================================================================
+
+  /** Which side of a mock battle the user controls, defaulting to AI. */
+  private mockSideControl(data: WebBattleData, side: 'players' | 'opponents'): MockSideControl {
+    const control = side === 'players' ? data.playersControl : data.opponentsControl;
+    return control === 'user' ? 'user' : 'ai';
+  }
+
+  /** A stable, per-side synthetic actor key so the engine can address each side. */
+  private static mockSideKey(playerKey: string, side: 'players' | 'opponents'): string {
+    return `${playerKey}#mock:${side}`;
+  }
+
+  async startMockBattle(
+    user: UserRow,
+    input: {
+      playersTrainerId: number;
+      playersMonsterIds: number[];
+      opponentsTrainerId: number;
+      opponentsMonsterIds: number[];
+      playersControl: MockSideControl;
+      opponentsControl: MockSideControl;
+      difficulty?: AIDifficulty;
+    }
+  ): Promise<WebBattleStateView> {
+    const playerKey = WebBattleService.actorKey(user);
+
+    const playersTrainer = await this.requireOwnedTrainer(user, input.playersTrainerId);
+    const opponentsTrainer = await this.requireOwnedTrainer(user, input.opponentsTrainerId);
+    if (input.playersTrainerId === input.opponentsTrainerId) {
+      throw new Error('Pick two different trainers for a mock battle');
+    }
+
+    const playersMonsters = await this.loadOwnedMonsters(
+      input.playersTrainerId,
+      input.playersMonsterIds
+    );
+    const opponentsMonsters = await this.loadOwnedMonsters(
+      input.opponentsTrainerId,
+      input.opponentsMonsterIds
+    );
+
+    const playersControl: MockSideControl = input.playersControl === 'user' ? 'user' : 'ai';
+    const opponentsControl: MockSideControl = input.opponentsControl === 'user' ? 'user' : 'ai';
+
+    // Start on a user-controlled side when there is one, so the human acts first
+    // without needing to nudge the AI. When both sides are AI, players leads.
+    const turnSide: 'players' | 'opponents' =
+      playersControl === 'user' || opponentsControl !== 'user' ? 'players' : 'opponents';
+
+    const playersKey = WebBattleService.mockSideKey(playerKey, 'players');
+    const opponentsKey = WebBattleService.mockSideKey(playerKey, 'opponents');
+
+    // Mock battles have no authored scenery — give them a random background/spot.
+    const appearance = await this.resolveAppearance({ fallbackRandom: true });
+
+    const battleData: WebBattleData = {
+      web: true,
+      mode: 'mock',
+      winReward: 0,
+      lossPenalty: 0,
+      playerKey,
+      playerTrainerId: input.playersTrainerId,
+      opponentTrainerId: input.opponentsTrainerId,
+      opponentLabel: `${playersTrainer.name} vs ${opponentsTrainer.name}`,
+      playersControl,
+      opponentsControl,
+      playersKey,
+      opponentsKey,
+      playersLabel: playersTrainer.name,
+      opponentsLabel: opponentsTrainer.name,
+      turnSide,
+      turnOf: playerKey,
+      aiDifficulty: input.difficulty ?? 'medium',
+      appearance,
+    };
+
+    const battle = await this.battleRepo.create({
+      adventureId: null,
+      battleType: 'trainer',
+      createdByDiscordUserId: playerKey,
+      battleData,
+    });
+
+    const playersParticipant = await this.participantRepo.create({
+      battleId: battle.id,
+      participantType: playersControl === 'user' ? 'player' : 'npc',
+      discordUserId: playersKey,
+      trainerId: input.playersTrainerId,
+      trainerName: playersTrainer.name,
+      teamSide: 'players',
+      turnOrder: 0,
+    });
+
+    const opponentsParticipant = await this.participantRepo.create({
+      battleId: battle.id,
+      participantType: opponentsControl === 'user' ? 'player' : 'npc',
+      discordUserId: opponentsKey,
+      trainerId: input.opponentsTrainerId,
+      trainerName: opponentsTrainer.name,
+      teamSide: 'opponents',
+      turnOrder: 1,
+    });
+
+    await this.addTeamToBattle(battle.id, playersParticipant.id, playersMonsters);
+    await this.addTeamToBattle(battle.id, opponentsParticipant.id, opponentsMonsters);
+
+    await this.logRepo.logSystem(
+      battle.id,
+      `🎭 Mock battle: **${playersTrainer.name}** faces **${opponentsTrainer.name}**! (No stakes)`
+    );
+
+    return this.getBattleState(battle.id, user);
+  }
+
+  // ==========================================================================
   // Battle creation — gauntlet
   // ==========================================================================
 
@@ -1163,12 +1325,16 @@ export class WebBattleService {
         const challenger = participants.find((p) => p.discordUserId === data.playerKey);
         opponentLabel = challenger?.trainerName ?? 'Challenger';
       }
+      // A mock battle is "your turn" whenever the side up next is one you control.
+      const isYourTurn = data.mode === 'mock'
+        ? this.mockSideControl(data, (data.turnSide as 'players' | 'opponents') ?? 'players') === 'user'
+        : data.turnOf === key;
       results.push({
         battleId: battle.id,
         mode: data.mode,
         opponentLabel,
         pending: Boolean(data.pending),
-        isYourTurn: data.turnOf === key,
+        isYourTurn,
         createdAt: battle.createdAt,
       });
     }
@@ -1195,16 +1361,45 @@ export class WebBattleService {
     const logs = await this.logRepo.findRecentByBattleId(battleId, 40);
     const turns = await this.turnRepo.findRecentByBattleId(battleId, RECENT_TURN_WINDOW);
 
+    // Mock battles: the owner drives whichever side is up, so "your side" and the
+    // participant whose moves are shown follow the current turn rather than a fixed
+    // per-user participant.
+    const isMock = data.mode === 'mock';
+    let mockView: WebBattleMockView | null = null;
+    let controlledSide: 'players' | 'opponents' | null = null;
+    if (isMock) {
+      const turnSide = (data.turnSide as 'players' | 'opponents') ?? 'players';
+      const turnControl = this.mockSideControl(data, turnSide);
+      const isActive = battle.status === 'active';
+      controlledSide = isActive && turnControl === 'user' ? turnSide : null;
+      mockView = {
+        playersControl: this.mockSideControl(data, 'players'),
+        opponentsControl: this.mockSideControl(data, 'opponents'),
+        playersLabel: data.playersLabel ?? 'Side A',
+        opponentsLabel: data.opponentsLabel ?? 'Side B',
+        turnSide,
+        controlledSide,
+        awaitingStep: isActive && turnControl === 'ai',
+      };
+    }
+
     const myParticipant = participants.find((p) => p.discordUserId === key) ?? null;
-    const yourSide = (myParticipant?.teamSide ?? null) as 'players' | 'opponents' | null;
+    const yourSide = (isMock
+      ? controlledSide
+      : myParticipant?.teamSide ?? null) as 'players' | 'opponents' | null;
+
+    // The participant whose active monster's moves are offered to the user.
+    const activeParticipant = isMock
+      ? (controlledSide ? participants.find((p) => p.teamSide === controlledSide) ?? null : null)
+      : myParticipant;
 
     const monsterViews = monsters.map((m) => this.toMonsterView(m, participants, yourSide));
 
     // Full move data for your active monster (any move the monster knows is usable)
     let activeMoves: Move[] = [];
-    if (myParticipant) {
+    if (activeParticipant) {
       const active = monsters.find(
-        (m) => m.participantId === myParticipant.id && m.isActive && !m.isFainted
+        (m) => m.participantId === activeParticipant.id && m.isActive && !m.isFainted
       );
       if (active) {
         const moveNames = this.parseMoveset(
@@ -1235,9 +1430,9 @@ export class WebBattleService {
     }
 
     const mustSwitch = Boolean(
-      myParticipant &&
-      !monsters.some((m) => m.participantId === myParticipant.id && m.isActive && !m.isFainted) &&
-      monsters.some((m) => m.participantId === myParticipant.id && !m.isFainted)
+      activeParticipant &&
+      !monsters.some((m) => m.participantId === activeParticipant.id && m.isActive && !m.isFainted) &&
+      monsters.some((m) => m.participantId === activeParticipant.id && !m.isFainted)
     );
 
     return {
@@ -1247,7 +1442,9 @@ export class WebBattleService {
       pending: Boolean(data.pending),
       winnerType: battle.winnerType,
       yourSide,
-      isYourTurn: battle.status === 'active' && !data.pending && data.turnOf === key,
+      isYourTurn: isMock
+        ? battle.status === 'active' && controlledSide != null
+        : battle.status === 'active' && !data.pending && data.turnOf === key,
       mustSwitch,
       opponentLabel: data.opponentLabel,
       winReward: data.winReward,
@@ -1272,7 +1469,7 @@ export class WebBattleService {
           p.trainerImage ?? (p.teamSide === 'opponents' ? data.opponentImage ?? null : null),
         teamSide: p.teamSide,
         participantType: p.participantType,
-        isYou: p.discordUserId === key,
+        isYou: isMock ? p.teamSide === controlledSide : p.discordUserId === key,
       })),
       monsters: monsterViews,
       activeMoves,
@@ -1283,6 +1480,7 @@ export class WebBattleService {
       })),
       recentTurns: turns.map((t) => this.toTurnView(t, participants, monsters)),
       settlement: data.settlement ?? null,
+      mock: mockView,
     };
   }
 
@@ -1409,6 +1607,12 @@ export class WebBattleService {
       throw new Error('The challenge has not been accepted yet');
     }
 
+    // Mock battles are driven side-by-side from a single owner, so they use their
+    // own turn/control resolution rather than the one-participant-per-user path.
+    if (data.mode === 'mock') {
+      return this.performMockAction(battle, data, user, action);
+    }
+
     const participant = await this.participantRepo.findByBattleAndUser(battleId, key);
     if (!participant) {
       throw new Error('You are not in this battle');
@@ -1416,6 +1620,9 @@ export class WebBattleService {
 
     if (action.type === 'forfeit') {
       return this.forfeit(battle, data, participant, user);
+    }
+    if (action.type === 'advance') {
+      throw new Error('Advancing is only available in mock battles');
     }
 
     const myMonsters = await this.monsterBattleRepo.findByBattleId(battleId, {
@@ -1516,6 +1723,170 @@ export class WebBattleService {
     return message;
   }
 
+  // ==========================================================================
+  // Mock battle actions
+  // ==========================================================================
+
+  private mockOtherSide(side: 'players' | 'opponents'): 'players' | 'opponents' {
+    return side === 'players' ? 'opponents' : 'players';
+  }
+
+  /**
+   * Resolve one action in a mock battle. The user acts for the side whose turn it
+   * is when that side is user-controlled; an `advance` steps an AI-controlled side.
+   * After a user side acts, an AI opponent replies immediately (as in friendly
+   * mode) so control returns to the human. No currency or levels are awarded.
+   */
+  private async performMockAction(
+    battle: BattleInstance,
+    data: WebBattleData,
+    user: UserRow,
+    action: WebBattleAction
+  ): Promise<WebActionResult> {
+    const battleId = battle.id;
+    const key = WebBattleService.actorKey(user);
+    if (data.playerKey !== key && !user.is_admin) {
+      throw new Error('This is not your mock battle');
+    }
+
+    const turnSide = (data.turnSide as 'players' | 'opponents') ?? 'players';
+    const otherSide = this.mockOtherSide(turnSide);
+    const control = this.mockSideControl(data, turnSide);
+
+    const participants = await this.participantRepo.findByBattleId(battleId);
+    const sideParticipant = participants.find((p) => p.teamSide === turnSide);
+    const otherParticipant = participants.find((p) => p.teamSide === otherSide);
+    if (!sideParticipant || !otherParticipant) {
+      throw new Error('Mock battle is missing a side');
+    }
+
+    if (action.type === 'forfeit') {
+      // The side currently in focus concedes; the other side wins. When purely
+      // spectating two AIs, there is nobody to concede, so cancel the battle.
+      const focusControl = this.mockSideControl(data, turnSide);
+      if (focusControl !== 'user') {
+        await this.logRepo.logSystem(battleId, `🏳️ Mock battle ended.`);
+        const cancelled = await this.battleRepo.cancel(battleId);
+        await this.settleMock(cancelled);
+        const state = await this.getBattleState(battleId, user);
+        return { success: true, message: 'Mock battle ended.', battleEnded: true, state };
+      }
+      const winnerSide = otherSide;
+      await this.logRepo.logSystem(
+        battleId,
+        `🏳️ **${sideParticipant.trainerName}** forfeited the mock battle!`
+      );
+      const completed = await this.battleRepo.complete(battleId, winnerSide);
+      await this.settleMock(completed);
+      const state = await this.getBattleState(battleId, user);
+      return { success: true, message: 'You forfeited the mock battle.', battleEnded: true, state };
+    }
+
+    const sideMonsters = await this.monsterBattleRepo.findByBattleId(battleId, {
+      participantId: sideParticipant.id,
+    });
+    const sideActive = sideMonsters.find((m) => m.isActive && !m.isFainted);
+    const faintSwitch = !sideActive && sideMonsters.some((m) => !m.isFainted);
+
+    let message = '';
+
+    if (control === 'user') {
+      if (action.type === 'advance') {
+        throw new Error("It's your turn to act");
+      }
+      if (action.type === 'switch') {
+        message = await this.performSwitch(
+          battleId,
+          sideParticipant,
+          sideMonsters,
+          action.battleMonsterId
+        );
+        // A forced post-faint switch does not consume the side's turn.
+        if (faintSwitch) {
+          const state = await this.getBattleState(battleId, user);
+          return { success: true, message, battleEnded: false, state };
+        }
+      } else {
+        if (!sideActive) {
+          throw new Error('You must send out a monster first');
+        }
+        const result = await this.actionService.executeAttack(
+          battleId,
+          sideParticipant.discordUserId!,
+          action.moveName,
+          null,
+          '',
+          (sideActive.monsterData as { name?: string }).name ?? null
+        );
+        message = result.message;
+      }
+    } else {
+      // AI-controlled side: an advance (or any nudge) runs one AI action.
+      await this.runAIActionForParticipant(
+        battleId,
+        sideParticipant,
+        data.aiDifficulty ?? 'medium'
+      );
+      message = `${sideParticipant.trainerName} acted.`;
+    }
+
+    // Advance the turn unless the battle just ended.
+    const afterAction = await this.battleRepo.findById(battleId);
+    if (afterAction && afterAction.status === 'active') {
+      await this.updateBattleData(battleId, { turnSide: otherSide });
+
+      // A user side that just acted gets an immediate AI reply, so control comes
+      // straight back to the human rather than stalling on the AI's turn.
+      if (control === 'user' && this.mockSideControl(data, otherSide) === 'ai') {
+        await this.runAIActionForParticipant(
+          battleId,
+          otherParticipant,
+          data.aiDifficulty ?? 'medium'
+        );
+        const afterAI = await this.battleRepo.findById(battleId);
+        if (afterAI && afterAI.status === 'active') {
+          await this.updateBattleData(battleId, { turnSide });
+        }
+      }
+    }
+
+    const finalBattle = await this.battleRepo.findById(battleId);
+    const battleEnded = !finalBattle || finalBattle.status !== 'active';
+    if (finalBattle && finalBattle.status !== 'active') {
+      await this.settleMock(finalBattle);
+    }
+
+    const state = await this.getBattleState(battleId, user);
+    return { success: true, message, battleEnded, state };
+  }
+
+  /** Finalize a mock battle: record the winning trainer, but grant nothing. */
+  private async settleMock(battle: BattleInstance): Promise<void> {
+    const data = battle.battleData as WebBattleData;
+    if (!data.web || data.settled) {
+      return;
+    }
+    const winnerSide = battle.winnerType as 'players' | 'opponents' | 'draw' | null;
+    const winnerLabel =
+      winnerSide === 'players'
+        ? data.playersLabel ?? null
+        : winnerSide === 'opponents'
+          ? data.opponentsLabel ?? null
+          : null;
+    if (winnerLabel) {
+      await this.logRepo.logSystem(battle.id, `🎭 Mock battle over — **${winnerLabel}** wins!`);
+    }
+    const settlement: WebBattleSettlement = {
+      won: false,
+      currencyDelta: 0,
+      levelRewards: [],
+      badge: null,
+      gauntlet: null,
+      mock: { winnerSide, winnerLabel },
+    };
+    await this.updateBattleData(battle.id, { settled: true, settlement });
+  }
+
   /** Run one AI action if the opponent side is NPC-controlled. Returns true if AI acted. */
   private async maybeRunAITurn(battleId: number, data: WebBattleData): Promise<boolean> {
     if (data.mode === 'pvp') {
@@ -1527,6 +1898,22 @@ export class WebBattleService {
     if (!aiParticipant) {
       return false;
     }
+
+    return this.runAIActionForParticipant(battleId, aiParticipant, data.aiDifficulty ?? 'medium');
+  }
+
+  /**
+   * Drive one AI action for a specific participant: send out a replacement after a
+   * faint (consuming the turn), otherwise pick and execute an attack or switch.
+   * Returns true if the AI took its turn. Shared by the single-AI friendly path
+   * and the mock battle's per-side AI control.
+   */
+  private async runAIActionForParticipant(
+    battleId: number,
+    aiParticipant: BattleParticipantWithDetails,
+    difficulty: AIDifficulty
+  ): Promise<boolean> {
+    const participants = await this.participantRepo.findByBattleId(battleId);
 
     // Ensure the AI has an active monster (auto-switch after a faint)
     const aiMonsters = await this.monsterBattleRepo.findByBattleId(battleId, {
@@ -1592,7 +1979,7 @@ export class WebBattleService {
         isAI: true,
       },
       battleState,
-      data.aiDifficulty ?? 'medium'
+      difficulty
     );
 
     const actionType = aiDecision.actionType ?? aiDecision.action_type;

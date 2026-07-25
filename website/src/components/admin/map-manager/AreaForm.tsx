@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FileUpload } from '@components/common/FileUpload';
+import { AutoGrowTextarea } from '@components/common/AutoGrowTextarea';
 import { ArrayFieldEditor } from './ArrayFieldEditor';
 
 interface WildlifeEntry {
@@ -95,7 +96,7 @@ export function AreaForm({ data, onChange }: AreaFormProps) {
       <CollapsibleSection title="Basic Info" defaultOpen>
         <div className="form-group">
           <label className="form-label">Description</label>
-          <textarea className="form-input" rows={4} value={data.description ?? ''} onChange={(e) => update({ description: e.target.value })} />
+          <AutoGrowTextarea className="form-input" minRows={4} value={data.description ?? ''} onChange={(e) => update({ description: e.target.value })} />
         </div>
         <div className="map-form-row">
           <div className="form-group">
@@ -157,11 +158,11 @@ export function AreaForm({ data, onChange }: AreaFormProps) {
       <CollapsibleSection title="Encounter Configuration">
         <div className="form-group">
           <label className="form-label">Welcome Message (Base)</label>
-          <textarea className="form-input" rows={2} value={data.welcomeMessages.base} onChange={(e) => update({ welcomeMessages: { ...data.welcomeMessages, base: e.target.value } })} />
+          <AutoGrowTextarea className="form-input" minRows={2} value={data.welcomeMessages.base} onChange={(e) => update({ welcomeMessages: { ...data.welcomeMessages, base: e.target.value } })} />
         </div>
         <div className="form-group">
           <label className="form-label">Welcome Variations (one per line)</label>
-          <textarea className="form-input" rows={4} value={data.welcomeMessages.variations.join('\n')} onChange={(e) => update({ welcomeMessages: { ...data.welcomeMessages, variations: e.target.value.split('\n').filter(Boolean) } })} />
+          <AutoGrowTextarea className="form-input" minRows={4} value={data.welcomeMessages.variations.join('\n')} onChange={(e) => update({ welcomeMessages: { ...data.welcomeMessages, variations: e.target.value.split('\n').filter(Boolean) } })} />
         </div>
         <div className="map-form-row">
           <div className="form-group">
@@ -354,11 +355,11 @@ export function AreaForm({ data, onChange }: AreaFormProps) {
       <CollapsibleSection title="Lore & History">
         <div className="form-group">
           <label className="form-label">Lore</label>
-          <textarea className="form-input" rows={6} value={data.lore ?? ''} onChange={(e) => update({ lore: e.target.value })} />
+          <AutoGrowTextarea className="form-input" minRows={6} value={data.lore ?? ''} onChange={(e) => update({ lore: e.target.value })} />
         </div>
         <div className="form-group">
           <label className="form-label">History</label>
-          <textarea className="form-input" rows={6} value={data.history ?? ''} onChange={(e) => update({ history: e.target.value })} />
+          <AutoGrowTextarea className="form-input" minRows={6} value={data.history ?? ''} onChange={(e) => update({ history: e.target.value })} />
         </div>
       </CollapsibleSection>
 
@@ -366,11 +367,11 @@ export function AreaForm({ data, onChange }: AreaFormProps) {
       <CollapsibleSection title="Dangers & Tips">
         <div className="form-group">
           <label className="form-label">Dangers (one per line)</label>
-          <textarea className="form-input" rows={4} value={(data.dangers ?? []).join('\n')} onChange={(e) => update({ dangers: e.target.value.split('\n').filter(Boolean) })} />
+          <AutoGrowTextarea className="form-input" minRows={4} value={(data.dangers ?? []).join('\n')} onChange={(e) => update({ dangers: e.target.value.split('\n').filter(Boolean) })} />
         </div>
         <div className="form-group">
           <label className="form-label">Tips (one per line)</label>
-          <textarea className="form-input" rows={4} value={(data.tips ?? []).join('\n')} onChange={(e) => update({ tips: e.target.value.split('\n').filter(Boolean) })} />
+          <AutoGrowTextarea className="form-input" minRows={4} value={(data.tips ?? []).join('\n')} onChange={(e) => update({ tips: e.target.value.split('\n').filter(Boolean) })} />
         </div>
       </CollapsibleSection>
     </div>

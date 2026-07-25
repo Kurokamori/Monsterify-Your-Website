@@ -415,6 +415,36 @@
   color: var(--error-color);
 }
 
+.monster-manager__add-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+}
+
+.monster-manager__add-section-title {
+  font-size: var(--font-size-medium);
+  font-weight: 500;
+  color: var(--text-color-muted);
+}
+
+.monster-manager__manual-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  margin-bottom: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.monster-manager__manual-toggle input {
+  cursor: pointer;
+  margin: 0;
+}
+
 .monster-manager__admin-edit-btn {
   background: var(--accent-color-dark);
   border-color: var(--accent-color);

@@ -56,8 +56,20 @@
 /* ---------- Trainer Selector ---------- */
 
 .ref-page__trainer-selector {
-  max-width: 400px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-medium);
+  align-items: flex-end;
   margin-bottom: var(--spacing-medium);
+}
+
+.ref-page__trainer-selector .form-group:first-child {
+  flex: 0 0 180px;
+}
+
+.ref-page__trainer-selector .form-group:last-child {
+  flex: 1 1 320px;
+  max-width: 400px;
 }
 
 .ref-page__loading-inline {
@@ -122,6 +134,12 @@
   width: 12px;
 }
 
+h3.ref-trainer-group__title {
+  margin: 0;
+  padding: var(--spacing-small) var(--spacing-medium);
+  font-size: var(--font-size-medium);
+}
+
 .ref-trainer-group__count {
   background-color: var(--accent-color);
   color: var(--background-color);
@@ -175,6 +193,15 @@
   font-weight: 600;
   color: var(--text-color);
   min-width: 120px;
+}
+
+.ref-table__name-link {
+  color: var(--link-color, var(--primary-color));
+  text-decoration: none;
+}
+
+.ref-table__name-link:hover {
+  text-decoration: underline;
 }
 
 .ref-table__cell--species {

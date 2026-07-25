@@ -10,6 +10,7 @@ import { ActionButtonGroup } from '../common/ActionButtonGroup';
 import { BallSelector, type BallInventoryEntry } from '../common/BallSelector';
 import api from '../../services/api';
 import trainerService from '../../services/trainerService';
+import speciesService, { type SpeciesImageMap } from '../../services/speciesService';
 import type { RolledMonster, AntiqueTrainer } from './types';
 import type { Monster } from '../common/MonsterDetails';
 
@@ -39,6 +40,7 @@ export function AntiqueAppraisal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rolledMonster, setRolledMonster] = useState<RolledMonster | null>(null);
+  const [speciesImages, setSpeciesImages] = useState<SpeciesImageMap>({});
 
   // Ball inventory
   const [ballInventory, setBallInventory] = useState<BallInventoryEntry[]>([]);
@@ -74,6 +76,7 @@ export function AntiqueAppraisal({
   useEffect(() => {
     if (isOpen) {
       setRolledMonster(null);
+      setSpeciesImages({});
       setMonsterName('');
       setSelectedBall('Poke Ball');
       setAdoptSuccess(false);
@@ -96,6 +99,20 @@ export function AntiqueAppraisal({
       setBallInventory(balls);
     }).catch(() => setBallInventory([]));
   }, [trainerId, isOpen]);
+
+  // Fetch species artwork for every species that was rolled
+  useEffect(() => {
+    if (!rolledMonster) return;
+
+    const species = [rolledMonster.species1, rolledMonster.species2, rolledMonster.species3]
+      .filter(Boolean) as string[];
+    const needed = [...new Set(species)];
+    if (needed.length === 0) return;
+
+    speciesService.getSpeciesImages(needed).then(imageMap => {
+      setSpeciesImages(prev => ({ ...prev, ...imageMap }));
+    }).catch(() => {});
+  }, [rolledMonster]);
 
   // Handle appraisal
   const handleAppraise = async () => {
@@ -166,13 +183,15 @@ export function AntiqueAppraisal({
     }
   };
 
-  // Get species display
-  const getSpeciesDisplay = () => {
-    if (!rolledMonster) return '';
+  // Get species array
+  const getSpeciesList = (): string[] => {
+    if (!rolledMonster) return [];
     return [rolledMonster.species1, rolledMonster.species2, rolledMonster.species3]
-      .filter(Boolean)
-      .join(' + ');
+      .filter(Boolean) as string[];
   };
+
+  // Get species display
+  const getSpeciesDisplay = () => getSpeciesList().join(' + ');
 
   // Get types array
   const getTypes = () => {
@@ -224,6 +243,30 @@ export function AntiqueAppraisal({
 
       <Card className="mb-md">
         <div className="card__content">
+          <div className="antique-appraisal__species-gallery">
+            {getSpeciesList().map((species, idx) => {
+              const imageUrl = speciesImages[species]?.image_url;
+              return (
+                <div className="antique-appraisal__species" key={`${species}-${idx}`}>
+                  <div className="antique-appraisal__species-image">
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={species}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.visibility = 'hidden';
+                        }}
+                      />
+                    ) : (
+                      <i className="fas fa-question"></i>
+                    )}
+                  </div>
+                  <span className="antique-appraisal__species-name">{species}</span>
+                </div>
+              );
+            })}
+          </div>
+
           <div className="flex gap-md">
             {rolledMonster?.img_link && (
               <img

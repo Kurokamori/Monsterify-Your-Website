@@ -86,6 +86,21 @@ const ReferenceTodoPage = () => {
     setCollapsedTrainers((prev) => ({ ...prev, [trainerId]: !prev[trainerId] }));
   };
 
+  const collapseAll = () => {
+    setCollapsedTrainers(
+      trainers.reduce<Record<number, boolean>>((acc, t) => {
+        acc[t.id] = true;
+        return acc;
+      }, {})
+    );
+  };
+
+  const expandAll = () => {
+    setCollapsedTrainers({});
+  };
+
+  const allCollapsed = trainers.length > 0 && trainers.every((t) => collapsedTrainers[t.id]);
+
   const totalNeeded = trainers.reduce((sum, t) => sum + t.monsters.length, 0);
   const isEmpty = trainers.length === 0;
 
@@ -110,6 +125,14 @@ const ReferenceTodoPage = () => {
             >
               <i className="fas fa-download"></i>
               Download
+            </button>
+            <button
+              className="button secondary no-flex"
+              onClick={allCollapsed ? expandAll : collapseAll}
+              title={allCollapsed ? 'Expand all trainers' : 'Collapse all trainers'}
+            >
+              <i className={`fas fa-${allCollapsed ? 'expand' : 'compress'}-alt`}></i>
+              {allCollapsed ? 'Expand All' : 'Collapse All'}
             </button>
             <button
               className={`button secondary no-flex ${showLineage ? 'active' : ''}`}

@@ -89,6 +89,8 @@ function MonsterManagerContent() {
     type1: '', type2: '', type3: '', type4: '', type5: '',
     attribute: '', name: '', level: 1,
   })
+  const [manualTypes, setManualTypes] = useState(false)
+  const [manualAttribute, setManualAttribute] = useState(false)
   const [addTrainer, setAddTrainer] = useState<Trainer | null>(null)
   const [addTrainerSearch, setAddTrainerSearch] = useState('')
   const [addTrainerResults, setAddTrainerResults] = useState<Trainer[]>([])
@@ -346,6 +348,8 @@ function MonsterManagerContent() {
   const openAddModal = useCallback(() => {
     setShowAddModal(true)
     setAddForm({ species1: '', species2: '', species3: '', type1: '', type2: '', type3: '', type4: '', type5: '', attribute: '', name: '', level: 1 })
+    setManualTypes(false)
+    setManualAttribute(false)
     setAddTrainer(null)
     setAddTrainerSearch('')
     setAddTrainerResults([])
@@ -907,14 +911,34 @@ function MonsterManagerContent() {
           </div>
 
           {/* Types */}
+          <div className="monster-manager__add-section-head">
+            <span className="monster-manager__add-section-title">Types</span>
+            <label className="monster-manager__manual-toggle">
+              <input type="checkbox" checked={manualTypes} onChange={(e) => setManualTypes(e.target.checked)} />
+              <span>Manual</span>
+            </label>
+          </div>
           {(['type1', 'type2', 'type3', 'type4', 'type5'] as const).map((field, i) => (
             <div className="monster-manager__add-field" key={field}>
               <label>Type {i + 1} {i === 0 && <span className="monster-manager__required">*</span>}</label>
               <div className="monster-manager__add-inline">
-                <select className="select" value={addForm[field]} onChange={(e) => updateAddForm(field, e.target.value)}>
-                  <option value="">— Select —</option>
-                  {MONSTER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
+                {manualTypes ? (
+                  <input
+                    type="text"
+                    className="input"
+                    value={addForm[field]}
+                    onChange={(e) => updateAddForm(field, e.target.value)}
+                    placeholder="Custom type name"
+                  />
+                ) : (
+                  <select className="select" value={addForm[field]} onChange={(e) => updateAddForm(field, e.target.value)}>
+                    <option value="">— Select —</option>
+                    {MONSTER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                    {addForm[field] && !(MONSTER_TYPES as readonly string[]).includes(addForm[field]) && (
+                      <option value={addForm[field]}>{addForm[field]}</option>
+                    )}
+                  </select>
+                )}
                 <button type="button" className="button sm secondary" onClick={() => rollRandomType(field)}>
                   <i className="fas fa-dice" /> Roll
                 </button>
@@ -924,12 +948,31 @@ function MonsterManagerContent() {
 
           {/* Attribute */}
           <div className="monster-manager__add-field">
-            <label>Attribute <span className="monster-manager__required">*</span></label>
+            <div className="monster-manager__add-section-head">
+              <label>Attribute <span className="monster-manager__required">*</span></label>
+              <label className="monster-manager__manual-toggle">
+                <input type="checkbox" checked={manualAttribute} onChange={(e) => setManualAttribute(e.target.checked)} />
+                <span>Manual</span>
+              </label>
+            </div>
             <div className="monster-manager__add-inline">
-              <select className="select" value={addForm.attribute} onChange={(e) => updateAddForm('attribute', e.target.value)}>
-                <option value="">— Select —</option>
-                {MONSTER_ATTRIBUTES.map(a => <option key={a} value={a}>{a}</option>)}
-              </select>
+              {manualAttribute ? (
+                <input
+                  type="text"
+                  className="input"
+                  value={addForm.attribute}
+                  onChange={(e) => updateAddForm('attribute', e.target.value)}
+                  placeholder="Custom attribute name"
+                />
+              ) : (
+                <select className="select" value={addForm.attribute} onChange={(e) => updateAddForm('attribute', e.target.value)}>
+                  <option value="">— Select —</option>
+                  {MONSTER_ATTRIBUTES.map(a => <option key={a} value={a}>{a}</option>)}
+                  {addForm.attribute && !(MONSTER_ATTRIBUTES as readonly string[]).includes(addForm.attribute) && (
+                    <option value={addForm.attribute}>{addForm.attribute}</option>
+                  )}
+                </select>
+              )}
               <button type="button" className="button sm secondary" onClick={rollRandomAttribute}>
                 <i className="fas fa-dice" /> Roll
               </button>

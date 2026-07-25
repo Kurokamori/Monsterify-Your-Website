@@ -451,6 +451,45 @@
   color: var(--error-color);
 }
 
+.battle-mode-chip--mock {
+  border-color: var(--info-color, #4f9dde);
+  color: var(--info-color, #4f9dde);
+}
+
+/* ── Mock battle intro card ── */
+
+.battle-mock-intro {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: 1.25rem;
+  background: var(--secondary-color, var(--background-color));
+  max-width: 640px;
+}
+
+.battle-mock-intro__icon {
+  font-size: 2.2rem;
+  color: var(--info-color, #4f9dde);
+  flex-shrink: 0;
+}
+
+.battle-mock-intro__body h3 {
+  margin: 0 0 0.5rem;
+}
+
+.battle-mock-intro__body p {
+  color: var(--text-color-muted);
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+
+.battle-mock-intro__note {
+  margin-top: 0.75rem !important;
+  font-size: 0.85rem;
+}
+
 .battle-turn-chip,
 .battle-pending-chip {
   display: inline-block;
@@ -490,6 +529,106 @@
   max-height: 340px;
   overflow-y: auto;
   padding: 0.25rem;
+}
+
+/* ── Mock battle setup modal ── */
+
+.mock-battle-modal__hint {
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+  margin: 0 0 0.75rem;
+  line-height: 1.4;
+}
+
+.mock-battle-modal__hint i {
+  color: var(--accent-color, var(--success-color));
+  margin-right: 0.25rem;
+}
+
+.mock-battle-modal__sides {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.mock-battle-modal__vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+}
+
+.mock-battle-modal__vs span {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--text-color-muted);
+  background: var(--background-color);
+  border-radius: 50%;
+  width: 2.4rem;
+  height: 2.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--border-color);
+}
+
+.mock-side {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: 0.75rem;
+  background: var(--secondary-color, var(--background-color));
+}
+
+.mock-side--players {
+  border-top: 3px solid var(--info-color, #4f9dde);
+}
+
+.mock-side--opponents {
+  border-top: 3px solid var(--error-color, #de5b4f);
+}
+
+.mock-side__heading {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+
+.mock-side__control {
+  margin: 0.5rem 0;
+}
+
+.mock-side__control-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-color-muted);
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mock-side__control-toggle {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.mock-side__control-toggle .button {
+  flex: 1;
+}
+
+.mock-side__counter {
+  margin: 0.5rem 0;
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 720px) {
+  .mock-battle-modal__sides {
+    grid-template-columns: 1fr;
+  }
+
+  .mock-battle-modal__vs {
+    padding: 0.25rem 0;
+  }
 }
 
 /* ── Monster picker (search / filters / pagination) ── */

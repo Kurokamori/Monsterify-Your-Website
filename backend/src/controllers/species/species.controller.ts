@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { db } from '../../database';
-import { UserRepository, MonsterRollerSettings } from '../../repositories';
+import { MonsterRollerSettings } from '../../repositories';
 
 const DEFAULT_MONSTER_ROLLER_SETTINGS: MonsterRollerSettings = {
   pokemon: true,
@@ -13,8 +13,6 @@ const DEFAULT_MONSTER_ROLLER_SETTINGS: MonsterRollerSettings = {
   monsterhunter: true,
   dragonquest: true,
 };
-
-const userRepository = new UserRepository();
 
 // Allowed species tables (used for image lookups)
 const SPECIES_TABLES = [
@@ -71,20 +69,16 @@ async function rollRandomSpecies(
 ): Promise<string[]> {
   let settings: MonsterRollerSettings = { ...DEFAULT_MONSTER_ROLLER_SETTINGS };
 
-  // Check if user is authenticated and has custom settings
-  if (req.user?.discord_id) {
-    try {
-      const dbUser = await userRepository.findByDiscordId(req.user.discord_id);
-      if (dbUser?.monster_roller_settings) {
-        const parsed = typeof dbUser.monster_roller_settings === 'string'
-          ? JSON.parse(dbUser.monster_roller_settings) as Partial<MonsterRollerSettings>
-          : dbUser.monster_roller_settings as Partial<MonsterRollerSettings>;
-        settings = { ...settings, ...parsed };
-      }
-    } catch (err) {
-      console.error('Error getting user settings for species roll:', err);
-    }
+  // Respect the authenticated user's roller settings (already normalized on req.user).
+  // Gating on discord_id previously caused non-Discord accounts to fall back to
+  // all-franchises-enabled, leaking species from disabled franchises.
+  if (req.user?.monster_roller_settings) {
+    settings = { ...settings, ...req.user.monster_roller_settings };
   }
+
+  // TODO: temporary diagnostic — remove after verifying berry species roll filtering
+  console.log('[species/roll DIAG] hasUser=%s discordId=%s settings=%j',
+    Boolean(req.user), req.user?.discord_id ?? null, settings);
 
   const queryParts: string[] = [];
 

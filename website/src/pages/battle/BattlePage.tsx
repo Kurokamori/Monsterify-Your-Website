@@ -21,12 +21,14 @@ import battleService, {
   type GymKind,
   type IncomingChallenge,
   type MyBattleSummary,
+  type StartMockBattleInput,
 } from '@services/battleService';
 import { BadgeCase } from '@components/trainers/detail/shared/BadgeCase';
 import chatSocketService from '@services/chatSocketService';
 import { extractErrorMessage } from '@utils/errorUtils';
 import type { Trainer } from '@components/trainers/types/Trainer';
 import { TeamPickModal } from './TeamPickModal';
+import { MockBattleModal } from './MockBattleModal';
 import { MonsterPicker } from './MonsterPicker';
 import { monsterCanBattle } from './battleMonsterUtils';
 
@@ -256,6 +258,10 @@ const BattlePage = () => {
   const [starting, setStarting] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
+  // Mock battle (pair two of your own trainers)
+  const [mockModalOpen, setMockModalOpen] = useState(false);
+  const [mockStarting, setMockStarting] = useState(false);
+
   const confirmModal = useConfirmModal();
 
   const myTrainerIds = useMemo(() => new Set(trainers.map(t => t.id)), [trainers]);
@@ -374,6 +380,20 @@ const BattlePage = () => {
       setActionError(extractErrorMessage(err, 'Failed to start battle.'));
     } finally {
       setStarting(false);
+    }
+  };
+
+  const handleStartMock = async (input: StartMockBattleInput) => {
+    try {
+      setMockStarting(true);
+      setActionError(null);
+      const state = await battleService.startMockBattle(input);
+      setMockModalOpen(false);
+      navigate(`/adventures/battle/${state.battleId}`);
+    } catch (err) {
+      setActionError(extractErrorMessage(err, 'Failed to start mock battle.'));
+    } finally {
+      setMockStarting(false);
     }
   };
 
@@ -775,11 +795,42 @@ const BattlePage = () => {
     </div>
   );
 
+  const mockTab = (
+    <div className="battle-hub__section">
+      <div className="battle-mock-intro">
+        <div className="battle-mock-intro__icon"><i className="fas fa-masks-theater"></i></div>
+        <div className="battle-mock-intro__body">
+          <h3>Mock Battle</h3>
+          <p>
+            Pair up two of your own trainers and watch — or play — them fight. Pick a
+            team for each side and decide who's at the controls: play <strong>both</strong>{' '}
+            sides yourself (hotseat), hand <strong>one</strong> side to the AI, or sit back
+            and let the AI run <strong>both</strong>. Nothing is at stake — no levels or
+            currency are earned.
+          </p>
+          <button
+            className="button primary"
+            onClick={() => setMockModalOpen(true)}
+            disabled={trainers.length < 2}
+          >
+            <i className="fas fa-masks-theater"></i> New Mock Battle
+          </button>
+          {trainers.length < 2 && (
+            <p className="battle-mock-intro__note">
+              <i className="fas fa-info-circle"></i> You need at least two trainers to set up a mock battle.
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   const tabs: Tab[] = [
     { key: 'teams', label: 'My Teams', icon: 'fas fa-users', content: teamsTab },
     { key: 'opponents', label: 'Opponents', icon: 'fas fa-user-friends', content: opponentsTab },
     { key: 'gyms', label: 'Gyms', icon: 'fas fa-dungeon', content: gymsTab },
     { key: 'ai-battles', label: 'AI Battles', icon: 'fas fa-robot', content: aiBattlesTab },
+    { key: 'mock', label: 'Mock Battle', icon: 'fas fa-masks-theater', content: mockTab },
     { key: 'pvp', label: 'PvP', icon: 'fas fa-crosshairs', content: pvpTab, badge: challenges.length || undefined },
     { key: 'mine', label: 'My Battles', icon: 'fas fa-flag-checkered', content: myBattlesTab },
   ];
@@ -829,6 +880,15 @@ const BattlePage = () => {
         confirmLabel={pickTarget?.kind === 'pvp' ? 'Send Challenge' : pickTarget?.kind === 'accept' ? 'Accept & Battle' : 'Start Battle'}
         submitting={starting}
         onConfirm={handlePickConfirm}
+      />
+
+      <MockBattleModal
+        isOpen={mockModalOpen}
+        onClose={() => setMockModalOpen(false)}
+        trainers={trainers}
+        initialTrainerId={selectedTrainerId}
+        submitting={mockStarting}
+        onConfirm={handleStartMock}
       />
 
       <ConfirmModal {...confirmModal.modalProps} />
